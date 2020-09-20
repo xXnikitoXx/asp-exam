@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>@ViewData["Title"] - Project</title>
+		<link rel="stylesheet" href="~/css/app.css" />
+		<link rel="stylesheet" href="~/css/site.css" />
+		<link href="https://fonts.googleapis.com/css?family=Maven+Pro:400,500,700,900|Noto+Sans:400,700|Nunito+Sans:400,400i,600,600i,700,700i,800,900,900i" rel="stylesheet">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+		<script src="~/lib/jquery/dist/jquery.min.js"></script>
+		<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+		<script src="~/js/vue.js"></script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<nav id="sidebar" class="sidebar">
+				<div class="sidebar-content js-simplebar">
+					<a class="sidebar-brand" href="/">
+						<img src="~/img/text-new.png" width="200" height="50">
+					</a>
+					<ul class="sidebar-nav">
+						@if (SignInManager.IsSignedIn(User))
+						{
+							<li class="sidebar-header" style="font-size: 15px;">
+								{{heading}}
+							</li>
+							<li class="sidebar-item" v-for="button in homeButton">
+								<a class="sidebar-link" :href="button.link" :class="{ active: button.active }">
+									<i :class="'ni ' + button.icon"></i>
+									<span class="align-middle">{{button.text}}</span>
+								</a>
+							</li>
+							<li class="sidebar-item">
+								<a data-target="#ui" data-toggle="collapse" class="sidebar-link collapsed">
+									<i class="fas fa-desktop"></i> <span class="align-middle">Клиент зона</span>
+								</a>
+								<ul id="ui" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
+									<li class="sidebar-item" v-for="button in clientDropdown">
+										<a class="sidebar-link" :href="button.link"
+										   :class="{ active: button.active }">{{button.text}}</a>
+									</li>
+								</ul>
+							</li>
+						}
+						<li class="sidebar-header" style="font-size: 15px;">
+							Услуги
+						</li>
+						<li class="sidebar-item" v-for="button in buyButton">
+							<a class="sidebar-link" :href="button.link" :class="{ active: button.active }">
+								<i :class="'ni ' + button.icon"></i>
+								<span class="align-middle">{{button.text}}</span>
+							</a>
+						</li>
+						<li class="sidebar-header" style="font-size: 15px;">
+							Полезни линкове
+						</li>
+						<li class="sidebar-item" v-for="button in mainButton">
+							<a class="sidebar-link" :href="button.link" :target="button.target" :class="{ active: button.active }">
+								<i :class="'ni ' + button.icon"></i>
+								<span class="align-middle">{{button.text}}</span>
+							</a>
+						</li>
+						<li class="sidebar-item">
+							<a data-target="#help" data-toggle="collapse" class="sidebar-link collapsed">
+								<i class="fas fa-question-circle"></i> <span class="align-middle">Поддръжка</span>
+							</a>
+							<ul id="help" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
+								<li class="sidebar-item" v-for="button in helpButtons">
+									<a class="sidebar-link" :href="button.link"
+									   :target="button.target" :class="{ active: button.active }">{{button.text}}</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</nav>
+			<div class="main">
+				<nav id="navbar" class="navbar navbar-expand navbar-light navbar-bg">
+					<a class="sidebar-toggle d-flex">
+						<i class="hamburger align-self-center"></i>
+					</a>
+					<div class="navbar-collapse collapse">
+						<ul class="navbar-nav navbar-align">
+							<li class="nav-item dropdown">
+								<a class="nav-icon dropdown-toggle d-inline-block d-sm-none" href="#" data-toggle="dropdown">
+									<i class="align-middle" data-feather="settings"></i>
+								</a>
+								<a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" style="color: white;" data-toggle="dropdown">
+									@if (SignInManager.IsSignedIn(User))
+									{
+										<span class="text-white"><i class="far fa-user-circle"></i> Добре дошли, @UserManager.GetUserName(User)</span>
+									}
+									else
+									{
+										<span class="text-white"><i class="fas fa-lock"></i> Клиент зона</span>
+									}
+								</a>
+								<div class="dropdown-menu dropdown-menu-right">
+									<a class="dropdown-item" href="/profile"><i class="align-middle mr-1" data-feather="user"></i> Профил</a>
+									<a class="dropdown-item" target="_blank" href="https://uhost.pw/clientarea/submitticket.php	"><i class="align-middle mr-1" data-feather="help-circle"></i> Поддръжка</a>
+									@if (SignInManager.IsSignedIn(User))
+									{
+										<div class="dropdown-divider"></div>
+										<a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt"></i> Изход</a>
+									}
+								</div>
+							</li>
+						</ul>
+					</div>
+				</nav>
+				<main class="content">
+					@RenderBody()
+				</main>
+			</div>
+		</div>
+		<script src="~/js/app.js" asp-append-version="true"></script>
+		<script src="~/js/home/navbar.js" asp-append-version="true"></script>
+		@RenderSection("Scripts", required: false)
+	</body>
+</html>
