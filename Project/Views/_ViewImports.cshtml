@@ -1,6 +1,7 @@
 ﻿@using Project
 @using Project.Models
+@using Project.ViewModels
 @using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

@@ -2,7 +2,6 @@ let menu = new Vue({
 	el: "#sidebar",
 	data() {
 		return {
-			get user() { return user; },
 			homeButton: [
 				{ text: "Начало", icon: "fas fa-home", link: "/panel", active: false }
 			],

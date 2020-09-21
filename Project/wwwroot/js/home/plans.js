@@ -2,7 +2,6 @@ plans = new Vue({
 	el: "#plans",
 	data() {
 		return {
-			get user() { return user; },
 			plans: [
 				{
 					id: "0",

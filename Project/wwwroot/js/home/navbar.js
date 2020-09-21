@@ -2,7 +2,6 @@ navbar = new Vue({
 	el: "#navbar",
 	data() {
 		return {
-			get user() { return user },
 			logo: "/img/icons/favicon.png",
 			title: "Website",
 			titleLink: "/",
