@@ -1,5 +1,5 @@
 ﻿@{
-	ViewData["Title"] = "Home Page";
+	ViewData["Title"] = "Начало";
 }
 
 <div class="container-fluid p-0">
@@ -35,7 +35,7 @@
 										</div>
 										<div class="mt-auto">
 											@if (SignInManager.IsSignedIn(User)) {
-												<a :href="/order?productId=' + plan.id" class="btn btn-lg btn-outline-primary">Поръчай</a>
+												<a :href="'/order?productId=' + plan.id" class="btn btn-lg btn-outline-primary">Поръчай</a>
 											} else {
 												<a href="/login" class="btn btn-lg btn-outline-primary">Поръчай</a>
 											}
@@ -215,5 +215,4 @@
 		</div>
 	</div>
 </div>
-<script src="~/js/home/sidebar.js"></script>
 <script src="~/js/home/plans.js"></script>

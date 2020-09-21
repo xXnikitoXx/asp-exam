@@ -1,1 +1,7 @@
-﻿@using Project.Areas.Identity.Pages.Account.Manage
+﻿@using Project.Models
+@using Project.ViewModels
+@using Project.Areas.Identity.Pages.Account.Manage
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@functions{
+	public string XsrfToken() => Xsrf.GetAndStoreTokens(Model.HttpContext).RequestToken;
+}

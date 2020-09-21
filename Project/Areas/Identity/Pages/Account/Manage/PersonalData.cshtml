@@ -1,27 +1,31 @@
 ﻿@page
 @model PersonalDataModel
 @{
-    ViewData["Title"] = "Personal Data";
-    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+	ViewData["Title"] = "Лични данни";
+	ViewData["ActivePage"] = ManageNavPages.PersonalData;
 }
 
-<h4>@ViewData["Title"]</h4>
-
 <div class="row">
-    <div class="col-md-6">
-        <p>Your account contains personal data that you have given us. This page allows you to download or delete that data.</p>
-        <p>
-            <strong>Deleting this data will permanently remove your account, and this cannot be recovered.</strong>
-        </p>
-        <form id="download-data" asp-page="DownloadPersonalData" method="post" class="form-group">
-            <button class="btn btn-primary" type="submit">Download</button>
-        </form>
-        <p>
-            <a id="delete" asp-page="DeletePersonalData" class="btn btn-primary">Delete</a>
-        </p>
-    </div>
+	<div class="col-md-6">
+		<div class="card">
+			<div class="card-header">
+				<h1>@ViewData["Title"]</h1>
+			</div>
+			<hr />
+			<div class="card-body">
+				<p>Вашият акаунт съдържа лични данни, които сте ни предоставили. Тази страница ви позволява да изтеглите или изтриете тези данни.</p>
+				<p>
+					<strong>Изтриването на тези данни ще премахне за постоянно вашия акаунт и това не може да бъде възстановено.</strong>
+				</p>
+				<form id="download-data" asp-page="DownloadPersonalData" method="post" class="form-group mb-3">
+					<button class="btn btn-primary" type="submit">Сваляне</button>
+				</form>
+				<a id="delete" asp-page="DeletePersonalData" class="btn btn-primary">Изтриване</a>
+			</div>
+		</div>
+	</div>
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+	<partial name="_ValidationScriptsPartial" />
 }

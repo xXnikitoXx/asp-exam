@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Контакт";
+}
+@model MessageCreateInputModel
+<div class="container-fluid p-0">
+	<h1 class="h3 mb-3">@ViewData["Title"]</h1>
+	<div class="row">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-header">
+					<h5 class="card-title">Basic form</h5>
+					<h6 class="card-subtitle text-muted">Default Bootstrap form layout.</h6>
+				</div>
+				<div class="card-body">
+					<form asp-controller="Contact" asp-action="Contact" method="POST">
+						<div class="mb-3">
+							<label class="form-label">Имейл</label>
+							<input type="email" class="form-control" placeholder="Email">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Съобщение</label>
+							<textarea class="form-control" placeholder="Textarea" rows="1"></textarea>
+						</div>
+						<div class="mb-3">
+							<label class="form-label w-100">File input</label>
+							<input type="file">
+							<small class="form-text text-muted">Example block-level help text here.</small>
+						</div>
+						<div class="mb-3">
+							<label class="form-check m-0">
+								<input type="checkbox" class="form-check-input">
+								<span class="form-check-label">Check me out</span>
+							</label>
+						</div>
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
