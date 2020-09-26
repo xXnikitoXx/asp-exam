@@ -29,6 +29,7 @@ namespace Project.Models
 		public string ParentId { get; set; }
 		public Post ParentPost { get; set; }
 
+		public string UserId { get; set; }
 		public ApplicationUser User { get; set; }
 
 		public ICollection<Post> Answers { get; set; }

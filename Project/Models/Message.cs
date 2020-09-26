@@ -22,6 +22,8 @@ namespace Project.Models
 
 		public string URL { get; set; }
 
+		public DateTime Time { get; set; }
+
 		public ApplicationUser User { get; set; }
 	}
 }

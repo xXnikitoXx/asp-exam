@@ -12,8 +12,8 @@ namespace Project.Models
 	public class VPS
 	{
 		public VPS() {
-			this.Activities = new HashSet<VPSActivity>();
-			this.States = new HashSet<VPSState>();
+			this.Activities = new HashSet<Activity>();
+			this.States = new HashSet<State>();
 		}
 
 		[Key]
@@ -25,7 +25,7 @@ namespace Project.Models
 		public string Name { get; set; }
 
 		[Required]
-		public Plan Plan { get; set; }
+		public Enums.Plan Plan { get; set; }
 
 		[Required]
 		public Location Location { get; set; }
@@ -41,12 +41,16 @@ namespace Project.Models
 		public byte RAM { get; set; }
 
 		[Required]
-		public byte SSD { get; set; }
+		public ushort SSD { get; set; }
 
+		public string UserId { get; set; }
 		public ApplicationUser User { get; set; }
 
-		public ICollection<VPSActivity> Activities { get; set; }
+		public ICollection<Activity> Activities { get; set; }
 		
-		public ICollection<VPSState> States { get; set; }
+		public ICollection<State> States { get; set; }
+
+		public string OrderId { get; set; }
+		public Order Order { get; set; }
 	}
 }

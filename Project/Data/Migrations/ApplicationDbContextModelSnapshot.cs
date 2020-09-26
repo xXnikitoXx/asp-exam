@@ -70,7 +70,7 @@ namespace Project.Data.Migrations
                     b.ToTable("AspNetRoleClaims");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.ApplicationUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -94,7 +94,7 @@ namespace Project.Data.Migrations
                     b.ToTable("AspNetUserClaims");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.ApplicationUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(128)")
@@ -118,7 +118,7 @@ namespace Project.Data.Migrations
                     b.ToTable("AspNetUserLogins");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.ApplicationUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -133,7 +133,7 @@ namespace Project.Data.Migrations
                     b.ToTable("AspNetUserRoles");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.ApplicationUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -166,7 +166,9 @@ namespace Project.Data.Migrations
                         .HasMaxLength(100);
 
                     b.Property<DateTime>("Time")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("URL")
                         .HasColumnType("nvarchar(max)");
@@ -285,6 +287,11 @@ namespace Project.Data.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("Time")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
+
                     b.Property<string>("URL")
                         .HasColumnType("nvarchar(max)");
 
@@ -296,6 +303,71 @@ namespace Project.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("Project.Models.Order", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<byte>("Amount")
+                        .HasColumnType("tinyint");
+
+                    b.Property<double>("FinalPrice")
+                        .HasColumnType("float");
+
+                    b.Property<double>("OriginalPrice")
+                        .HasColumnType("float");
+
+                    b.Property<int>("Plan")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TimeFinished")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("TimeStarted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Order");
+                });
+
+            modelBuilder.Entity("Project.Models.Plan", b =>
+                {
+                    b.Property<byte>("Cores")
+                        .HasColumnType("tinyint");
+
+                    b.Property<string>("IP")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(15)")
+                        .HasMaxLength(15);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("RAM")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int>("SSD")
+                        .HasColumnType("int");
+
+                    b.HasIndex("Number")
+                        .IsUnique();
+
+                    b.ToTable("Plans");
                 });
 
             modelBuilder.Entity("Project.Models.Post", b =>
@@ -317,7 +389,9 @@ namespace Project.Data.Migrations
                         .HasMaxLength(50);
 
                     b.Property<DateTime>("Time")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -329,6 +403,44 @@ namespace Project.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("Project.Models.PromoCode", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
+
+                    b.Property<bool>("IsValid")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<float>("Value")
+                        .HasColumnType("real");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PromoCode");
+                });
+
+            modelBuilder.Entity("Project.Models.PromoCodePlan", b =>
+                {
+                    b.Property<string>("PromoCodeId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("PlanNumber")
+                        .HasColumnType("int");
+
+                    b.HasKey("PromoCodeId");
+
+                    b.ToTable("PromoCodePlans");
                 });
 
             modelBuilder.Entity("Project.Models.State", b =>
@@ -347,7 +459,9 @@ namespace Project.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Time")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("getdate()");
 
                     b.Property<string>("VPSId")
                         .HasColumnType("nvarchar(450)");
@@ -387,79 +501,19 @@ namespace Project.Data.Migrations
                     b.ToTable("Tickets");
                 });
 
-            modelBuilder.Entity("Project.Models.UserActivity", b =>
+            modelBuilder.Entity("Project.Models.UserPromoCode", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ActivityId")
+                    b.Property<string>("PromoCodeId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("UserId", "ActivityId");
+                    b.HasKey("UserId", "PromoCodeId");
 
-                    b.HasIndex("ActivityId");
+                    b.HasIndex("PromoCodeId");
 
-                    b.ToTable("UserActivities");
-                });
-
-            modelBuilder.Entity("Project.Models.UserMessage", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("MessageId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "MessageId");
-
-                    b.HasIndex("MessageId");
-
-                    b.ToTable("UserMessages");
-                });
-
-            modelBuilder.Entity("Project.Models.UserPost", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("PostId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "PostId");
-
-                    b.HasIndex("PostId");
-
-                    b.ToTable("UserPosts");
-                });
-
-            modelBuilder.Entity("Project.Models.UserTicket", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("TicketId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "TicketId");
-
-                    b.HasIndex("TicketId");
-
-                    b.ToTable("UserTickets");
-                });
-
-            modelBuilder.Entity("Project.Models.UserVPS", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("VPSId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "VPSId");
-
-                    b.HasIndex("VPSId");
-
-                    b.ToTable("UserVPSs");
+                    b.ToTable("UserPromoCode");
                 });
 
             modelBuilder.Entity("Project.Models.VPS", b =>
@@ -484,53 +538,28 @@ namespace Project.Data.Migrations
                         .HasColumnType("nvarchar(30)")
                         .HasMaxLength(30);
 
+                    b.Property<string>("OrderId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int>("Plan")
                         .HasColumnType("int");
 
                     b.Property<byte>("RAM")
                         .HasColumnType("tinyint");
 
-                    b.Property<byte>("SSD")
-                        .HasColumnType("tinyint");
+                    b.Property<int>("SSD")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OrderId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("VPSs");
-                });
-
-            modelBuilder.Entity("Project.Models.VPSActivity", b =>
-                {
-                    b.Property<string>("VPSId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ActivityId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("VPSId", "ActivityId");
-
-                    b.HasIndex("ActivityId");
-
-                    b.ToTable("VPSActivities");
-                });
-
-            modelBuilder.Entity("Project.Models.VPSState", b =>
-                {
-                    b.Property<string>("VPSId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("StateId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("VPSId", "StateId");
-
-                    b.HasIndex("StateId");
-
-                    b.ToTable("VPSStates");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -542,7 +571,7 @@ namespace Project.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.ApplicationUserClaim<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.HasOne("Project.Models.ApplicationUser", null)
                         .WithMany()
@@ -551,7 +580,7 @@ namespace Project.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.ApplicationUserLogin<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.HasOne("Project.Models.ApplicationUser", null)
                         .WithMany()
@@ -560,7 +589,7 @@ namespace Project.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.ApplicationUserRole<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
@@ -575,7 +604,7 @@ namespace Project.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.ApplicationUserToken<string>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.HasOne("Project.Models.ApplicationUser", null)
                         .WithMany()
@@ -587,19 +616,28 @@ namespace Project.Data.Migrations
             modelBuilder.Entity("Project.Models.Activity", b =>
                 {
                     b.HasOne("Project.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithMany("Activities")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Project.Models.VPS", "VPS")
-                        .WithMany()
+                        .WithMany("Activities")
                         .HasForeignKey("VPSId");
                 });
 
             modelBuilder.Entity("Project.Models.Message", b =>
                 {
                     b.HasOne("Project.Models.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("Messages")
                         .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Project.Models.Order", b =>
+                {
+                    b.HasOne("Project.Models.ApplicationUser", "User")
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Project.Models.Post", b =>
@@ -610,134 +648,60 @@ namespace Project.Data.Migrations
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Project.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithMany("Posts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Project.Models.PromoCodePlan", b =>
+                {
+                    b.HasOne("Project.Models.PromoCode", "PromoCode")
+                        .WithMany("Plans")
+                        .HasForeignKey("PromoCodeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Project.Models.State", b =>
                 {
                     b.HasOne("Project.Models.VPS", "VPS")
-                        .WithMany()
+                        .WithMany("States")
                         .HasForeignKey("VPSId");
                 });
 
             modelBuilder.Entity("Project.Models.Ticket", b =>
                 {
                     b.HasOne("Project.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("Project.Models.UserActivity", b =>
-                {
-                    b.HasOne("Project.Models.Activity", "Activity")
-                        .WithMany()
-                        .HasForeignKey("ActivityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Project.Models.ApplicationUser", "User")
-                        .WithMany("Activities")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Project.Models.UserMessage", b =>
-                {
-                    b.HasOne("Project.Models.Message", "Message")
-                        .WithMany()
-                        .HasForeignKey("MessageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Project.Models.ApplicationUser", "User")
-                        .WithMany("Messages")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Project.Models.UserPost", b =>
-                {
-                    b.HasOne("Project.Models.Post", "Post")
-                        .WithMany()
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Project.Models.ApplicationUser", "User")
-                        .WithMany("Posts")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Project.Models.UserTicket", b =>
-                {
-                    b.HasOne("Project.Models.Ticket", "Ticket")
-                        .WithMany()
-                        .HasForeignKey("TicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Project.Models.ApplicationUser", "User")
                         .WithMany("Tickets")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Project.Models.UserVPS", b =>
+            modelBuilder.Entity("Project.Models.UserPromoCode", b =>
                 {
-                    b.HasOne("Project.Models.ApplicationUser", "User")
-                        .WithMany("VPSs")
-                        .HasForeignKey("UserId")
+                    b.HasOne("Project.Models.PromoCode", "PromoCode")
+                        .WithMany("Users")
+                        .HasForeignKey("PromoCodeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Project.Models.VPS", "VPS")
-                        .WithMany()
-                        .HasForeignKey("VPSId")
+                    b.HasOne("Project.Models.ApplicationUser", "User")
+                        .WithMany("PromoCodes")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("Project.Models.VPS", b =>
                 {
+                    b.HasOne("Project.Models.Order", "Order")
+                        .WithMany("VPSs")
+                        .HasForeignKey("OrderId");
+
                     b.HasOne("Project.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("Project.Models.VPSActivity", b =>
-                {
-                    b.HasOne("Project.Models.Activity", "Activity")
-                        .WithMany()
-                        .HasForeignKey("ActivityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Project.Models.VPS", "VPS")
-                        .WithMany("Activities")
-                        .HasForeignKey("VPSId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Project.Models.VPSState", b =>
-                {
-                    b.HasOne("Project.Models.State", "State")
-                        .WithMany()
-                        .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Project.Models.VPS", "VPS")
-                        .WithMany("States")
-                        .HasForeignKey("VPSId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("VPSs")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

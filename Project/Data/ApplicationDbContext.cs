@@ -9,6 +9,8 @@ namespace Project.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        #region Tables
+
         public DbSet<Activity> Activities { get; set; }
         public DbSet<Announcement> Announcements { get; set; }
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
@@ -16,22 +18,25 @@ namespace Project.Data
         public DbSet<Post> Posts { get; set; }
         public DbSet<State> States { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
-        public DbSet<UserActivity> UserActivities { get; set; }
-        public DbSet<UserMessage> UserMessages { get; set; }
-        public DbSet<UserPost> UserPosts { get; set; }
-        public DbSet<UserTicket> UserTickets { get; set; }
-        public DbSet<UserVPS> UserVPSs { get; set; }
+        public DbSet<Plan> Plans { get; set; }
         public DbSet<VPS> VPSs { get; set; }
-        public DbSet<VPSActivity> VPSActivities { get; set; }
-        public DbSet<VPSState> VPSStates { get; set; }
+        public DbSet<PromoCodePlan> PromoCodePlans { get; set; }
+
+        #endregion
+
+        #region Configuration
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {}
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => base.OnConfiguring(optionsBuilder);
 
+        #endregion
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            #region EntityModels
 
             modelBuilder.Entity<ApplicationUser>(entity =>
             {
@@ -39,17 +44,17 @@ namespace Project.Data
 
                 entity.HasMany(user => user.VPSs)
                 .WithOne(vps => vps.User)
-                .HasForeignKey(userVps => userVps.UserId)
+                .HasForeignKey(vps => vps.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasMany(user => user.Posts)
                 .WithOne(post => post.User)
-                .HasForeignKey(userPost => userPost.UserId)
+                .HasForeignKey(post => post.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasMany(user => user.Tickets)
                 .WithOne(ticket => ticket.User)
-                .HasForeignKey(userTicket => userTicket.UserId)
+                .HasForeignKey(ticket => ticket.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasMany(user => user.Messages)
@@ -57,7 +62,12 @@ namespace Project.Data
 
                 entity.HasMany(user => user.Activities)
                 .WithOne(activity => activity.User)
-                .HasForeignKey(userActivity => userActivity.UserId)
+                .HasForeignKey(activity => activity.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(user => user.Orders)
+                .WithOne(order => order.User)
+                .HasForeignKey(order => order.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
             });
 
@@ -65,41 +75,78 @@ namespace Project.Data
             {
                 entity.HasMany(vps => vps.Activities)
                 .WithOne(activity => activity.VPS)
-                .HasForeignKey(vpsActivity => vpsActivity.VPSId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(activity => activity.VPSId);
 
                 entity.HasMany(vps => vps.States)
                 .WithOne(state => state.VPS)
-                .HasForeignKey(vpsState => vpsState.VPSId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(state => state.VPSId);
             });
 
-            modelBuilder.Entity<Post>()
-            .HasMany(post => post.Answers)
-            .WithOne(answer => answer.ParentPost)
-            .HasForeignKey(answer => answer.ParentId)
-            .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Post>(entity =>
+            {
+                entity.HasMany(post => post.Answers)
+                .WithOne(answer => answer.ParentPost)
+                .HasForeignKey(answer => answer.ParentId)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<UserVPS>()
-            .HasKey(userVps => new { userVps.UserId, userVps.VPSId });
+                entity.Property(post => post.Time)
+                .HasDefaultValueSql("getdate()");
+            });
 
-            modelBuilder.Entity<UserPost>()
-            .HasKey(userPost => new { userPost.UserId, userPost.PostId });
+            modelBuilder.Entity<Plan>()
+            .HasNoKey()
+            .HasIndex(plan => plan.Number)
+            .IsUnique();
 
-            modelBuilder.Entity<UserTicket>()
-            .HasKey(userTicket => new { userTicket.UserId, userTicket.TicketId });
+            modelBuilder.Entity<Activity>()
+            .Property(activity => activity.Time)
+            .HasDefaultValueSql("getdate()");
 
-            modelBuilder.Entity<UserMessage>()
-            .HasKey(userMessage => new { userMessage.UserId, userMessage.MessageId });
+            modelBuilder.Entity<State>()
+            .Property(state => state.Time)
+            .HasDefaultValueSql("getdate()");
 
-            modelBuilder.Entity<UserActivity>()
-            .HasKey(userActivity => new { userActivity.UserId, userActivity.ActivityId });
+            modelBuilder.Entity<Message>()
+            .Property(message => message.Time)
+            .HasDefaultValueSql("getdate()");
 
-            modelBuilder.Entity<VPSActivity>()
-            .HasKey(vpsActivity => new { vpsActivity.VPSId, vpsActivity.ActivityId });
+            modelBuilder.Entity<Order>(entity =>
+            {
+                entity.Property(order => order.TimeStarted)
+                .HasDefaultValueSql("getdate()");
 
-            modelBuilder.Entity<VPSState>()
-            .HasKey(vpsState => new { vpsState.VPSId, vpsState.StateId });
+                entity.HasMany(order => order.VPSs)
+                .WithOne(vps => vps.Order)
+                .HasForeignKey(vps => vps.OrderId);
+            });
+            
+            #endregion
+
+            #region MappingModels
+
+            modelBuilder.Entity<UserPromoCode>(entity =>
+            {
+                entity.HasKey(userPromoCode => new { userPromoCode.UserId, userPromoCode.PromoCodeId });
+
+                entity.HasOne(userPromoCode => userPromoCode.User)
+                .WithMany(user => user.PromoCodes)
+                .HasForeignKey(userPromoCode => userPromoCode.UserId);
+
+                entity.HasOne(userPromoCode => userPromoCode.PromoCode)
+                .WithMany(promoCode => promoCode.Users)
+                .HasForeignKey(userPromoCode => userPromoCode.PromoCodeId);
+            });
+
+            modelBuilder.Entity<PromoCodePlan>(entity =>
+            {
+                entity.HasKey(promoCodePlan => promoCodePlan.PromoCodeId);
+
+                entity.HasOne(promoCodePlan => promoCodePlan.PromoCode)
+                .WithMany(promoCode => promoCode.Plans)
+                .HasForeignKey(promoCodePlan => promoCodePlan.PromoCodeId);
+            });
+
+            #endregion
         }
     }
 }

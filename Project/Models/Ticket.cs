@@ -24,6 +24,7 @@ namespace Project.Models
 		[Required]
 		public Priority Priority { get; set; }
 
+		public string UserId { get; set; }
 		public ApplicationUser User { get; set; }
 	}
 }

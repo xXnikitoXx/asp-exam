@@ -22,6 +22,7 @@ namespace Project.Models
 
 		public float RAM { get; set; }
 
+		public string VPSId { get; set; }
 		public VPS VPS { get; set; }
 	}
 }
