@@ -47,18 +47,23 @@ namespace Project.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [EmailAddress]
-            [Display(Name = "Email")]
+            [Display(Name = "Потребителско име")]
+            [StringLength(30, ErrorMessage = "Потребителското име трябва да е между {2} и {1} знака.", MinimumLength = 3)]
+            public string UserName { get; set; }
+
+            [Required]
+            [EmailAddress(ErrorMessage = "Невалиден имейл")]
+            [Display(Name = "Имейл")]
             public string Email { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "Паролата трябва да е между {2} и {1} знака.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "Парола")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
+            [Display(Name = "Потвърдете паролата")]
             [Compare("Password", ErrorMessage = "Паролите не съвпадат.")]
             public string ConfirmPassword { get; set; }
         }
@@ -75,7 +80,7 @@ namespace Project.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser { UserName = Input.UserName, Email = Input.Email };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
