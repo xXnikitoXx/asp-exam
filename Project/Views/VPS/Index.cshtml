@@ -1,0 +1,68 @@
+﻿@{
+	ViewData["Title"] = "Сървъри";
+}
+
+<div class="col-12">
+	<div class="card">
+		<div class="card-header">
+			<h1 class="h3 mb-3">@ViewData["Title"]</h1>
+			<h6 class="card-subtitle text-muted">Общо XX</h6>
+			<span class="badge bg-success">На линия - X</span>
+			<span class="badge bg-secondary">Извън линия - X</span>
+			<span class="badge bg-danger">Неочакван срив - X</span>
+			<span class="badge bg-warning">В ремонт - X</span>
+		</div>
+		<div class="card-body text-center">
+			<div class="container-fluid p-0">
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-body">
+									<table id="datatables-reponsive" class="table table-striped" style="width:100%">
+										<thead>
+											<tr>
+												<th>Име на сървъра</th>
+												<th>План</th>
+												<th>Локация</th>
+												<th>IP Адрес</th>
+												<th>OS</th>
+												<th>RAM Памет</th>
+												<th>Пространство</th>
+												<th>Управление</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>vipervps</td>
+												<td>VPS-01</td>
+												<td>Germany</td>
+												<td>127.0.0.1</td>
+												<td><i class="fab fa-ubuntu"></i></td>
+												<td>2048 MB</td>
+												<td>20GB</td>
+												<td>
+													<button class="btn btn-success" type="button" data-toggle="tooltip" data-placement="top" title="Стартиране">
+														<i class="fas fa-play-circle"></i>
+													</button>&nbsp;
+													<button class="btn btn-warning" type="button" data-toggle="tooltip" data-placement="top" title="Рестартиране">
+														<i class="fas fa-undo-alt"></i>
+													</button>&nbsp;
+													<button class="btn btn-danger" type="button" data-toggle="tooltip" data-placement="top" title="Спиране">
+														<i class="fas fa-stop-circle"></i>
+													</button>&nbsp;
+													<a style="color: #fff;" href="control">
+														<button class="btn btn-primary">Контрол</button>
+													</a>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+		</div>
+	</div>
+</div>

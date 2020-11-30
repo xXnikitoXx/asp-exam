@@ -1,24 +1,147 @@
-﻿
+﻿@model AccountViewModel
 @{
-    ViewData["Title"] = "Профил";
+	ViewData["Title"] = "Профил";
 }
 
+<style>
+	.card.blue { background-color: #3b7ddd; }
+	.card.green { background-color: #28a745; }
+	.card.yellow { background-color: #ffc107; }
+	.card.red { background-color: #dc3545; }
+	.card.blue, .card.green, .card.yellow, .card.red { color: #fff; }
+	.card.blue h1, .card.green h1, .card.yellow h1, .card.red h1 { color: #fff; }
+	.card.blue h5, .card.green h5, .card.yellow h5, .card.red h5 { color: #fff; }
+	.circle {
+		background-color: rgba(0, 0, 0, .25);
+		border-radius: 50%;
+		width: 75px;
+		height: 75px;
+	}
+	.circle i {
+		margin-top: 22.5%;
+	}
+	.card.blue a, .card.green a, .card.yellow a, .card.red a { color: #fff; text-decoration: none; }
+	
+	@@media all and (max-width: 1415px) {
+		.card-body .col-md-3 {
+			width: 50%;
+		}
+	}
+
+	@@media all and (max-width:560px) {
+		.card-body .col-md-3 {
+			width: 100%;
+		}
+	}
+</style>
+
 <div class="container-fluid p-0">
-	<h1 class="h3 mb-3">@ViewData["Title"]</h1>
 	<div class="row">
 		<div class="col-12">
 			<div class="card">
 				<div class="card-header">
-					<h5 class="card-title">Basic Buttons</h5>
-					<h6 class="card-subtitle text-muted">Default Bootstrap buttons style.</h6>
+					<h1 class="h3 mb-3">@ViewData["Title"]</h1>
+					<h6 class="card-subtitle text-muted">Основна информация</h6>
 				</div>
 				<div class="card-body text-center">
 					<div class="mb-3">
-						
+						<div class="row">
+							<div class="col-md-3">
+								<div class="card blue">
+									<a href="/vps">
+										<div class="card-body">
+											<div class="row">
+												<div class="col-4">
+													<div class="circle">
+														<i class="fa fa-3x fa-server"></i>
+													</div>
+												</div>
+												<div class="col-8">
+													<h1>@Model.VPSCount</h1>
+													<h5>Сървъри</h5>
+												</div>
+											</div>
+										</div>
+									</a>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="card green">
+									<a href="/Order/List">
+										<div class="card-body">
+											<div class="row">
+												<div class="col-4">
+													<div class="circle">
+														<i class="fa fa-3x fa-file-invoice-dollar"></i>
+													</div>
+												</div>
+												<div class="col-8">
+													<h1>@Model.OrdersCount</h1>
+													<h5>Поръчки</h5>
+												</div>
+											</div>
+										</div>
+									</a>
+								</div>
+							</div>
+							<div class="col-md-3 ">
+								<div class="card yellow">
+									<div class="card-body">
+										<div class="row">
+											<div class="col-4">
+												<div class="circle">
+													<i class="fa fa-3x fa-piggy-bank"></i>
+												</div>
+											</div>
+											<div class="col-8">
+												<h1>@Model.TotalInvestments.ToString("F2")лв.</h1>
+												<h5>Общо инвестиции</h5>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="card red">
+									<div class="card-body">
+										<div class="row">
+											<div class="col-4">
+												<div class="circle">
+													<i class="fa fa-3x fa-money-bill-wave"></i>
+												</div>
+											</div>
+											<div class="col-8">
+												<h1>@Model.MonthlyBill.ToString("F2")лв.</h1>
+												<h5>Месечна сметка</h5>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 					<div>
 						<a href="/Identity/Account/Manage"><button class="btn btn-info">Разширени настройки</button></a>
 					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-header">
+					<h1 class="h3 mb-3">Последни поръчки (<a href="/Order/List">Виж всички</a>)</h1>
+					<h6 class="card-subtitle text-muted">Общо @Model.OrdersCount</h6>
+					<span class="badge bg-primary">Записани - @Model.CreatedOrders</span>
+					<span class="badge bg-info">В процес на обработка - @Model.AwaitingOrders</span>
+					<span class="badge bg-success">Завършени - @Model.FinishedOrders</span>
+					<span class="badge bg-danger">Провалени - @Model.FailedOrders</span>
+					<span class="badge bg-warning">Отказани - @Model.CancelledOrders</span>
+					<span class="badge bg-warning">Изтекли - @Model.ExpiredOrders</span>
+				</div>
+				<div class="card-body text-center">
+					
 				</div>
 			</div>
 		</div>

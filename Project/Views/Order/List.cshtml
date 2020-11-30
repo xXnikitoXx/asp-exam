@@ -1,0 +1,81 @@
+﻿@model OrdersViewModel
+@{
+	ViewData["Title"] = "Поръчки";
+}
+
+<style>
+	select.form-control {
+		text-align: center;
+	}
+</style>
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="card">
+			<div class="card-header">
+				<h1>@ViewData["Title"]</h1>
+				<div class="row">
+					<div class="col-md-2">
+						Брой: @Model.Total
+					</div>
+					<div class="col-md-2">
+						Обща стойност: @Model.TotalInvestments.ToString("F2")лв.
+					</div>
+					<div class="col-md-8">
+						<span class="badge bg-primary">Записани - X</span>
+						<span class="badge bg-info">В процес на обработка - X</span>
+						<span class="badge bg-success">Завършени - X</span>
+						<span class="badge bg-danger">Провалени - X</span>
+						<span class="badge bg-warning">Отказани - X</span>
+						<span class="badge bg-warning">Изтекли - X</span>
+					</div>
+					<div class="offset-10 col-md-2">
+						<label>Поръчки на страница</label>
+						<select class="form-control" asp-for="Show" onchange="location.href = '/Order/List?Page=1&Show=' + this.value;">
+							<option value="20">20</option>
+							<option value="40">40</option>
+							<option value="60">60</option>
+							<option value="80">80</option>
+							<option value="100">100</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<hr />
+			<div class="card-body">
+				@if (Model.Total == 0)
+				{
+					<h3>За момента нямате поръчки.</h3>
+				}
+				else
+				{
+
+				}
+			</div>
+			@if (Model.Total != 0)
+			{
+				<div class="card-actions">
+					<ul class="pagination pagination-md">
+						<li class="page-item active"><a class="page-link" href="#"><i class="fas fa-angle-left"></i></a></li>
+						@for (int i = 1; i <= Model.Pages; i++)
+						{
+							if (Model.Page == i)
+							{
+								<li class="page-item active">
+									<a class="page-link" href="/Order/List?Page=@i&Show=@Model.Show">1</a>
+								</li>
+							}
+							else
+							{
+								<li class="page-item active">
+									<a class="page-link" href="/Order/List?Page=@i&Show=@Model.Show">1</a>
+								</li>
+							}
+						}
+						<li class="page-item active"><a class="page-link" href="#"><i class="fas fa-angle-right"></i></a></li>
+					</ul>
+				</div>
+			}
+		</div>
+	</div>
+</div>

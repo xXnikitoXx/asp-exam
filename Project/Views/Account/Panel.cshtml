@@ -1,0 +1,68 @@
+﻿@{
+	ViewData["Title"] = "Панел";
+}
+
+<div class="col-12">
+	<div class="card">
+		<div class="card-header">
+			<h1 class="h3 mb-3">@ViewData["Title"]</h1>
+		</div>
+		<div class="card-body text-center">
+			<div class="col-6">
+				<div class="card flex-fill w-100">
+					<div class="card-body py-3">
+						<div class="chart chart-sm">
+							<div class="chartjs-size-monitor">
+								<div class="chartjs-size-monitor-expand">
+									<div class=""></div>
+								</div>
+								<div class="chartjs-size-monitor-shrink">
+									<div class=""></div>
+								</div>
+							</div>
+							<canvas id="cpu-stats" style="display: block; width: 729px; height: 250px;" class="chartjs-render-monitor"></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+
+</script>
+<script>
+	const cpuStatsCtx = document.querySelector("#cpu-stats").getContext("2d");
+	const cpuChart = new Chart(cpuStatsCtx, {
+		type: "line",
+		data: {
+			labels: [
+				
+			],
+			datasets: [
+				{
+					label: "Средно CPU натоварване",
+					data: [],
+					backgroundColor: "rgba(255, 99, 132, 0.2)",
+					borderColor: "rgba(255, 99, 132, 1)",
+					borderWidth: 2
+				}
+			]
+		},
+		options: {
+			scales: {
+				yAxes: [{
+					ticks: {
+						min: 0,
+						max: 100,
+						callback: value => value + "%",
+					},
+					scaleLabel: {
+						display: true,
+						labelString: ""
+					}
+				}]
+			}
+		}
+	});
+</script>
