@@ -18,17 +18,21 @@
 	}
 </style>
 
-<ul class="nav nav-pills flex-column">
-	<li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Профил</a></li>
-	<li class="nav-item"><a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Имейл</a></li>
-	<li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Парола</a></li>
-	<li class="nav-item"><a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Лични Данни</a></li>
-	<li class="nav-item">
-		<a class="nav-link" id="logout">
-			<form action="/Identity/Account/Logout?returnUrl=/" method="POST">
-				<input type="submit" value="Изход">
-				<input type="hidden" name="__RequestVerificationToken" value="@XsrfToken()" />
-			</form>
-		</a>
-	</li>
-</ul>
+<div class="list-group list-group-flush" role="tablist">
+	<a class="list-group-item list-group-item-action @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">
+		Профил
+	</a>
+	<a class="list-group-item list-group-item-action @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">
+		Имейл
+	</a>
+	<a class="list-group-item list-group-item-action @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">
+		Парола
+	</a>
+	<a class="list-group-item list-group-item-action @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">
+		Лични Данни
+	</a>
+	<a class="list-group-item list-group-item-action" href="/Logout" id="logout">
+		Изход
+	</a>
+</div>
+

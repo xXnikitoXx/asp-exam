@@ -1,49 +1,53 @@
 ﻿@page
 @model LoginModel
 @{
-    ViewData["Title"] = "Вход";
+    ViewData["Title"] = "Вход в клиент зоната";
 }
 
-<div class="row">
-    <div class="col-md-4">
-		<div class="card">
-			<div class="card-header">
-				<h1>@ViewData["Title"]</h1>
-			</div>
-			<hr />
-			<div class="card-body">
-				<form id="account" method="post">
-					<div asp-validation-summary="All" class="text-danger"></div>
-					<div class="form-group mb-3">
-						<label asp-for="Input.UserName"></label>
-						<input asp-for="Input.UserName" class="form-control" />
-						<span asp-validation-for="Input.UserName" class="text-danger"></span>
+<div class="container d-flex flex-column">
+	<div class="row vh-95">
+		<div class="col-sm-10 col-md-8 col-lg-6 mx-auto d-table h-100">
+			<div class="d-table-cell align-middle">
+				<div class="card">
+					<div class="card-header">
+						<h1 class="text-center">@ViewData["Title"]</h1>
 					</div>
-					<div class="form-group mb-3">
-						<label asp-for="Input.Password"></label>
-						<input asp-for="Input.Password" class="form-control" />
-						<span asp-validation-for="Input.Password" class="text-danger"></span>
-					</div>
-					<div class="form-group mb-3">
-						<div class="checkbox">
-							<label asp-for="Input.RememberMe">
-								<input asp-for="Input.RememberMe" />
-								@Html.DisplayNameFor(m => m.Input.RememberMe)
-							</label>
+					<div class="card-body">
+						<div class="m-sm-4">
+							<form id="account" method="post">
+								<div asp-validation-summary="All" class="text-danger"></div>
+								<div class="form-group mb-3">
+									<label asp-for="Input.UserName"></label>
+									<input asp-for="Input.UserName" class="form-control" />
+									<span asp-validation-for="Input.UserName" class="text-danger"></span>
+								</div>
+								<div class="form-group mb-3">
+									<label asp-for="Input.Password"></label>
+									<input asp-for="Input.Password" class="form-control" />
+									<span asp-validation-for="Input.Password" class="text-danger"></span>
+									<a id="forgot-password" asp-page="./ForgotPassword">Забравена парола?</a>
+								</div>
+								<div class="form-group mb-3">
+									<div class="checkbox">
+										<label asp-for="Input.RememberMe">
+											<input asp-for="Input.RememberMe" />
+											@Html.DisplayNameFor(m => m.Input.RememberMe)
+										</label>
+									</div>
+								</div>
+								<div class="row">
+									<div class="form-group mb-3 row">
+										<a class="btn btn-info col-5" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Регистрирай се <i class="fas fa-edit"></i></a>
+										<button type="submit" class="btn btn-success col-5 offset-2">Вход <i class="fas fa-sign-in-alt"></i></button>
+									</div>
+								</div>
+							</form>
 						</div>
 					</div>
-					<div class="form-group mb-3">
-						<button type="submit" class="btn btn-primary">Вход</button>
-					</div>
-					<div class="form-group">
-						<a id="forgot-password" asp-page="./ForgotPassword">Забравена парола?</a>
-						<br />
-						<a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Регистрирай се</a>
-					</div>
-				</form>
+				</div>
 			</div>
 		</div>
-    </div>
+	</div>
 </div>
 
 @section Scripts {
