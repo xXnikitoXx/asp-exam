@@ -1,22 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Project.Models
 {
-    public class Plan
-    {
+	public class Plan
+	{
+		public Plan() {
+			this.Orders = new HashSet<Order>();
+		}
+
 		[Required]
 		public int Number { get; set; }
 
-        [Required]
-        public string Name { get; set; }
-
 		[Required]
-		[StringLength(15, MinimumLength = 7)]
-		public string IP { get; set; }
+		public string Name { get; set; }
 
 		[Required]
 		public byte Cores { get; set; }
@@ -26,5 +23,10 @@ namespace Project.Models
 
 		[Required]
 		public ushort SSD { get; set; }
+
+		[Required]
+		public double Price { get; set; }
+
+		public ICollection<Order> Orders { get; set; }
 	}
 }

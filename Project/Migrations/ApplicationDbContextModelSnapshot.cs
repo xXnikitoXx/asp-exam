@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Project.Data;
 
-namespace Project.Data.Migrations
+namespace Project.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -320,7 +320,10 @@ namespace Project.Data.Migrations
                     b.Property<double>("OriginalPrice")
                         .HasColumnType("float");
 
-                    b.Property<int>("Plan")
+                    b.Property<int>("PlanNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("State")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("TimeFinished")
@@ -336,27 +339,29 @@ namespace Project.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PlanNumber");
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("Order");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Project.Models.Plan", b =>
                 {
+                    b.Property<int>("Number")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
                     b.Property<byte>("Cores")
                         .HasColumnType("tinyint");
-
-                    b.Property<string>("IP")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(15)")
-                        .HasMaxLength(15);
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Number")
-                        .HasColumnType("int");
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
 
                     b.Property<byte>("RAM")
                         .HasColumnType("tinyint");
@@ -364,8 +369,7 @@ namespace Project.Data.Migrations
                     b.Property<int>("SSD")
                         .HasColumnType("int");
 
-                    b.HasIndex("Number")
-                        .IsUnique();
+                    b.HasKey("Number");
 
                     b.ToTable("Plans");
                 });
@@ -430,15 +434,17 @@ namespace Project.Data.Migrations
                     b.ToTable("PromoCode");
                 });
 
-            modelBuilder.Entity("Project.Models.PromoCodePlan", b =>
+            modelBuilder.Entity("Project.Models.PromoCodeOrder", b =>
                 {
                     b.Property<string>("PromoCodeId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("PlanNumber")
-                        .HasColumnType("int");
+                    b.Property<string>("OrderId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("PromoCodeId");
+                    b.HasKey("PromoCodeId", "OrderId");
+
+                    b.HasIndex("OrderId");
 
                     b.ToTable("PromoCodePlans");
                 });
@@ -634,6 +640,12 @@ namespace Project.Data.Migrations
 
             modelBuilder.Entity("Project.Models.Order", b =>
                 {
+                    b.HasOne("Project.Models.Plan", "Plan")
+                        .WithMany("Orders")
+                        .HasForeignKey("PlanNumber")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Project.Models.ApplicationUser", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
@@ -653,10 +665,16 @@ namespace Project.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Project.Models.PromoCodePlan", b =>
+            modelBuilder.Entity("Project.Models.PromoCodeOrder", b =>
                 {
+                    b.HasOne("Project.Models.Order", "Order")
+                        .WithMany("PromoCodes")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Project.Models.PromoCode", "PromoCode")
-                        .WithMany("Plans")
+                        .WithMany("Orders")
                         .HasForeignKey("PromoCodeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

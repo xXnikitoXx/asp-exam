@@ -13,7 +13,7 @@ namespace Project.Models
     {
         public PromoCode()
         {
-            this.Plans = new HashSet<PromoCodePlan>();
+            this.Orders = new HashSet<PromoCodeOrder>();
             this.Users = new HashSet<UserPromoCode>();
         }
 
@@ -34,7 +34,7 @@ namespace Project.Models
         [DefaultValue(true)]
         public bool IsValid { get; set; }
 
-        public ICollection<PromoCodePlan> Plans { get; set; }
+        public ICollection<PromoCodeOrder> Orders { get; set; }
 
         public ICollection<UserPromoCode> Users { get; set; }
     }

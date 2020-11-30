@@ -9,7 +9,8 @@ namespace Project.MappingConfiguration
     {
         public ApplicationProfile()
         {
-
+            CreateMap<Order, OrderViewModel>();
+			CreateMap<VPS, VPSViewModel>();
         }
     }
 }
