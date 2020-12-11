@@ -1,0 +1,51 @@
+<ul class="pagination pagination-md">
+	@if ((int)ViewData["Pages"] < 7) {
+		for (int i = 1; i <= (int)ViewData["Pages"]; i++) {
+			if ((int)ViewData["Page"] == i) {
+				<li class="page-item active">
+					<a class="page-link">@i</a>
+				</li>
+			} else {
+				<li class="page-item">
+					<a class="page-link" href='@ViewData["PaginationUrl"]?Page=@i&Show=@ViewData["Show"]'>@i</a>
+				</li>
+			}
+		}
+	} else {
+		if ((int)ViewData["Page"] > 1) {
+			<li class="page-item active">
+				<a class="page-link" href='@ViewData["PaginationUrl"]?Page@((int)ViewData["Page"] - 1)&Show=@ViewData["Show"]'>
+					<i class="fas fa-angle-left"></i>
+				</a>
+			</li>
+			if ((int)ViewData["Page"] > 3) {
+				<li class="page-item">
+					<a target class="page-link" href='@ViewData["PaginationUrl"]?Page=@((int)ViewData["Page"] - 3)&Show=@ViewData["Show"]'>...</a>
+				</li>
+			}
+		}
+		for (int i = (int)ViewData["Page"] <= 3 ? 1 : (int)ViewData["Page"] - 2; i <= ((int)ViewData["Page"] + 2 <= (int)ViewData["Pages"] ? (int)ViewData["Page"] + 2 : (int)ViewData["Pages"]); i++) {
+			if ((int)ViewData["Page"] == i) {
+				<li class="page-item active">
+					<a class="page-link">@i</a>
+				</li>
+			} else {
+				<li class="page-item">
+					<a class="page-link" href='@ViewData["PaginationUrl"]?Page=@i&Show=@ViewData["Show"]'>@i</a>
+				</li>
+			}
+		}
+		if ((int)ViewData["Page"] < (int)ViewData["Pages"]) {
+			if ((int)ViewData["Page"] < (int)ViewData["Pages"] - 2) {
+				<li class="page-item">
+					<a target class="page-link" href='@ViewData["PaginationUrl"]?Page=@((int)ViewData["Page"] + 3)&Show=@ViewData["Show"]'>...</a>
+				</li>
+			}
+			<li class="page-item active">
+				<a class="page-link" href='@ViewData["PaginationUrl"]?Page=@((int)ViewData["Page"] + 1)&Show=@ViewData["Show"]'>
+					<i class="fas fa-angle-right"></i>
+				</a>
+			</li>
+		}
+	}
+</ul>

@@ -13,6 +13,7 @@
 		<script src="~/lib/jquery/dist/jquery.min.js"></script>
 		<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="~/js/vue.js"></script>
+		<script src="~/js/site.js"></script>
 		<style>
 			.card > hr {
 				margin: 0 !important;
@@ -44,8 +45,7 @@
 								</a>
 								<ul id="ui" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
 									<li class="sidebar-item" v-for="button in clientDropdown">
-										<a class="sidebar-link" :href="button.link"
-										   :class="{ active: button.active }">{{button.text}}</a>
+										<a class="sidebar-link" :href="button.link" :class="{ active: button.active }">{{button.text}}</a>
 									</li>
 								</ul>
 							</li>
@@ -74,8 +74,7 @@
 							</a>
 							<ul id="help" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
 								<li class="sidebar-item" v-for="button in helpButtons">
-									<a class="sidebar-link" :href="button.link"
-									   :target="button.target" :class="{ active: button.active }">{{button.text}}</a>
+									<a class="sidebar-link" :href="button.link" :target="button.target" :class="{ active: button.active }">{{button.text}}</a>
 								</li>
 							</ul>
 						</li>
@@ -105,6 +104,8 @@
 								</a>
 								<div class="dropdown-menu dropdown-menu-right">
 									<a class="dropdown-item" href="/profile"><i class="align-middle mr-1" data-feather="user"></i> Профил</a>
+									<a class="dropdown-item" href="/Identity/Account/Manage"><i class="align-middle mr-1" data-feather="settings"></i> Разширени настройки</a>
+									<div class="dropdown-divider"></div>
 									<a class="dropdown-item" target="_blank" href="https://uhost.pw/clientarea/submitticket.php	"><i class="align-middle mr-1" data-feather="help-circle"></i> Поддръжка</a>
 									@if (SignInManager.IsSignedIn(User))
 									{
