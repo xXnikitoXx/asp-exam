@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace Project.Enums
 {
@@ -11,7 +7,7 @@ namespace Project.Enums
         [Description("Определена стойност")]
         FixedAmount = 0,
         [Description("Процент")]
-        Precentage = 1,
+        Percentage = 1,
         [Description("Презаписване на стойност")]
         PriceOverride = 2,
         [Description("Безплатно")]
