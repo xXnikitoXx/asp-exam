@@ -8,7 +8,9 @@ namespace Project.Controllers
 {
     public class VPSController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Index() => View();
+
+        public IActionResult Manage(string id)
         {
             return View();
         }
