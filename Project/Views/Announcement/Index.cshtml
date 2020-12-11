@@ -1,0 +1,106 @@
+@using Project.Enums
+@model AnnouncementsViewModel
+@{
+	ViewData["Title"] = "Системни съобщения";
+	ViewData["PaginationUrl"] = "/Admin/Announcements";
+	ViewData["Page"] = Model.Page;
+	ViewData["Pages"] = Model.Pages;
+	ViewData["Show"] = Model.Show;
+}
+
+<style>
+	.pagination {
+		justify-content: center;
+	}
+</style>
+
+<div class="row">
+	<div class="col-12">
+		<div class="card">
+			<div class="card-header">
+				<h1>@ViewData["Title"] (<a href="/Admin/Announcements/New">Добави</a>)</h1>
+				<div class="row">
+					<div class="col-md-2">
+						Брой: @Model.Total
+					</div>
+					<div class="offset-10 col-md-2">
+						<label>Съобщения на страница</label>
+						<select class="form-control" asp-for="Show" onchange="location.href = '/Admin/Announcements?Page=1&Show=' + this.value;">
+							<option value="5">5</option>
+							<option value="10">10</option>
+							<option value="20">20</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<hr />
+			<div class="card-body text-center">
+				<div class="container-fluid p-0">
+					<div class="row">
+						<div class="col-12">
+							@if (Model.Total == 0) {
+								<h3>За момента няма съобщения.</h3>
+							} else {
+								<table id="datatables-reponsive" class="table table-striped" style="width:100%">
+									<thead>
+										<tr>
+											<th>Заглавие</th>
+											<th>Съдържание</th>
+											<th>Тип</th>
+											<th></th>
+											<th>Контрол</th>
+										</tr>
+									</thead>
+									<tbody>
+										@foreach (Announcement announcement in Model.Announcements) {
+											<tr>
+												<td>@announcement.Title</td>
+												<td>@announcement.Content.Substring(0, Math.Min(announcement.Content.Length, 15)) ...</td>
+												<td>
+													@(new Func<string>(() => {
+														switch (announcement.Type) {
+															case MessageType.Primary: return "Основен";
+															case MessageType.Secondary: return "Второстепенен";
+															case MessageType.Success: return "Успех";
+															case MessageType.Danger: return "Опасност";
+															case MessageType.Warning: return "Внимание";
+															default: return "Инфо";
+														}
+													}).Invoke())
+												</td>
+												<td></td>
+												<td>
+													<a data-toggle="modal" data-target="#preview" onclick="PreviewAnnouncement(`@announcement.Title`, `@announcement.Content`, '@announcement.Type')" class="btn btn-primary"><i class="fas fa-eye"></i></a>
+													<a href="/Admin/Announcements/Remove?Id=@announcement.Id" class="btn btn-danger"><i class="fas fa-times"></i></a>
+												</td>
+											</tr>
+										}
+									</tbody>
+								</table>
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+			@if (Model.Total > 0)
+			{
+				<div class="card-actions">
+					<partial name="/Views/Shared/_Pagination.cshtml" />
+				</div>
+			}
+		</div>
+	</div>
+</div>
+<div id="preview" class="modal fade show" tabindex="-1" role="dialog" style="padding-right: 17px; display: none;" aria-modal="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title"></h5>
+			</div>
+			<div class="modal-body m-3">
+				
+			</div>
+		</div>
+	</div>
+</div>
+<script src="/js/announcement/preview.js"></script>

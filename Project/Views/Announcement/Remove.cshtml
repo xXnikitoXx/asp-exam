@@ -1,0 +1,40 @@
+@model string
+@{
+	ViewData["Title"] = "Премахване на системно съобщение";
+}
+
+<style>
+	.card-header { padding-bottom: 0; }
+	.card-body { padding-top: 0; }
+	.card-body .m-sm-4 { margin-bottom: 0 !important; }
+	h4:nth-child(2) { color: #f00; }
+</style>
+
+<div class="row">
+	<div class="container d-flex flex-column">
+		<div class="row vh-95">
+			<div class="col-sm-10 col-md-8 col-lg-6 mx-auto d-table h-100">
+				<div class="d-table-cell align-middle">
+					<div class="card">
+						<div class="card-header">
+							<h1 class="text-center">@ViewData["Title"]</h1>
+						</div>
+						<div class="card-body">
+							<div class="m-sm-4">
+								<div class="row mb-2">
+									<h4>Сигурни ли сте че искате да премахнете това системно съобщение?</h4>
+									<h4>Това действие не може да бъде отменено!</h4>
+								</div>
+								<div class="row mb-0">
+									<a class="btn btn-info col-5" href="/Admin/Announcements"><i class="fas fa-chevron-left"></i> Назад</a>
+									<button onclick="DeleteAnnouncement();" class="btn btn-danger col-5 offset-2">Премахни <i class="fas fa-trash-alt"></i></button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="/js/announcement/delete.js"></script>
