@@ -1,5 +1,11 @@
-﻿@{
+﻿@model OrderViewModel
+@using Project.Enums
+@{
 	ViewData["Title"] = "Преглед и плащане";
+	OrderState[] removeAllowedStates = new OrderState[] {
+		OrderState.Created,
+		OrderState.Expired,
+	};
 }
 
 <style>
@@ -7,6 +13,16 @@
 		text-align: center;
 	}
 </style>
+@if (ViewData["Message"] != null) {
+	<div class="alert alert-primary alert-dismissible" role="alert">
+		<div class="alert-icon">
+			<i class="fa fa-info"></i>
+		</div>
+		<div class="alert-message">
+			@Html.Raw(@ViewData["Message"])
+		</div>
+	</div>
+}
 <div class="row">
 	<div class="col-8">
 		<div class="card">
@@ -21,33 +37,39 @@
 						<th>Количество</th>
 						<th>Сървърна локация</th>
 						<th>Цена</th>
-						<th>Премахни</th>
+						@if (removeAllowedStates.Contains(Model.State)) {
+							<th>Премахни</th>
+						}
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<td>VPS-01</td>
+						<td>@Model.Plan.Name</td>
 						<td>
-							<input type="number" id="quantity" name="quantity" min="1" max="5" value="1">
+							<input type="number" id="amount" name="amount" min="1" max="5" asp-for="Amount">
 						</td>
 						<td class="table-action">
 							<fieldset class="mb-3">
 								<div class="row">
 									<div class="col-sm-10">
-										<label class="form-check">
-											<input name="radio-3" type="radio" class="form-check-input">
-											<span class="form-check-label">Nuremberg, Germany</span>
-										</label>
-										<label class="form-check">
-											<input name="radio-3" type="radio" class="form-check-input">
-											<span class="form-check-label">Falkenstein, Germany</span>
-										</label>
+										@foreach (string s in typeof(Location).GetEnumNames()) {
+											<label class="form-check">
+												<input name="location" type="radio" class="form-check-input" value="@s" @(Model.Location.ToString() == s ? "checked" : "")>
+												<span class="form-check-label">@s.Replace("_", ", ")</span>
+											</label>
+										}
 									</div>
 								</div>
 							</fieldset>
 						</td>
-						<td>20лв</td>
-						<td style="text-align: center;"><a href="#"><i data-feather="trash"></i></a></td>
+						<td>@(Model.OriginalPrice.ToString("F2"))лв</td>
+						@if (removeAllowedStates.Contains(Model.State)) {
+							<td style="text-align: center;">
+								<a href="/Order/Remove?id=@Model.Id">
+									<i data-feather="trash"></i>
+								</a>
+							</td>
+						}
 					</tr>
 				</tbody>
 			</table>
@@ -65,20 +87,47 @@
 							<thead>
 								<tr>
 									<th>Междинна сума: </th>
-									<th>Отстъпка: <code>testCode</code></th>
+									<th>Отстъпка: <code>@string.Join(", ", Model.PromoCodes.Select(code => code.Code).ToList())</code></th>
 									<th>Обща сума: </th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td>20лв</td>
-									<td>-1.00лв</td>
-									<td>19лв</td>
+									<td>@(Model.OriginalPrice.ToString("F2"))лв</td>
+									<td>
+										@(new Func<double>(() => {
+											double amount = Model.OriginalPrice;
+											foreach (PromoCodeViewModel code in Model.PromoCodes) {
+												switch (code.Type) {
+													case PromoCodeType.FixedAmount:
+														amount -= code.Value;
+														break;
+													case PromoCodeType.Percentage:
+														amount -= amount * code.Value;
+														break;
+													case PromoCodeType.PriceOverride:
+														amount = code.Value;
+														break;
+													case PromoCodeType.Free:
+														amount = 0;
+														break;
+												}
+											}
+											if (amount < 0)
+												amount = 0;
+											@ViewData["Change"] = amount.ToString("F2");
+											return Model.OriginalPrice - amount;
+										}).Invoke().ToString("F2"))лв
+									</td>
+									<td>@ViewData["Change"]лв</td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
-					<div class="row">
+					<div class="row m-1">
+						<button class="btn btn-outline-info" onclick="SaveOrder();">Запазване <i class="fas fa-save"></i></button>
+					</div>
+					<div class="row m-1">
 						<button class="btn btn-outline-success">Плащане <i class="fas fa-cart-plus"></i></button>
 					</div>
 				</div>
@@ -104,3 +153,4 @@
 		</div>
 	</div>
 </div>
+<script src="/js/order/save.js"></script>

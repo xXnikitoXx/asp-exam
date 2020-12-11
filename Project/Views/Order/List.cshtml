@@ -1,11 +1,20 @@
-﻿@model OrdersViewModel
+﻿@using Project.Enums
+@model OrdersViewModel
 @{
 	ViewData["Title"] = "Поръчки";
+	ViewData["PaginationUrl"] = "/Order/List";
+	ViewData["Page"] = Model.Page;
+	ViewData["Pages"] = Model.Pages;
+	ViewData["Show"] = Model.Show;
 }
 
 <style>
 	select.form-control {
 		text-align: center;
+	}
+
+	.pagination {
+		justify-content: center;
 	}
 </style>
 
@@ -22,58 +31,75 @@
 						Обща стойност: @Model.TotalInvestments.ToString("F2")лв.
 					</div>
 					<div class="col-md-8">
-						<span class="badge bg-primary">Записани - X</span>
-						<span class="badge bg-info">В процес на обработка - X</span>
-						<span class="badge bg-success">Завършени - X</span>
-						<span class="badge bg-danger">Провалени - X</span>
-						<span class="badge bg-warning">Отказани - X</span>
-						<span class="badge bg-warning">Изтекли - X</span>
+						<span class="badge bg-primary">Записани - @Model.CreatedOrders</span>
+						<span class="badge bg-info">В процес на обработка - @Model.AwaitingOrders</span>
+						<span class="badge bg-success">Завършени - @Model.FinishedOrders</span>
+						<span class="badge bg-danger">Провалени - @Model.FailedOrders</span>
+						<span class="badge bg-warning">Отказани - @Model.CancelledOrders</span>
+						<span class="badge bg-warning">Изтекли - @Model.ExpiredOrders</span>
 					</div>
 					<div class="offset-10 col-md-2">
 						<label>Поръчки на страница</label>
 						<select class="form-control" asp-for="Show" onchange="location.href = '/Order/List?Page=1&Show=' + this.value;">
+							<option value="5">5</option>
+							<option value="10">10</option>
 							<option value="20">20</option>
 							<option value="40">40</option>
-							<option value="60">60</option>
-							<option value="80">80</option>
-							<option value="100">100</option>
 						</select>
 					</div>
 				</div>
 			</div>
 			<hr />
 			<div class="card-body">
-				@if (Model.Total == 0)
-				{
+				@if (Model.Total == 0) {
 					<h3>За момента нямате поръчки.</h3>
-				}
-				else
-				{
-
+				} else {
+					<table id="datatables-reponsive" class="table table-striped" style="width:100%">
+						<thead>
+							<tr>
+								<th>Време на поръчката</th>
+								<th>Завършена на</th>
+								<th>План</th>
+								<th>Състояние</th>
+								<th>Действие</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (OrderViewModel order in Model.Orders) {
+								<tr>
+									<td>@order.TimeStarted</td>
+									<td>@(order.TimeFinished.Year == 1 ? "-" : order.TimeFinished.ToString())</td>
+									<td>@order.Plan.Name</td>
+									<td>
+										@(new Func<string>(() => {
+											switch(order.State) {
+												case OrderState.Created: return "Запазена";
+												case OrderState.Awaiting: return "В процес на обработка";
+												case OrderState.Finished: return "Завършена";
+												case OrderState.Failed: return "Провалена";
+												case OrderState.Cancelled: return "Отказана";
+												case OrderState.Expired: return "Изтекла";
+											}
+											return "Неизвестен";
+										}).Invoke())
+									</td>
+									<td>
+										@if (order.State == OrderState.Created) {
+											<a class="btn btn-outline-info" href="/order/details?orderId=@order.Id">Довърши поръчката</a>
+										} else {
+											<a class="btn btn-outline-primary" href="/order/details?orderId=@order.Id">Преглед на поръчката</a>
+										}
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
 				}
 			</div>
-			@if (Model.Total != 0)
+			@if (Model.Total > 0)
 			{
 				<div class="card-actions">
-					<ul class="pagination pagination-md">
-						<li class="page-item active"><a class="page-link" href="#"><i class="fas fa-angle-left"></i></a></li>
-						@for (int i = 1; i <= Model.Pages; i++)
-						{
-							if (Model.Page == i)
-							{
-								<li class="page-item active">
-									<a class="page-link" href="/Order/List?Page=@i&Show=@Model.Show">1</a>
-								</li>
-							}
-							else
-							{
-								<li class="page-item active">
-									<a class="page-link" href="/Order/List?Page=@i&Show=@Model.Show">1</a>
-								</li>
-							}
-						}
-						<li class="page-item active"><a class="page-link" href="#"><i class="fas fa-angle-right"></i></a></li>
-					</ul>
+					<partial name="_Pagination" />
 				</div>
 			}
 		</div>
