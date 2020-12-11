@@ -19,6 +19,8 @@ namespace Project.MappingConfiguration
 
 			CreateMap<PromoCodeEditInputModel, PromoCode>()
 			.ForMember(dest => dest.Type, opt => opt.MapFrom(src => (PromoCodeType)Enum.Parse(typeof(PromoCodeType), src.Type)));
+			CreateMap<AnnouncementInputModel, Announcement>()
+			.ForMember(dest => dest.Type, opt => opt.MapFrom(src => (MessageType)Enum.Parse(typeof(MessageType), src.Type)));
 		}
 	}
 }
