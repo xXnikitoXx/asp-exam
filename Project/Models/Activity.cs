@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Project.Enums;
 
 namespace Project.Models
 {
@@ -13,6 +14,9 @@ namespace Project.Models
 		[Required]
 		[StringLength(100)]
 		public string Message { get; set; }
+
+		[Required]
+		public MessageType Type { get; set; }
 
 		public string URL { get; set; }
 
