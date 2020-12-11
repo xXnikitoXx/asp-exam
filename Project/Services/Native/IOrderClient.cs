@@ -11,6 +11,7 @@ namespace Project.Services.Native
 		Task<List<Order>> GetOrders(ClaimsPrincipal user);
 		List<Order> GetOrders(ApplicationUser user);
 		Task RegisterOrder(Order order);
+		Task UpdateOrder(Order order);
 		Task AddVPS(string id, VPS vps);
 		Task AddVPS(Order order, VPS vps);
 		Task RemoveVPS(string id, VPS vps);

@@ -27,9 +27,7 @@ namespace Project.Services.Native
 
 		public async Task<List<VPS>> GetVPSs(ClaimsPrincipal user) => GetVPSs(await _userManager.GetUserAsync(user));
 
-		public List<VPS> GetVPSs(ApplicationUser user) => _context.VPSs
-			.Where(vps => vps.UserId == user.Id)
-			.ToList();
+		public List<VPS> GetVPSs(ApplicationUser user) => _context.VPSs.Where(vps => vps.UserId == user.Id).ToList();
 
 		public async Task RegisterVPS(VPS vps)
 		{

@@ -4,6 +4,7 @@ using Project.Data;
 using Project.Models;
 using Project.Services.Native;
 using System.Linq;
+using System;
 
 public class PlanClient : IPlanClient
 {
@@ -12,11 +13,26 @@ public class PlanClient : IPlanClient
 	public PlanClient(ApplicationDbContext context) {
 		this._context = context;
 		
-		int[] preRegisteredPlans = new int[0];
-		typeof(Project.Enums.Plan).GetEnumValues().CopyTo(preRegisteredPlans, 0);
-		if (this.GetPlans().Count < preRegisteredPlans.Length)
-			foreach (int n in preRegisteredPlans)
-				Task.Run(async () => await this.RegisterPlan(PlanFor(n)));
+		string[] names = typeof(Project.Enums.Plan).GetEnumNames();
+		if (names.Length > this._context.Plans.Count()) {
+			Array valueObjects = typeof(Project.Enums.Plan).GetEnumValues();
+			int[] values = new int[valueObjects.Length];
+			valueObjects.CopyTo(values, 0);
+			Dictionary<string, int> plans = new Dictionary<string, int>();
+			for (int i = 0; i < names.Length; i++)
+				plans.Add(names[i], values[i]);
+			RegisterPlans(plans);
+		}
+	}
+
+	public void RegisterPlans(Dictionary<string, int> plans) {
+		foreach (KeyValuePair<string, int> plan in plans)
+		{
+			Plan p = PlanFor(plan.Value);
+			p.Name = plan.Key;
+			this._context.Plans.Add(p);
+		}
+		this._context.SaveChanges();
 	}
 
 	public List<Plan> GetPlans() => this._context.Plans.ToList();
@@ -83,9 +99,9 @@ public class PlanClient : IPlanClient
 		}
 	}
 
-	protected static Plan PlanFor(int n) => new Plan()
+	public static Plan PlanFor(int n) => new Plan()
 	{
-		Number = n,
+		Name = typeof(Project.Enums.Plan).GetEnumNames()[n],
 		Cores = CoresFor(n),
 		RAM = RAMFor(n),
 		SSD = SSDFor(n),

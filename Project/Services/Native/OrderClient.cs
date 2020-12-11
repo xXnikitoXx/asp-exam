@@ -34,7 +34,7 @@ namespace Project.Services.Native
 		public async Task RegisterOrder(Order order)
 		{
 			_context.Orders.Add(order);
-			_context.Users.Find(order.User)
+			_context.Users.FirstOrDefault(user => user.Id == order.User.Id)
 				.Orders.Add(order);
 			await _context.SaveChangesAsync();
 		}
@@ -42,11 +42,22 @@ namespace Project.Services.Native
 
 		public async Task RemoveOrder(Order order)
 		{
+			OrderState[] allowedStates = new OrderState[] {
+				OrderState.Cancelled,
+				OrderState.Created,
+			};
+			if (!allowedStates.Contains(order.State))
+				throw new ArgumentException();
+			_context.PromoCodeOrders.RemoveRange(order.PromoCodes);
 			order.User.Orders.Remove(order);
-			foreach (VPS vps in order.VPSs)
-				vps.Order = null;
 			_context.Orders.Remove(order);
 			await _context.SaveChangesAsync();
+		}
+
+		public async Task UpdateOrder(Order order) {
+			Order target = await Find(order.Id);
+			target = order;
+			await this._context.SaveChangesAsync();
 		}
 
 		public async Task UpdateState(string id, OrderState state) => await UpdateState(await Find(id), state);
