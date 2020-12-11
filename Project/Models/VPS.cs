@@ -20,6 +20,8 @@ namespace Project.Models
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public string Id { get; set; }
 
+		public string ExternalId { get; set; }
+
 		[Required]
 		[StringLength(30, MinimumLength = 3)]
 		public string Name { get; set; }

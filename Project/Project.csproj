@@ -7,23 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Data\Migrations\00000000000000_CreateIdentitySchema.cs" />
-    <Compile Remove="Data\Migrations\00000000000000_CreateIdentitySchema.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200920002505_AddModels.cs" />
-    <Compile Remove="Data\Migrations\20200920002505_AddModels.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200920003329_AddModels.cs" />
-    <Compile Remove="Data\Migrations\20200920003329_AddModels.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200926125706_AddModels.cs" />
-    <Compile Remove="Data\Migrations\20200926125706_AddModels.Designer.cs" />
-    <Compile Remove="Data\Migrations\20200926130240_AddModels.cs" />
-    <Compile Remove="Data\Migrations\20200926130240_AddModels.Designer.cs" />
-    <Compile Remove="Migrations\20200926165830_AddModels.cs" />
-    <Compile Remove="Migrations\20200926165830_AddModels.Designer.cs" />
-    <Compile Remove="Migrations\20201129214629_AddModels.cs" />
-    <Compile Remove="Migrations\20201129214629_AddModels.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.7" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.8" />

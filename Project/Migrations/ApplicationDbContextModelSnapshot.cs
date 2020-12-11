@@ -317,6 +317,9 @@ namespace Project.Migrations
                     b.Property<double>("FinalPrice")
                         .HasColumnType("float");
 
+                    b.Property<int>("Location")
+                        .HasColumnType("int");
+
                     b.Property<double>("OriginalPrice")
                         .HasColumnType("float");
 
@@ -431,7 +434,7 @@ namespace Project.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PromoCode");
+                    b.ToTable("PromoCodes");
                 });
 
             modelBuilder.Entity("Project.Models.PromoCodeOrder", b =>
@@ -446,7 +449,7 @@ namespace Project.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.ToTable("PromoCodePlans");
+                    b.ToTable("PromoCodeOrders");
                 });
 
             modelBuilder.Entity("Project.Models.State", b =>
@@ -519,7 +522,7 @@ namespace Project.Migrations
 
                     b.HasIndex("PromoCodeId");
 
-                    b.ToTable("UserPromoCode");
+                    b.ToTable("UserPromoCodes");
                 });
 
             modelBuilder.Entity("Project.Models.VPS", b =>
@@ -530,6 +533,10 @@ namespace Project.Migrations
 
                     b.Property<byte>("Cores")
                         .HasColumnType("tinyint");
+
+                    b.Property<string>("ExternalId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("IP")
                         .IsRequired()
@@ -560,6 +567,8 @@ namespace Project.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("ExternalId");
 
                     b.HasIndex("OrderId");
 

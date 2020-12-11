@@ -1,6 +1,7 @@
 ﻿using Project.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -36,6 +37,9 @@ namespace Project.Models
 		public int PlanNumber { get; set; }
 
 		public Models.Plan Plan { get; set; }
+
+		[DefaultValue(Location.Nuremberg_Germany)]
+		public Location Location { get; set; }
 
 		[Required]
 		public OrderState State { get; set; }

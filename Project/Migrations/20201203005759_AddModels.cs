@@ -77,7 +77,7 @@ namespace Project.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PromoCode",
+                name: "PromoCodes",
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
@@ -88,7 +88,7 @@ namespace Project.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PromoCode", x => x.Id);
+                    table.PrimaryKey("PK_PromoCodes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -278,6 +278,7 @@ namespace Project.Migrations
                     OriginalPrice = table.Column<double>(nullable: false),
                     FinalPrice = table.Column<double>(nullable: false),
                     PlanNumber = table.Column<int>(nullable: false),
+                    Location = table.Column<int>(nullable: false),
                     State = table.Column<int>(nullable: false),
                     UserId = table.Column<string>(nullable: true)
                 },
@@ -299,7 +300,7 @@ namespace Project.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserPromoCode",
+                name: "UserPromoCodes",
                 columns: table => new
                 {
                     UserId = table.Column<string>(nullable: false),
@@ -307,15 +308,15 @@ namespace Project.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserPromoCode", x => new { x.UserId, x.PromoCodeId });
+                    table.PrimaryKey("PK_UserPromoCodes", x => new { x.UserId, x.PromoCodeId });
                     table.ForeignKey(
-                        name: "FK_UserPromoCode_PromoCode_PromoCodeId",
+                        name: "FK_UserPromoCodes_PromoCodes_PromoCodeId",
                         column: x => x.PromoCodeId,
-                        principalTable: "PromoCode",
+                        principalTable: "PromoCodes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserPromoCode_AspNetUsers_UserId",
+                        name: "FK_UserPromoCodes_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -323,7 +324,7 @@ namespace Project.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PromoCodePlans",
+                name: "PromoCodeOrders",
                 columns: table => new
                 {
                     PromoCodeId = table.Column<string>(nullable: false),
@@ -331,17 +332,17 @@ namespace Project.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PromoCodePlans", x => new { x.PromoCodeId, x.OrderId });
+                    table.PrimaryKey("PK_PromoCodeOrders", x => new { x.PromoCodeId, x.OrderId });
                     table.ForeignKey(
-                        name: "FK_PromoCodePlans_Orders_OrderId",
+                        name: "FK_PromoCodeOrders_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PromoCodePlans_PromoCode_PromoCodeId",
+                        name: "FK_PromoCodeOrders_PromoCodes_PromoCodeId",
                         column: x => x.PromoCodeId,
-                        principalTable: "PromoCode",
+                        principalTable: "PromoCodes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -351,6 +352,7 @@ namespace Project.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
+                    ExternalId = table.Column<string>(nullable: false),
                     Name = table.Column<string>(maxLength: 30, nullable: false),
                     Plan = table.Column<int>(nullable: false),
                     Location = table.Column<int>(nullable: false),
@@ -364,6 +366,7 @@ namespace Project.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_VPSs", x => x.Id);
+                    table.UniqueConstraint("AK_VPSs_ExternalId", x => x.ExternalId);
                     table.ForeignKey(
                         name: "FK_VPSs_Orders_OrderId",
                         column: x => x.OrderId,
@@ -503,8 +506,8 @@ namespace Project.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PromoCodePlans_OrderId",
-                table: "PromoCodePlans",
+                name: "IX_PromoCodeOrders_OrderId",
+                table: "PromoCodeOrders",
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
@@ -518,8 +521,8 @@ namespace Project.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserPromoCode_PromoCodeId",
-                table: "UserPromoCode",
+                name: "IX_UserPromoCodes_PromoCodeId",
+                table: "UserPromoCodes",
                 column: "PromoCodeId");
 
             migrationBuilder.CreateIndex(
@@ -563,7 +566,7 @@ namespace Project.Migrations
                 name: "Posts");
 
             migrationBuilder.DropTable(
-                name: "PromoCodePlans");
+                name: "PromoCodeOrders");
 
             migrationBuilder.DropTable(
                 name: "States");
@@ -572,7 +575,7 @@ namespace Project.Migrations
                 name: "Tickets");
 
             migrationBuilder.DropTable(
-                name: "UserPromoCode");
+                name: "UserPromoCodes");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -581,7 +584,7 @@ namespace Project.Migrations
                 name: "VPSs");
 
             migrationBuilder.DropTable(
-                name: "PromoCode");
+                name: "PromoCodes");
 
             migrationBuilder.DropTable(
                 name: "Orders");
