@@ -45,6 +45,7 @@ namespace Project
 			services.AddScoped<IPlanClient, PlanClient>();
 			services.AddScoped<IOrderClient, OrderClient>();
 			services.AddScoped<IPromoCodeClient, PromoCodeClient>();
+			services.AddScoped<IAnnouncementClient, AnnouncementClient>();
 
 			services.AddAntiforgery();
 			services.AddControllersWithViews();
