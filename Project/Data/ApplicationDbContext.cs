@@ -16,13 +16,15 @@ namespace Project.Data
 		public DbSet<Announcement> Announcements { get; set; }
 		public new DbSet<ApplicationUser> Users { get; set; }
 		public DbSet<Message> Messages { get; set; }
+		public DbSet<Order> Orders { get; set; }
+		public DbSet<Plan> Plans { get; set; }
 		public DbSet<Post> Posts { get; set; }
+		public DbSet<PromoCode> PromoCodes { get; set; }
+		public DbSet<PromoCodeOrder> PromoCodeOrders { get; set; }
 		public DbSet<State> States { get; set; }
 		public DbSet<Ticket> Tickets { get; set; }
-		public DbSet<Plan> Plans { get; set; }
+		public DbSet<UserPromoCode> UserPromoCodes { get; set; }
 		public DbSet<VPS> VPSs { get; set; }
-		public DbSet<Order> Orders { get; set; }
-		public DbSet<PromoCodeOrder> PromoCodePlans { get; set; }
 
 		#endregion
 
@@ -75,6 +77,8 @@ namespace Project.Data
 
 			modelBuilder.Entity<VPS>(entity =>
 			{
+				entity.HasAlternateKey(vps => vps.ExternalId);
+
 				entity.HasMany(vps => vps.Activities)
 					.WithOne(activity => activity.VPS)
 					.HasForeignKey(activity => activity.VPSId);
@@ -119,6 +123,10 @@ namespace Project.Data
 			{
 				entity.Property(order => order.TimeStarted)
 					.HasDefaultValueSql("getdate()");
+
+				entity.HasOne(order => order.Plan)
+					.WithMany(plan => plan.Orders)
+					.HasForeignKey(order => order.PlanNumber);
 
 				entity.HasMany(order => order.VPSs)
 					.WithOne(vps => vps.Order)
