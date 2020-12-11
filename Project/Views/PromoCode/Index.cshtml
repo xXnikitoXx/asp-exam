@@ -1,0 +1,115 @@
+@using Project.Enums
+@model PromoCodesViewModel
+@{
+	ViewData["Title"] = "Промо кодове";
+	ViewData["PaginationUrl"] = "/Admin/Codes";
+	ViewData["Page"] = Model.Page;
+	ViewData["Pages"] = Model.Pages;
+	ViewData["Show"] = Model.Show;
+}
+
+<style>
+	.pagination {
+		justify-content: center;
+	}
+</style>
+
+<div class="row">
+	<div class="col-12">
+		<div class="card">
+			<div class="card-header">
+				<h1>@ViewData["Title"] (<a href="/Admin/Codes/New">Добави</a>)</h1>
+				<div class="row">
+					<div class="col-md-2">
+						Брой: @Model.Total
+					</div>
+					<div class="col-md-10">
+						<span class="badge bg-info">Определена стойност - @Model.FixedAmount</span>
+						<span class="badge bg-info">Процент - @Model.Percentage</span>
+						<span class="badge bg-info">Презаписана стойност - @Model.PriceOverride</span>
+						<span class="badge bg-info">Безплатни - @Model.Free</span>
+						<span class="badge bg-success">Активни - @Model.Active</span>
+						<span class="badge bg-danger">Неактивни - @Model.Inactive</span>
+					</div>
+					<div class="offset-10 col-md-2">
+						<label>Кодове на страница</label>
+						<select class="form-control" asp-for="Show" onchange="location.href = '/Admin/Codes?Page=1&Show=' + this.value;">
+							<option value="10">10</option>
+							<option value="20">20</option>
+							<option value="40">40</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<hr />
+			<div class="card-body text-center">
+				<div class="container-fluid p-0">
+					<div class="row">
+						<div class="col-12">
+							@if (Model.Total == 0) {
+								<h3>За момента нямате поръчки.</h3>
+							} else {
+								<table id="datatables-reponsive" class="table table-striped" style="width:100%">
+									<thead>
+										<tr>
+											<th>Промо код</th>
+											<th>Тип</th>
+											<th>Стойност</th>
+											<th>Използвания</th>
+											<th>Активност</th>
+											<th></th>
+											<th>Контрол</th>
+										</tr>
+									</thead>
+									<tbody>
+										@foreach (PromoCodeViewModel code in Model.Codes) {
+											<tr>
+												<td>@code.Code</td>
+												<td>
+													@(new Func<string>(() => {
+														switch (code.Type) {
+															case PromoCodeType.FixedAmount: return "Определена сума";
+															case PromoCodeType.Percentage: return "Процент";
+															case PromoCodeType.PriceOverride: return "Презаписване на сума";
+															default: return "Безплатно";
+														}
+													}).Invoke())
+												</td>
+												<td>
+													@(new Func<string>(() => {
+														switch (code.Type) {
+															case PromoCodeType.FixedAmount: return $"-{code.Value}лв.";
+															case PromoCodeType.Percentage: return $"-{code.Value}%";
+															case PromoCodeType.PriceOverride: return $"={code.Value}лв.";
+															default: return "-";
+														}
+													}).Invoke())
+												</td>
+												<td>@code.Usage</td>
+												<td>
+													<input class="form-check-input" type="checkbox" onclick="SwitchState(event, '@code.Id')" @(code.IsValid ? "checked" : "")>
+												</td>
+												<td></td>
+												<td>
+													<a href="/Admin/Codes/Details?Id=@code.Id" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+													<a href="/Admin/Codes/Remove?Id=@code.Id" class="btn btn-danger"><i class="fas fa-times"></i></a>
+												</td>
+											</tr>
+										}
+									</tbody>
+								</table>
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+			@if (Model.Total > 0)
+			{
+				<div class="card-actions">
+					<partial name="/Views/Shared/_Pagination.cshtml" />
+				</div>
+			}
+		</div>
+	</div>
+</div>
+<script src="/js/promoCode/switch.js"></script>

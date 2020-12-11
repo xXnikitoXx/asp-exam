@@ -1,0 +1,178 @@
+﻿@model VPSViewModel
+@{
+	ViewData["Title"] = "VPS";
+}
+
+<main class="content">
+	<div class="row">
+		<h1 class="text-center">VPS Информация</h1>
+		<p class="lead text-center mb-4">Контрол и детайли на Вашият VPS сървър</p>
+		<hr>
+		<div class="col-12 col-md-6 col-lg-4 text-center">
+			<div class="card">
+				<div class="card-body">
+					<h3>Server Status:</h3>
+					<h4>Online</h4>
+					<p class="small text-muted no-margin-bottom" style="margin-top: 37px !important;">
+				</div>
+			</div>
+		</div>
+		<div class="col-12 col-md-6 col-lg-4 text-center">
+			<div class="card">
+				<div class="card-body">
+					<h3>Server Location:</h3>
+					<p class="card-text">City: Nuremgerg</p>
+					<p class="card-text">Country: Germany</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-12 col-md-6 col-lg-4 text-center">
+			<div class="card">
+				<div class="card-body">
+					<h3>Plan: </h3>
+					<h4>VPS-01</h4>
+					<small>Created: </small>
+					<small>20/20/2020</small>
+					<p class="small text-muted no-margin-bottom" style="margin-top: -7px !important;">
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="container-fluid p-0">
+		<hr />
+		<div class="row">
+			<div class="col-9 col-lg-9">
+				<div class="card">
+					<div class="card-header">
+						<ul class="nav nav-tabs" role="tablist">
+							<li class="nav-item"><a class="nav-link active" href="#tab-1" data-toggle="tab"
+									role="tab">Overview</a></li>
+							<li class="nav-item"><a class="nav-link" href="#tab-2" data-toggle="tab"
+									role="tab">Control</a></li>
+							<li class="nav-item"><a class="nav-link" href="#tab-3" data-toggle="tab"
+									role="tab">Reinstall</a></li>
+							<li class="nav-item"><a class="nav-link" href="#tab-4" data-toggle="tab" role="tab">Reset
+									root password</a></li>
+							<li class="nav-item"><a class="nav-link" href="#tab-5" data-toggle="tab" role="tab">Rescue
+									System</a></li>
+							<li class="nav-item"><a class="nav-link" href="#tab-6" data-toggle="tab"
+									role="tab">Мрежа</a></li>
+						</ul>
+					</div>
+					<div class="card-body">
+						<div class="tab-content">
+							<div class="tab-pane active" id="tab-1" role="tabpanel">
+								<h4 class="tab-title">Обща информация за услугата Ви</h4><br>
+								<div class="col-3 col-xl-3">
+									<form>
+										<div class="mb-3">
+											<label class="form-label">Ip Адрес</label>
+											<input type="text" class="form-control" value="127.0.0.1" placeholder="ip"
+												disabled>
+										</div>
+									</form>
+								</div>
+							</div>
+							<div class="tab-pane" id="tab-2" role="tabpanel">
+								<h4 class="tab-title">От този раздел може да контролирате сървърът си чрез
+									посочените бутони по-долу</h4><br>
+								<div class="col-12 col-lg-12">
+									<button class="btn btn-success"><i class="fas fa-play-circle"></i>
+										Start</button>
+									<button class="btn btn-primary"><i class="fas fa-undo-alt"></i>
+										Reboot</button>
+									<button class="btn btn-danger"><i class="fas fa-power-off"></i>
+										Stop</button>
+								</div>
+							</div>
+							<div class="tab-pane" id="tab-3" role="tabpanel">
+								<h4 class="tab-title">Преинсталиране</h4>
+								<p>Преинсталацията ще спре Вашия сървър и ще презапише целият диск със системата, която
+									сте избрали</p>
+								<div class="alert alert-danger alert-dismissible" role="alert">
+									<div class="alert-icon">
+										<i class="fas fa-exclamation"></i>
+									</div>
+									<div class="alert-message">
+										<strong>Внимание!</strong> Предишната информация на дискът ще бъде загубена!
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-10">
+										<p><select class="form-control mb-3">
+												<option selected>Изберете операционна система</option>
+												<option>Ubuntu 16.04</option>
+												<option>CentOS 7</option>
+												<option>Debian 9</option>
+											</select></p>
+									</div>
+									<div class="col-2">
+										<button class="btn btn-outline-danger">Преинсталиране</button>
+									</div>
+								</div>
+								<p></p>
+							</div>
+							<div class="tab-pane" id="tab-4" role="tabpanel">
+								<h4 class="tab-title">Tab4 </h4><br>
+								<p></p>
+								<p></p>
+							</div>
+							<div class="tab-pane" id="tab-5" role="tabpanel">
+								<h4 class="tab-title">Tab4 </h4><br>
+								<p></p>
+								<p></p>
+							</div>
+							<div class="tab-pane" id="tab-6" role="tabpanel">
+								<table id="datatables-reponsive" class="table table-striped" style="width:100%">
+									<thead>
+										<tr>
+											<th>IP Адрес</th>
+											<th>Hostname</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>127.0.0.1</td>
+											<td>myserver.com</td>
+											<td><button class="btn btn-outline-secondary"><i class="fas fa-cogs"></i></button></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-3 col-md-3 col-lg-3">
+				<div class="card">
+					<div class="card-header">
+						<h5 class="card-title mb-0">Card with button</h5>
+					</div>
+					<div class="card-body">
+						<p class="card-text">Some quick example text to build on the card title and make up the bulk of
+							the card's content.</p>
+						<a href="#" class="btn btn-primary">Go somewhere</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-9 col-md-9 col-lg-9"></div>
+			<div class="col-3 col-md-3 col-lg-3">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="mb-0">Детайтли</h3>
+					</div>
+					<div class="card-body">
+						<p class="card-text"><i class="fas fa-network-wired"></i> Hostname: </p>
+						<p class="card-text"><i class="fas fa-microchip"></i> Ядра: </p>
+						<p class="card-text"><i class="fas fa-memory"></i> Рам Памет: </p>
+						<p class="card-text"><i class="fas fa-hdd"></i> Диск: </p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</main>
