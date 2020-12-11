@@ -18,6 +18,9 @@
 			.card > hr {
 				margin: 0 !important;
 			}
+			.main > .alert {
+				margin: 0;
+			}
 		</style>
 	</head>
 	<body>
@@ -96,15 +99,16 @@
 									@if (SignInManager.IsSignedIn(User))
 									{
 										<span class="text-white"><i class="far fa-user-circle"></i> Добре дошли, @UserManager.GetUserName(User)</span>
-									}
-									else
-									{
+									} else {
 										<span class="text-white"><i class="fas fa-lock"></i> Клиент зона</span>
 									}
 								</a>
 								<div class="dropdown-menu dropdown-menu-right">
 									<a class="dropdown-item" href="/profile"><i class="align-middle mr-1" data-feather="user"></i> Профил</a>
-									<a class="dropdown-item" href="/Identity/Account/Manage"><i class="align-middle mr-1" data-feather="settings"></i> Разширени настройки</a>
+									@if (SignInManager.IsSignedIn(User))
+									{
+										<a class="dropdown-item" href="/Identity/Account/Manage"><i class="align-middle mr-1" data-feather="settings"></i> Разширени настройки</a>
+									}
 									<div class="dropdown-divider"></div>
 									<a class="dropdown-item" target="_blank" href="https://uhost.pw/clientarea/submitticket.php	"><i class="align-middle mr-1" data-feather="help-circle"></i> Поддръжка</a>
 									@if (SignInManager.IsSignedIn(User))
@@ -117,6 +121,15 @@
 						</ul>
 					</div>
 				</nav>
+				@if (!Context.Request.Path.ToString().ToLower().Contains("/admin/"))
+					foreach (Announcement announcement in AnnouncementService.GetAnnouncements()) {
+						<div class="alert alert-@announcement.Type.ToString().ToLower()">
+							<div class="alert-message">
+								<span style="font-weight: bold;">@announcement.Title</span>
+								@Html.Raw(announcement.Content)
+							</div>
+						</div>
+					}
 				<main class="content">
 					@RenderBody()
 				</main>
