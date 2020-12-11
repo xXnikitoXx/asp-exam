@@ -7,6 +7,10 @@ namespace Project.ViewModels
 {
 	public class AccountViewModel
 	{
+		public AccountViewModel() {
+			this.Orders = new List<OrderViewModel>();
+		}
+
 		public int VPSCount { get; set; }
 		public int OrdersCount { get; set; }
 		public int CreatedOrders { get; set; }

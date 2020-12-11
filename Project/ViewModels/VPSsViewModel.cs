@@ -7,6 +7,10 @@ namespace Project.ViewModels
 {
 	public class VPSsViewModel
 	{
+		public VPSsViewModel() {
+			this.VPSs = new List<VPSViewModel>();
+		}
+
 		public List<VPSViewModel> VPSs { get; set; }
 
 		public int Page { get; set; }

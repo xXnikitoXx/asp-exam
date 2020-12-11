@@ -9,6 +9,11 @@ namespace Project.ViewModels
 {
 	public class VPSViewModel
 	{
+		public VPSViewModel() {
+			this.Activities = new List<Activity>();
+			this.States = new List<State>();
+		}
+
 		public string Name { get; set; }
 
 		public Enums.Plan Plan { get; set; }
