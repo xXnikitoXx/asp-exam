@@ -33,27 +33,14 @@ namespace Project.Controllers
 		[HttpGet("/Admin/Codes")]
 		public IActionResult Index(int Page = 1, int Show = 10)
 		{
-			List<PromoCode> codes = this._service.GetPromoCodes();
-			codes.Reverse();
-			int Total = codes.Count;
-			int Pages = (Total / Show) + (Total % Show != 0 ? 1 : 0);
 			PromoCodesViewModel model = new PromoCodesViewModel {
-				Codes = codes
-					.Skip(Show * (Page - 1))
-					.Take(Show)
-					.Select(this._mapper.Map<PromoCodeViewModel>)
-					.ToList(),
-				Total = Total,
-				Show = Show,
 				Page = Page,
-				Pages = Pages,
-				Active = codes.Count(code => code.IsValid),
-				Inactive = codes.Count(code => !code.IsValid),
-				FixedAmount = codes.Count(code => code.Type == PromoCodeType.FixedAmount),
-				Percentage = codes.Count(code => code.Type == PromoCodeType.Percentage),
-				PriceOverride = codes.Count(code => code.Type == PromoCodeType.PriceOverride),
-				Free = codes.Count(code => code.Type == PromoCodeType.Free),
+				Show = Show,
 			};
+			model.Codes = this._service.GetPromoCodes(model)
+				.Select(this._mapper.Map<PromoCodeViewModel>)
+				.Reverse()
+				.ToList();
 			return View(model);
 		}
 

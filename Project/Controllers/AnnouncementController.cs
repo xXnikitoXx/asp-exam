@@ -33,19 +33,11 @@ namespace Project.Controllers {
 
 		[HttpGet("/Admin/Announcements")]
 		public IActionResult Index(int Page = 1, int Show = 5) {
-			List<Announcement> announcements = this._service.GetAnnouncements();
-			int Total = announcements.Count;
-			int Pages = (Total / Show) + (Total % Show != 0 ? 1 : 0);
 			AnnouncementsViewModel model = new AnnouncementsViewModel {
-				Announcements = announcements
-					.Skip(Show * (Page - 1))
-					.Take(Show)
-					.ToList(),
-				Total = Total,
-				Show = Show,
 				Page = Page,
-				Pages = Pages,
+				Show = Show,
 			};
+			model.Announcements = this._service.GetAnnouncements(model);
 			return View(model);
 		}
 

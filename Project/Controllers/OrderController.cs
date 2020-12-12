@@ -118,33 +118,14 @@ namespace Project.Controllers {
 		}
 
 		public async Task<IActionResult> List(int Page = 1, int Show = 5) {
-			List<Order> orders = await this._service.GetOrders(User);
 			List<Models.Plan> plans = this._planService.GetPlans();
-			int Total = orders.Count;
-			int Pages = (Total / Show) + (Total % Show != 0 ? 1 : 0);
-			double TotalInvestments = orders
-				.Where(order => order.State == OrderState.Finished)
-				.Sum(order => order.FinalPrice);
-
 			OrdersViewModel model = new OrdersViewModel {
-				Orders = orders
-					.Skip(Show * (Page - 1))
-					.Take(Show)
-					.Select(this._mapper.Map<OrderViewModel>)
-					.ToList(),
-				Total = Total,
 				Page = Page,
-				Pages = Pages,
 				Show = Show,
-				CreatedOrders = orders.Count(order => order.State == OrderState.Created),
-				AwaitingOrders = orders.Count(orders => orders.State == OrderState.Awaiting),
-				CancelledOrders = orders.Count(orders => orders.State == OrderState.Cancelled),
-				FinishedOrders = orders.Count(orders => orders.State == OrderState.Finished),
-				FailedOrders = orders.Count(orders => orders.State == OrderState.Failed),
-				ExpiredOrders = orders.Count(orders => orders.State == OrderState.Expired),
-				TotalInvestments = TotalInvestments
 			};
-
+			model.Orders = (await this._service.GetOrders(User, model))
+				.Select(this._mapper.Map<OrderViewModel>)
+				.ToList();
 			foreach (OrderViewModel order in model.Orders)
 				order.Plan = _mapper.Map<PlanViewModel>(plans.FirstOrDefault(plan => plan.Number == order.PlanNumber));
 			return View(model);
