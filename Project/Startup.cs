@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Project.Data;
 using Microsoft.Extensions.Configuration;
@@ -34,12 +28,13 @@ namespace Project
 				options.UseSqlServer(
 					Configuration.GetConnectionString("DefaultConnection")));
 			services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
-				.AddRoles<IdentityRole>()
 				.AddEntityFrameworkStores<ApplicationDbContext>();
 
 			MapperConfiguration mapperConfig = new MapperConfiguration(mc => mc.AddProfile(new ApplicationProfile()));
 			services.AddSingleton(mapperConfig.CreateMapper());
-
+			
+			services.AddScoped<IRoleClient, RoleClient>();
+			services.AddScoped<IAdminClient, AdminClient>();
 			services.AddScoped<IOrderClient, OrderClient>();
 			services.AddScoped<IVPSClient, VPSClient>();
 			services.AddScoped<IPlanClient, PlanClient>();
@@ -58,7 +53,6 @@ namespace Project
 			{
 				context.Database.EnsureCreated();
 				app.UseDeveloperExceptionPage();
-				app.UseDatabaseErrorPage();
 			}
 			else
 			{
