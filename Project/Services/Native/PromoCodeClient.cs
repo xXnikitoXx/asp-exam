@@ -7,6 +7,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using System;
 using Project.Enums;
+using Project.ViewModels;
 
 namespace Project.Services.Native {
 	public class PromoCodeClient : IPromoCodeClient {
@@ -33,18 +34,58 @@ namespace Project.Services.Native {
 		}
 
 		public List<PromoCode> GetPromoCodes() => this._context.PromoCodes.ToList();
+		public List<PromoCode> GetPromoCodes(PromoCodesViewModel pageInfo) {
+			pageInfo.Total = this._context.PromoCodes.Count();
+			pageInfo.Active = this._context.PromoCodes.Count(code => code.IsValid);
+			pageInfo.Inactive = this._context.PromoCodes.Count(code => !code.IsValid);
+			pageInfo.FixedAmount = this._context.PromoCodes.Count(code => code.Type == PromoCodeType.FixedAmount);
+			pageInfo.Percentage = this._context.PromoCodes.Count(code => code.Type == PromoCodeType.Percentage);
+			pageInfo.PriceOverride = this._context.PromoCodes.Count(code => code.Type == PromoCodeType.PriceOverride);
+			pageInfo.Free = this._context.PromoCodes.Count(code => code.Type == PromoCodeType.Free);
+			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
+			return this._context.PromoCodes.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
+		}
 
 		public List<PromoCode> GetPromoCodes(Order order) => this._context.PromoCodes
 			.Where(promoCode =>
 				promoCode.Orders.Any(promoCodeOrder => promoCodeOrder.OrderId == order.Id))
 			.ToList();
 
+		public List<PromoCode> GetPromoCodes(Order order, PromoCodesViewModel pageInfo) {
+			IQueryable<PromoCode> codes = this._context.PromoCodes.Where(promoCode =>
+				promoCode.Orders.Any(promoCodeOrder => promoCodeOrder.OrderId == order.Id));
+			pageInfo.Total = codes.Count();
+			pageInfo.Active = codes.Count(code => code.IsValid);
+			pageInfo.Inactive = codes.Count(code => !code.IsValid);
+			pageInfo.FixedAmount = codes.Count(code => code.Type == PromoCodeType.FixedAmount);
+			pageInfo.Percentage = codes.Count(code => code.Type == PromoCodeType.Percentage);
+			pageInfo.PriceOverride = codes.Count(code => code.Type == PromoCodeType.PriceOverride);
+			pageInfo.Free = codes.Count(code => code.Type == PromoCodeType.Free);
+			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
+			return codes.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
+		}
+
 		public List<PromoCode> GetPromoCodes(ApplicationUser user) => this._context.PromoCodes
 			.Where(promoCode =>
 				promoCode.Users.Any(userPromoCode => userPromoCode.UserId == user.Id))
 			.ToList();
 
+		public List<PromoCode> GetPromoCodes(ApplicationUser user, PromoCodesViewModel pageInfo) {
+			IQueryable<PromoCode> codes = this._context.PromoCodes.Where(promoCode =>
+				promoCode.Users.Any(promoCodeUser => promoCodeUser.UserId == user.Id));
+			pageInfo.Total = codes.Count();
+			pageInfo.Active = codes.Count(code => code.IsValid);
+			pageInfo.Inactive = codes.Count(code => !code.IsValid);
+			pageInfo.FixedAmount = codes.Count(code => code.Type == PromoCodeType.FixedAmount);
+			pageInfo.Percentage = codes.Count(code => code.Type == PromoCodeType.Percentage);
+			pageInfo.PriceOverride = codes.Count(code => code.Type == PromoCodeType.PriceOverride);
+			pageInfo.Free = codes.Count(code => code.Type == PromoCodeType.Free);
+			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
+			return codes.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
+		}
+
 		public async Task<List<PromoCode>> GetPromoCodes(ClaimsPrincipal user) => GetPromoCodes(await _userManager.GetUserAsync(user));
+		public async Task<List<PromoCode>> GetPromoCodes(ClaimsPrincipal user, PromoCodesViewModel pageInfo) => GetPromoCodes(await _userManager.GetUserAsync(user), pageInfo);
 
 		public async Task SetCodes(List<string> codes, Order order)
 		{

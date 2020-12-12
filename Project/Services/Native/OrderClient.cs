@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Project.Data;
 using Project.Enums;
 using Project.Models;
+using Project.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,10 +27,25 @@ namespace Project.Services.Native
 		async Task<Order> Find(string id) => await _context.Orders.FirstOrDefaultAsync(order => order.Id == id);
 
 		public async Task<List<Order>> GetOrders(ClaimsPrincipal user) => GetOrders(await _userManager.GetUserAsync(user));
+		public async Task<List<Order>> GetOrders(ClaimsPrincipal user, OrdersViewModel pageInfo) => GetOrders(await _userManager.GetUserAsync(user), pageInfo);
 
 		public List<Order> GetOrders(ApplicationUser user) => _context.Orders
 			.Where(order => order.UserId == user.Id)
 			.ToList();
+
+		public List<Order> GetOrders(ApplicationUser user, OrdersViewModel pageInfo) {
+			IQueryable<Order> orders = this._context.Orders.Where(order => order.UserId == user.Id);
+			pageInfo.Total = orders.Count();
+			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
+			pageInfo.CreatedOrders = orders.Count(order => order.State == OrderState.Created);
+			pageInfo.AwaitingOrders = orders.Count(orders => orders.State == OrderState.Awaiting);
+			pageInfo.CancelledOrders = orders.Count(orders => orders.State == OrderState.Cancelled);
+			pageInfo.FinishedOrders = orders.Count(orders => orders.State == OrderState.Finished);
+			pageInfo.FailedOrders = orders.Count(orders => orders.State == OrderState.Failed);
+			pageInfo.ExpiredOrders = orders.Count(orders => orders.State == OrderState.Expired);
+			pageInfo.TotalInvestments = orders.Where(order => order.State == OrderState.Finished).Sum(order => order.FinalPrice);
+			return orders.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
+		}
 
 		private IQueryable<Order> FinishedOrders => this._context.Orders.Where(order => order.State == OrderState.Finished);
 		private int Day => DateTime.Today.Day;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Project.Data;
 using Project.Models;
+using Project.ViewModels;
 
 namespace Project.Services.Native {
 	public class AnnouncementClient : IAnnouncementClient
@@ -15,6 +16,11 @@ namespace Project.Services.Native {
 		public AnnouncementClient(ApplicationDbContext context) => this._context = context;
 
 		public List<Announcement> GetAnnouncements() => this._context.Announcements.ToList();
+		public List<Announcement> GetAnnouncements(AnnouncementsViewModel pageInfo) {
+			pageInfo.Total = this._context.Announcements.Count();
+			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
+			return this._context.Announcements.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
+		}
 
 		public async Task CreateAnnouncement(Announcement announcement)
 		{

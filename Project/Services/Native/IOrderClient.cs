@@ -1,5 +1,6 @@
 ﻿using Project.Enums;
 using Project.Models;
+using Project.ViewModels;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -9,7 +10,9 @@ namespace Project.Services.Native
 	public interface IOrderClient
 	{
 		Task<List<Order>> GetOrders(ClaimsPrincipal user);
+		Task<List<Order>> GetOrders(ClaimsPrincipal user, OrdersViewModel pageInfo);
 		List<Order> GetOrders(ApplicationUser user);
+		List<Order> GetOrders(ApplicationUser user, OrdersViewModel pageInfo);
 		double DailyIncome();
 		double MonthlyIncome();
 		double YearlyIncome();
