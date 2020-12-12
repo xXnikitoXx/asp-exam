@@ -91,37 +91,13 @@
 					</a>
 					<div class="navbar-collapse collapse">
 						<ul class="navbar-nav navbar-align">
-							<li class="nav-item dropdown">
-								<a class="nav-icon dropdown-toggle d-inline-block d-sm-none" href="#" data-toggle="dropdown">
-									<i class="align-middle" data-feather="settings"></i>
-								</a>
-								<a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" style="color: white;" data-toggle="dropdown">
-									@if (SignInManager.IsSignedIn(User))
-									{
-										<span class="text-white"><i class="far fa-user-circle"></i> Добре дошли, @UserManager.GetUserName(User)</span>
-									} else {
-										<span class="text-white"><i class="fas fa-lock"></i> Клиент зона</span>
-									}
-								</a>
-								<div class="dropdown-menu dropdown-menu-right">
-									<a class="dropdown-item" href="/profile"><i class="align-middle mr-1" data-feather="user"></i> Профил</a>
-									@if (SignInManager.IsSignedIn(User))
-									{
-										<a class="dropdown-item" href="/Identity/Account/Manage"><i class="align-middle mr-1" data-feather="settings"></i> Разширени настройки</a>
-									}
-									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" target="_blank" href="https://uhost.pw/clientarea/submitticket.php	"><i class="align-middle mr-1" data-feather="help-circle"></i> Поддръжка</a>
-									@if (SignInManager.IsSignedIn(User))
-									{
-										<div class="dropdown-divider"></div>
-										<a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt"></i> Изход</a>
-									}
-								</div>
-							</li>
+							<partial name="_NavbarActivities" />
+							<partial name="_NavbarMessages" />
+							<partial name="_NavbarUser" />
 						</ul>
 					</div>
 				</nav>
-				@if (!Context.Request.Path.ToString().ToLower().Contains("/admin/"))
+				@if (SignInManager.IsSignedIn(User) && !Context.Request.Path.ToString().ToLower().Contains("/admin"))
 					foreach (Announcement announcement in AnnouncementService.GetAnnouncements()) {
 						<div class="alert alert-@announcement.Type.ToString().ToLower()">
 							<div class="alert-message">

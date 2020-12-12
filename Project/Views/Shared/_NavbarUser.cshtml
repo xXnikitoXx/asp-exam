@@ -1,0 +1,42 @@
+<li class="nav-item dropdown">
+	<a class="nav-icon dropdown-toggle d-inline-block d-sm-none" href="#" data-toggle="dropdown">
+		<i class="align-middle" data-feather="settings"></i>
+	</a>
+	<a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" style="color: white;" data-toggle="dropdown">
+		@if (SignInManager.IsSignedIn(User))
+		{
+			<span class="text-white">
+				<i class="far fa-user-circle"></i>
+				Добре дошли, @UserManager.GetUserName(User)
+			</span>
+		} else {
+			<span class="text-white">
+				<i class="fas fa-lock"></i>
+				Клиент зона
+			</span>
+		}
+	</a>
+	<div class="dropdown-menu dropdown-menu-right">
+		<a class="dropdown-item" href="/profile"><i class="align-middle mr-1" data-feather="user"></i> Профил</a>
+		@if (SignInManager.IsSignedIn(User))
+		{
+			<a class="dropdown-item" href="/Identity/Account/Manage">
+				<i class="align-middle mr-1" data-feather="settings"></i>
+				Разширени настройки
+			</a>
+		}
+		@if (User.IsInRole("Administrator")) {
+			<a class="dropdown-item" href="/Admin">
+				<i class="fas fa-users-cog"></i>
+				Admin контролен панел
+			</a>
+		}
+		<div class="dropdown-divider"></div>
+		<a class="dropdown-item" target="_blank" href="https://uhost.pw/clientarea/submitticket.php	"><i class="align-middle mr-1" data-feather="help-circle"></i> Поддръжка</a>
+		@if (SignInManager.IsSignedIn(User))
+		{
+			<div class="dropdown-divider"></div>
+			<a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt"></i> Изход</a>
+		}
+	</div>
+</li>
