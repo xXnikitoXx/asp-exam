@@ -31,6 +31,26 @@ namespace Project.Services.Native
 			.Where(order => order.UserId == user.Id)
 			.ToList();
 
+		private IQueryable<Order> FinishedOrders => this._context.Orders.Where(order => order.State == OrderState.Finished);
+		private int Day => DateTime.Today.Day;
+		private int Month => DateTime.Today.Month;
+		private int Year => DateTime.Today.Year;
+
+		public double DailyIncome() =>
+			FinishedOrders.Where(order => order.TimeFinished.Year == Year && order.TimeFinished.Month == Month && order.TimeFinished.Day == Day)
+				.Sum(order => order.FinalPrice);
+
+		public double MonthlyIncome() =>
+			FinishedOrders.Where(order => order.TimeFinished.Year == Year && order.TimeFinished.Month == Month)
+				.Sum(order => order.FinalPrice);
+
+		public double YearlyIncome() =>
+			FinishedOrders.Where(order => order.TimeFinished.Year == Year)
+				.Sum(order => order.FinalPrice);
+
+		public double TotalIncome() =>
+			FinishedOrders.Sum(order => order.FinalPrice);
+
 		public async Task RegisterOrder(Order order)
 		{
 			_context.Orders.Add(order);

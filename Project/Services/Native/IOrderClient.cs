@@ -10,6 +10,10 @@ namespace Project.Services.Native
 	{
 		Task<List<Order>> GetOrders(ClaimsPrincipal user);
 		List<Order> GetOrders(ApplicationUser user);
+		double DailyIncome();
+		double MonthlyIncome();
+		double YearlyIncome();
+		double TotalIncome();
 		Task RegisterOrder(Order order);
 		Task UpdateOrder(Order order);
 		Task AddVPS(string id, VPS vps);
