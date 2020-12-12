@@ -11,7 +11,7 @@ using Project.Services.Native;
 using Project.ViewModels;
 
 namespace Project.Controllers {
-	// [Authorize(Roles = "Administrator")]
+	[Authorize(Roles = "Administrator")]
 	public class AnnouncementController : Controller {
 		private readonly ApplicationDbContext _context;
 		private readonly IAnnouncementClient _service;

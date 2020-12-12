@@ -11,23 +11,24 @@ namespace Project.Controllers
 {
 	public class HomeController : Controller
 	{
-		private readonly IPlanClient _service;
+		private readonly IPlanClient _planService;
 		private readonly ILogger<HomeController> _logger;
 		private readonly IMapper _mapper;
 
 		public HomeController(
 			IPlanClient service,
 			ILogger<HomeController> logger,
-			IMapper mapper
+			IMapper mapper,
+			IRoleClient _
 		)
 		{
-			this._service = service;
+			this._planService = service;
 			this._logger = logger;
 			this._mapper = mapper;
 		}
 
 		public IActionResult Index() =>
-			View(this._mapper.Map<List<PlanViewModel>>(this._service.GetPlans()));
+			View(this._mapper.Map<List<PlanViewModel>>(this._planService.GetPlans()));
 
 		[HttpGet("/Error")]
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

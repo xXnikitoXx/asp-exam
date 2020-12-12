@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Project.Controllers
 {
-	// [Authorize(Roles = "Administrator")]
+	[Authorize(Roles = "Administrator")]
 	public class PromoCodeController : Controller
 	{
 		private readonly ApplicationDbContext _context;
