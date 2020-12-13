@@ -6,6 +6,9 @@
 		OrderState.Created,
 		OrderState.Expired,
 	};
+	OrderState[] saveAllowedStates = new OrderState[] {
+		OrderState.Created,
+	};
 }
 
 <style>
@@ -24,58 +27,61 @@
 	</div>
 }
 <div class="row">
-	<div class="col-8">
+	<div class="col-12 col-md-8">
 		<div class="card">
 			<div class="card-header">
+				<a class="btn btn-info" href="/Order/List"><i class="fas fa-chevron-left"></i> Назад</a>
 				<h5 class="card-title">Продукти</h5>
 				<h6 class="card-subtitle text-muted">Настройки и опции на Вашата поръчка</h6>
 			</div>
-			<table class="table table-striped">
-				<thead>
-					<tr>
-						<th>Име на продукт</th>
-						<th>Количество</th>
-						<th>Сървърна локация</th>
-						<th>Цена</th>
-						@if (removeAllowedStates.Contains(Model.State)) {
-							<th>Премахни</th>
-						}
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>@Model.Plan.Name</td>
-						<td>
-							<input type="number" id="amount" name="amount" min="1" max="5" asp-for="Amount">
-						</td>
-						<td class="table-action">
-							<fieldset class="mb-3">
-								<div class="row">
-									<div class="col-sm-10">
-										@foreach (string s in typeof(Location).GetEnumNames()) {
-											<label class="form-check">
-												<input name="location" type="radio" class="form-check-input" value="@s" @(Model.Location.ToString() == s ? "checked" : "")>
-												<span class="form-check-label">@s.Replace("_", ", ")</span>
-											</label>
-										}
-									</div>
-								</div>
-							</fieldset>
-						</td>
-						<td>@(Model.OriginalPrice.ToString("F2"))лв</td>
-						@if (removeAllowedStates.Contains(Model.State)) {
-							<td style="text-align: center;">
-								<a href="/Order/Remove?id=@Model.Id">
-									<i data-feather="trash"></i>
-								</a>
+			<div class="card-body">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Име на продукт</th>
+							<th>Количество</th>
+							<th>Сървърна локация</th>
+							<th>Цена</th>
+							@if (removeAllowedStates.Contains(Model.State)) {
+								<th>Премахни</th>
+							}
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>@Model.Plan.Name</td>
+							<td>
+								<input type="number" id="amount" name="amount" min="1" max="5" asp-for="Amount">
 							</td>
-						}
-					</tr>
-				</tbody>
-			</table>
+							<td class="table-action">
+								<fieldset class="mb-3">
+									<div class="row">
+										<div class="col-sm-10">
+											@foreach (string s in typeof(Location).GetEnumNames()) {
+												<label class="form-check">
+													<input name="location" type="radio" class="form-check-input" value="@s" @(Model.Location.ToString() == s ? "checked" : "")>
+													<span class="form-check-label">@s.Replace("_", ", ")</span>
+												</label>
+											}
+										</div>
+									</div>
+								</fieldset>
+							</td>
+							<td>@(Model.OriginalPrice.ToString("F2"))лв</td>
+							@if (removeAllowedStates.Contains(Model.State)) {
+								<td style="text-align: center;">
+									<a href="/Order/Remove?id=@Model.Id">
+										<i data-feather="trash"></i>
+									</a>
+								</td>
+							}
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
-	<div class="col-4">
+	<div class="col-12 col-md-4">
 		<div class="card">
 			<div class="card-header">
 				<h4>Общ преглед на поръчката</h4>
@@ -124,12 +130,14 @@
 							</tbody>
 						</table>
 					</div>
-					<div class="row m-1">
-						<button class="btn btn-outline-info" onclick="SaveOrder();">Запазване <i class="fas fa-save"></i></button>
-					</div>
-					<div class="row m-1">
-						<button class="btn btn-outline-success">Плащане <i class="fas fa-cart-plus"></i></button>
-					</div>
+					@if (saveAllowedStates.Contains(Model.State)) {
+						<div class="row m-1">
+							<button class="btn btn-outline-info" onclick="SaveOrder();">Запазване <i class="fas fa-save"></i></button>
+						</div>
+						<div class="row m-1">
+							<button class="btn btn-outline-success">Плащане <i class="fas fa-cart-plus"></i></button>
+						</div>
+					}
 				</div>
 			</div>
 		</div>
@@ -153,4 +161,6 @@
 		</div>
 	</div>
 </div>
-<script src="/js/order/save.js"></script>
+@if (saveAllowedStates.Contains(Model.State)) {
+	<script src="/js/order/save.js"></script>
+}

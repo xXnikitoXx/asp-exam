@@ -32,7 +32,9 @@
 						<span class="badge bg-success">Активни - @Model.Active</span>
 						<span class="badge bg-danger">Неактивни - @Model.Inactive</span>
 					</div>
-					<div class="offset-10 col-md-2">
+				</div>
+				<div class="row">
+					<div class="col-auto">
 						<label>Кодове на страница</label>
 						<select class="form-control" asp-for="Show" onchange="location.href = '/Admin/Codes?Page=1&Show=' + this.value;">
 							<option value="10">10</option>

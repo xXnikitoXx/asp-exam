@@ -22,6 +22,7 @@
 	<div class="col-md-12">
 		<div class="card">
 			<div class="card-header">
+				<a class="btn btn-info" href="/Profile"><i class="fas fa-chevron-left"></i> Назад</a>
 				<h1>@ViewData["Title"]</h1>
 				<div class="row">
 					<div class="col-md-2">
@@ -38,7 +39,9 @@
 						<span class="badge bg-warning">Отказани - @Model.CancelledOrders</span>
 						<span class="badge bg-warning">Изтекли - @Model.ExpiredOrders</span>
 					</div>
-					<div class="offset-10 col-md-2">
+				</div>
+				<div class="row">
+					<div class="col-auto">
 						<label>Поръчки на страница</label>
 						<select class="form-control" asp-for="Show" onchange="location.href = '/Order/List?Page=1&Show=' + this.value;">
 							<option value="5">5</option>

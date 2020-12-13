@@ -52,15 +52,12 @@
 	.card.aqua a
 	{ color: #fff; text-decoration: none; }
 	
+	.income a { color: #333; text-decoration: none; }
 	.income-amount { font-weight: bold; }
 	.income .col-6:nth-child(1) .income-amount { color: #28a745; }
 	.income .col-6:nth-child(2) .income-amount { color: #ffc107; }
 	.income .col-6:nth-child(3) .income-amount { color: #dc3545; }
 	.income .col-6:nth-child(4) .income-amount { color: purple; }
-
-	.shadow-extra {
-		box-shadow: 0 .2rem .2rem rgba(0, 0, 0, .25) !important;
-	}
 
 	@@media all and (max-width: 1415px) {
 		.card-body .col-md-3 {
@@ -87,7 +84,7 @@
 					<div class="mb-3">
 						<div class="row">
 							<div class="col-md-3">
-								<div class="card blue">
+								<div class="card blue shadow-extra">
 									<a href="/Admin/Users">
 										<div class="card-body">
 											<div class="row">
@@ -106,7 +103,7 @@
 								</div>
 							</div>
 							<div class="col-md-3">
-								<div class="card purple">
+								<div class="card purple shadow-extra">
 									<a href="/Admin/Announcements">
 										<div class="card-body">
 											<div class="row">
@@ -125,7 +122,7 @@
 								</div>
 							</div>
 							<div class="col-md-3">
-								<div class="card green">
+								<div class="card green shadow-extra">
 									<a href="/Admin/VPSs">
 										<div class="card-body">
 											<div class="row">
@@ -144,7 +141,7 @@
 								</div>
 							</div>
 							<div class="col-md-3">
-								<div class="card yellow">
+								<div class="card yellow shadow-extra">
 									<a href="/Admin/Orders">
 										<div class="card-body">
 											<div class="row">
@@ -163,7 +160,7 @@
 								</div>
 							</div>
 							<div class="col-md-3 ">
-								<div class="card aqua">
+								<div class="card aqua shadow-extra">
 									<a href="/Admin/Codes">
 										<div class="card-body">
 											<div class="row">
@@ -182,7 +179,7 @@
 								</div>
 							</div>
 							<div class="col-md-3 ">
-								<div class="card red">
+								<div class="card red shadow-extra">
 									<a href="/Admin/Tickets">
 										<div class="card-body">
 											<div class="row">
@@ -225,34 +222,42 @@
 					<div class="row">
 						<div class="col-6">
 							<div class="card shadow-extra">
-								<div class="card-body">
-									<h3 class="income-amount">@Model.DailyIncome.ToString("F2")лв.</h3>
-									за днес
-								</div>
+								<a href="/Admin/Orders?From=Today">
+									<div class="card-body">
+										<h3 class="income-amount">@Model.DailyIncome.ToString("F2")лв.</h3>
+										за днес
+									</div>
+								</a>
 							</div>
 						</div>
 						<div class="col-6">
 							<div class="card shadow-extra">
-								<div class="card-body">
-									<h3 class="income-amount">@Model.MonthlyIncome.ToString("F2")лв.</h3>
-									за този месец
-								</div>
+								<a href="/Admin/Orders?From=ThisMonth">
+									<div class="card-body">
+										<h3 class="income-amount">@Model.MonthlyIncome.ToString("F2")лв.</h3>
+										за този месец
+									</div>
+								</a>
 							</div>
 						</div>
 						<div class="col-6">
 							<div class="card shadow-extra">
-								<div class="card-body">
-									<h3 class="income-amount">@Model.YearlyIncome.ToString("F2")лв.</h3>
-									за тази година
-								</div>
+								<a href="/Admin/Orders?From=ThisYear">
+									<div class="card-body">
+										<h3 class="income-amount">@Model.YearlyIncome.ToString("F2")лв.</h3>
+										за тази година
+									</div>
+								</a>
 							</div>
 						</div>
 						<div class="col-6">
 							<div class="card shadow-extra">
-								<div class="card-body">
-									<h3 class="income-amount">@Model.TotalIncome.ToString("F2")лв.</h3>
-									през цялото време
-								</div>
+								<a href="/Admin/Orders?From=AllTime">
+									<div class="card-body">
+										<h3 class="income-amount">@Model.TotalIncome.ToString("F2")лв.</h3>
+										през цялото време
+									</div>
+								</a>
 							</div>
 						</div>
 					</div>
