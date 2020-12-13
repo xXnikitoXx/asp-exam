@@ -29,6 +29,10 @@ namespace Project.ViewModels
 
 		public Location Location { get; set; }
 
+		public string UserId { get; set; }
+
+		public string Username { get; set; }
+
 		public PlanViewModel Plan { get; set; }
 
 		public OrderState State { get; set; }

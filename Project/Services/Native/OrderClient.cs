@@ -24,11 +24,25 @@ namespace Project.Services.Native
 			this._userManager = userManager;
 		}
 
-		async Task<Order> Find(string id) => await _context.Orders.FirstOrDefaultAsync(order => order.Id == id);
+		public async Task<Order> Find(string id) => await _context.Orders.FirstOrDefaultAsync(order => order.Id == id);
 
 		public async Task<List<Order>> GetOrders(ClaimsPrincipal user) => GetOrders(await _userManager.GetUserAsync(user));
 		public async Task<List<Order>> GetOrders(ClaimsPrincipal user, OrdersViewModel pageInfo) => GetOrders(await _userManager.GetUserAsync(user), pageInfo);
 
+		public List<Order> GetOrders(OrdersViewModel pageInfo) {
+			IQueryable<Order> orders = this._context.Orders.AsQueryable();
+			pageInfo.Total = orders.Count();
+			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
+			pageInfo.CreatedOrders = orders.Count(order => order.State == OrderState.Created);
+			pageInfo.AwaitingOrders = orders.Count(orders => orders.State == OrderState.Awaiting);
+			pageInfo.CancelledOrders = orders.Count(orders => orders.State == OrderState.Cancelled);
+			pageInfo.FinishedOrders = orders.Count(orders => orders.State == OrderState.Finished);
+			pageInfo.FailedOrders = orders.Count(orders => orders.State == OrderState.Failed);
+			pageInfo.ExpiredOrders = orders.Count(orders => orders.State == OrderState.Expired);
+			pageInfo.TotalInvestments = orders.Where(order => order.State == OrderState.Finished).Sum(order => order.FinalPrice);
+			return orders.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
+		}
+		
 		public List<Order> GetOrders(ApplicationUser user) => _context.Orders
 			.Where(order => order.UserId == user.Id)
 			.ToList();
@@ -47,25 +61,93 @@ namespace Project.Services.Native
 			return orders.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
 		}
 
-		private IQueryable<Order> FinishedOrders => this._context.Orders.Where(order => order.State == OrderState.Finished);
+		public IQueryable<Order> FinishedOrders() => this._context.Orders.Where(order => order.State == OrderState.Finished);
+		public List<Order> FinishedOrders(OrdersViewModel pageInfo) {
+			IQueryable<Order> orders = FinishedOrders();
+			pageInfo.Total = orders.Count();
+			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
+			pageInfo.CreatedOrders = orders.Count(order => order.State == OrderState.Created);
+			pageInfo.AwaitingOrders = orders.Count(orders => orders.State == OrderState.Awaiting);
+			pageInfo.CancelledOrders = orders.Count(orders => orders.State == OrderState.Cancelled);
+			pageInfo.FinishedOrders = orders.Count(orders => orders.State == OrderState.Finished);
+			pageInfo.FailedOrders = orders.Count(orders => orders.State == OrderState.Failed);
+			pageInfo.ExpiredOrders = orders.Count(orders => orders.State == OrderState.Expired);
+			pageInfo.TotalInvestments = orders.Where(order => order.State == OrderState.Finished).Sum(order => order.FinalPrice);
+			return orders.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
+		}
+
 		private int Day => DateTime.Today.Day;
 		private int Month => DateTime.Today.Month;
 		private int Year => DateTime.Today.Year;
 
 		public double DailyIncome() =>
-			FinishedOrders.Where(order => order.TimeFinished.Year == Year && order.TimeFinished.Month == Month && order.TimeFinished.Day == Day)
+			FinishedOrders().Where(order => order.TimeFinished.Year == Year && order.TimeFinished.Month == Month && order.TimeFinished.Day == Day)
 				.Sum(order => order.FinalPrice);
 
 		public double MonthlyIncome() =>
-			FinishedOrders.Where(order => order.TimeFinished.Year == Year && order.TimeFinished.Month == Month)
+			FinishedOrders().Where(order => order.TimeFinished.Year == Year && order.TimeFinished.Month == Month)
 				.Sum(order => order.FinalPrice);
 
 		public double YearlyIncome() =>
-			FinishedOrders.Where(order => order.TimeFinished.Year == Year)
+			FinishedOrders().Where(order => order.TimeFinished.Year == Year)
 				.Sum(order => order.FinalPrice);
 
 		public double TotalIncome() =>
-			FinishedOrders.Sum(order => order.FinalPrice);
+			FinishedOrders().Sum(order => order.FinalPrice);
+
+		public List<Order> FromToday() =>
+			FinishedOrders().Where(order => order.TimeFinished.Year == Year && order.TimeFinished.Month == Month && order.TimeFinished.Day == Day)
+			.ToList();
+
+		public List<Order> FromToday(OrdersViewModel pageInfo) {
+			IQueryable<Order> orders = FinishedOrders().Where(order => order.TimeFinished.Year == Year && order.TimeFinished.Month == Month && order.TimeFinished.Day == Day);
+			pageInfo.Total = orders.Count();
+			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
+			pageInfo.CreatedOrders = orders.Count(order => order.State == OrderState.Created);
+			pageInfo.AwaitingOrders = orders.Count(orders => orders.State == OrderState.Awaiting);
+			pageInfo.CancelledOrders = orders.Count(orders => orders.State == OrderState.Cancelled);
+			pageInfo.FinishedOrders = orders.Count(orders => orders.State == OrderState.Finished);
+			pageInfo.FailedOrders = orders.Count(orders => orders.State == OrderState.Failed);
+			pageInfo.ExpiredOrders = orders.Count(orders => orders.State == OrderState.Expired);
+			pageInfo.TotalInvestments = orders.Where(order => order.State == OrderState.Finished).Sum(order => order.FinalPrice);
+			return orders.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
+		}
+
+		public List<Order> FromThisMonth() =>
+			FinishedOrders().Where(order => order.TimeFinished.Year == Year && order.TimeFinished.Month == Month)
+			.ToList();
+
+		public List<Order> FromThisMonth(OrdersViewModel pageInfo) {
+			IQueryable<Order> orders = FinishedOrders().Where(order => order.TimeFinished.Year == Year && order.TimeFinished.Month == Month);
+			pageInfo.Total = orders.Count();
+			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
+			pageInfo.CreatedOrders = orders.Count(order => order.State == OrderState.Created);
+			pageInfo.AwaitingOrders = orders.Count(orders => orders.State == OrderState.Awaiting);
+			pageInfo.CancelledOrders = orders.Count(orders => orders.State == OrderState.Cancelled);
+			pageInfo.FinishedOrders = orders.Count(orders => orders.State == OrderState.Finished);
+			pageInfo.FailedOrders = orders.Count(orders => orders.State == OrderState.Failed);
+			pageInfo.ExpiredOrders = orders.Count(orders => orders.State == OrderState.Expired);
+			pageInfo.TotalInvestments = orders.Where(order => order.State == OrderState.Finished).Sum(order => order.FinalPrice);
+			return orders.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
+		}
+
+		public List<Order> FromThisYear() =>
+			FinishedOrders().Where(order => order.TimeFinished.Year == Year)
+			.ToList();
+
+		public List<Order> FromThisYear(OrdersViewModel pageInfo) {
+			IQueryable<Order> orders = FinishedOrders().Where(order => order.TimeFinished.Year == Year);
+			pageInfo.Total = orders.Count();
+			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
+			pageInfo.CreatedOrders = orders.Count(order => order.State == OrderState.Created);
+			pageInfo.AwaitingOrders = orders.Count(orders => orders.State == OrderState.Awaiting);
+			pageInfo.CancelledOrders = orders.Count(orders => orders.State == OrderState.Cancelled);
+			pageInfo.FinishedOrders = orders.Count(orders => orders.State == OrderState.Finished);
+			pageInfo.FailedOrders = orders.Count(orders => orders.State == OrderState.Failed);
+			pageInfo.ExpiredOrders = orders.Count(orders => orders.State == OrderState.Expired);
+			pageInfo.TotalInvestments = orders.Where(order => order.State == OrderState.Finished).Sum(order => order.FinalPrice);
+			return orders.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
+		}
 
 		public async Task RegisterOrder(Order order)
 		{
