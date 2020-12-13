@@ -13,6 +13,7 @@ using Project.ViewModels;
 
 namespace Project.Controllers
 {
+	[Authorize]
 	public class AccountController : Controller
 	{
 		private readonly SignInManager<ApplicationUser> _signInManager;
@@ -35,7 +36,6 @@ namespace Project.Controllers
 		}
 
 		[HttpGet("/Account")]
-		[Authorize]
 		public async Task<IActionResult> Index()
 		{
 			List<VPS> vpss = await _vpsService.GetVPSs(User);
@@ -69,25 +69,25 @@ namespace Project.Controllers
 		}
 
 		[HttpGet("/Profile")]
-		[Authorize]
 		public IActionResult Profile() => this.Redirect("/Account");
 
 		[HttpGet("/Panel")]
-		[Authorize]
 		public IActionResult Panel() {
 			return this.View();
 		}
 
+		[AllowAnonymous]
 		public IActionResult Settings() => this.Redirect("/Identity/Account");
 
+		[AllowAnonymous]
 		[HttpGet("/Login")]
 		public IActionResult Login() => this.Redirect("/Identity/Account/Login");
 
+		[AllowAnonymous]
 		[HttpGet("/Register")]
 		public IActionResult Register() => this.Redirect("/Identity/Account/Register");
 
 		[HttpGet("/Logout")]
-		[Authorize]
 		public async Task<IActionResult> Logout()
 		{
 			await _signInManager.SignOutAsync();

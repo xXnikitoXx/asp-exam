@@ -1,0 +1,112 @@
+@model OrderViewModel
+@using Project.Enums
+@{
+	ViewData["Title"] = "Преглед и плащане";
+	OrderState[] removeAllowedStates = new OrderState[] {
+		OrderState.Created,
+		OrderState.Expired,
+	};
+	OrderState[] saveAllowedStates = new OrderState[] {
+		OrderState.Created,
+	};
+}
+
+<style>
+	input[type="number"] {
+		text-align: center;
+	}
+</style>
+@if (ViewData["Message"] != null) {
+	<div class="alert alert-primary alert-dismissible" role="alert">
+		<div class="alert-icon">
+			<i class="fa fa-info"></i>
+		</div>
+		<div class="alert-message">
+			@Html.Raw(@ViewData["Message"])
+		</div>
+	</div>
+}
+<div class="row">
+	<div class="col-12 col-md-8">
+		<div class="card">
+			<div class="card-header">
+				<a class="btn btn-info" href="/Admin/Orders"><i class="fas fa-chevron-left"></i> Назад</a>
+				<h5 class="card-title">Продукти</h5>
+				<h6 class="card-subtitle text-muted">Настройки и опции на Вашата поръчка</h6>
+			</div>
+			<div class="card-body">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Име на продукт</th>
+							<th>Количество</th>
+							<th>Сървърна локация</th>
+							<th>Цена</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>@Model.Plan.Name</td>
+							<td>@Model.Amount</td>
+							<td class="table-action">@Model.Location.ToString().Replace("_", ", ")</td>
+							<td>@(Model.OriginalPrice.ToString("F2"))лв</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="col-12 col-md-4">
+		<div class="card">
+			<div class="card-header">
+				<h4>Общ преглед на поръчката</h4>
+			</div>
+			<div class="card-body">
+				<div class="col-12">
+					<div class="row">
+						<table class="table table-striped">
+							<thead>
+								<tr>
+									<th>Междинна сума: </th>
+									<th>Отстъпка: <code>@string.Join(", ", Model.PromoCodes.Select(code => code.Code).ToList())</code></th>
+									<th>Обща сума: </th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>@(Model.OriginalPrice.ToString("F2"))лв</td>
+									<td>
+										@(new Func<double>(() => {
+											double amount = Model.OriginalPrice;
+											foreach (PromoCodeViewModel code in Model.PromoCodes) {
+												switch (code.Type) {
+													case PromoCodeType.FixedAmount:
+														amount -= code.Value;
+														break;
+													case PromoCodeType.Percentage:
+														amount -= amount * code.Value;
+														break;
+													case PromoCodeType.PriceOverride:
+														amount = code.Value;
+														break;
+													case PromoCodeType.Free:
+														amount = 0;
+														break;
+												}
+											}
+											if (amount < 0)
+												amount = 0;
+											@ViewData["Change"] = amount.ToString("F2");
+											return Model.OriginalPrice - amount;
+										}).Invoke().ToString("F2"))лв
+									</td>
+									<td>@ViewData["Change"]лв</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

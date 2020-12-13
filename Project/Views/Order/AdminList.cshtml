@@ -1,0 +1,146 @@
+﻿@using Project.Enums
+@model OrdersViewModel
+@{
+	if (Context.Request.Query.ContainsKey("From"))
+		switch (Context.Request.Query["From"].ToString().ToLower()) {
+			case "today":
+				ViewData["Title"] = "Поръчки за днес";
+				break;
+			case "thismonth":
+				ViewData["Title"] = "Поръчки за месеца";
+				break;
+			case "thisyear":
+				ViewData["Title"] = "Поръчки за годината";
+				break;
+			case "alltime":
+				ViewData["Title"] = "Всички завършени поръчки";
+				break;
+		}
+	else ViewData["Title"] = "Всички поръчки";
+	ViewData["PaginationUrl"] = "/Admin/Orders";
+	ViewData["Page"] = Model.Page;
+	ViewData["Pages"] = Model.Pages;
+	ViewData["Show"] = Model.Show;
+}
+
+<style>
+	select.form-control {
+		text-align: center;
+	}
+
+	.pagination {
+		justify-content: center;
+	}
+</style>
+
+<div class="row">
+	<div class="col-md-12">
+		<div class="card">
+			<div class="card-header">
+				<a class="btn btn-info" href="/Admin"><i class="fas fa-chevron-left"></i> Назад</a>
+				<h1>@ViewData["Title"]</h1>
+				<div class="row">
+					<div class="col-md-2">
+						Брой: @Model.Total
+					</div>
+					<div class="col-md-2">
+						Обща стойност: @Model.TotalInvestments.ToString("F2")лв.
+					</div>
+					@if (!Context.Request.Query.ContainsKey("From")) {
+						<div class="col-md-8">
+							<span class="badge bg-primary">Записани - @Model.CreatedOrders</span>
+							<span class="badge bg-info">В процес на обработка - @Model.AwaitingOrders</span>
+							<span class="badge bg-success">Завършени - @Model.FinishedOrders</span>
+							<span class="badge bg-danger">Провалени - @Model.FailedOrders</span>
+							<span class="badge bg-warning">Отказани - @Model.CancelledOrders</span>
+							<span class="badge bg-warning">Изтекли - @Model.ExpiredOrders</span>
+						</div>
+					}
+				</div>
+				<div class="row">
+					<div class="col-auto">
+						<label>Поръчки на страница</label>
+						<select class="form-control" asp-for="Show" onchange="location.href = '/Admin/Orders?@(Context.Request.Query.ContainsKey("From") ? "From=" + Context.Request.Query["From"] + "&" : "")Page=1&Show=' + this.value;">
+							<option value="20">20</option>
+							<option value="40">40</option>
+							<option value="80">80</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<hr />
+			<div class="card-body">
+				@if (Model.Total == 0) {
+					if (Context.Request.Query.ContainsKey("From"))
+						switch (Context.Request.Query["From"].ToString().ToLower()) {
+							case "today":
+								<h3>За днес няма поръчки.</h3>
+								break;
+							case "thismonth":
+								<h3>За текущия месец няма поръчки.</h3>
+								break;
+							case "thisyear":
+								<h3>За текущата година няма поръчки.</h3>
+								break;
+							case "alltime":
+								<h3>За момента няма завършени поръчки.</h3>
+								break;
+							default:
+								<h3>За момента няма поръчки.</h3>
+								break;
+						}
+					else {
+						<h3>За момента няма поръчки.</h3>
+					}
+				} else {
+					<table id="datatables-reponsive" class="table table-striped" style="width:100%">
+						<thead>
+							<tr>
+								<th>Потребител</th>
+								<th>Време на поръчката</th>
+								<th>Завършена на</th>
+								<th>План</th>
+								<th>Състояние</th>
+								<th>Действие</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (OrderViewModel order in Model.Orders) {
+								<tr>
+									<td>
+										<a href="/Admin/User?UserName=@order.Username">@order.Username</a>
+									</td>
+									<td>@order.TimeStarted</td>
+									<td>@(order.TimeFinished.Year == 1 ? "-" : order.TimeFinished.ToString())</td>
+									<td>@order.Plan.Name</td>
+									<td>
+										@(new Func<string>(() => {
+											switch(order.State) {
+												case OrderState.Created: return "Запазена";
+												case OrderState.Awaiting: return "В процес на обработка";
+												case OrderState.Finished: return "Завършена";
+												case OrderState.Failed: return "Провалена";
+												case OrderState.Cancelled: return "Отказана";
+												case OrderState.Expired: return "Изтекла";
+											}
+											return "Неизвестен";
+										}).Invoke())
+									</td>
+									<td>
+										<a class="btn btn-outline-primary" href="/Admin/Order?orderId=@order.Id">Преглед на поръчката</a>
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				}
+			</div>
+			@if (Model.Total > 0)
+			{
+				<div class="card-actions">
+					<partial name="_Pagination" />
+				</div>
+			}
+		</div>
+	</div>
+</div>

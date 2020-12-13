@@ -151,5 +151,59 @@ namespace Project.Controllers {
 			await this._service.RemoveOrder(target);
 			return Ok();
 		}
+
+		[HttpGet("/Admin/Order")]
+		[Authorize(Roles = "Administrator")]
+		public async Task<IActionResult> AdminIndex(string OrderId) {
+			OrderViewModel model = this._mapper.Map<OrderViewModel>(await this._service.Find(OrderId));
+			if (model == null)
+				return Redirect("/404");
+			model.Plan = this._mapper.Map<PlanViewModel>(this._planService.GetPlans()
+				.FirstOrDefault(plan => plan.Number == model.PlanNumber));
+			return View(model);
+		}
+
+		[HttpGet("/Admin/Orders")]
+		[Authorize(Roles = "Administrator")]
+		public async Task<IActionResult> AdminList(int Page = 1, int show = 20, string From = "") {
+			List<Models.Plan> plans = this._planService.GetPlans();
+			OrdersViewModel model = new OrdersViewModel {
+				Page = Page,
+				Show = show,
+			};
+			switch (From.ToLower()) {
+				case "today":
+					model.Orders = this._service.FromToday(model)
+						.Select(this._mapper.Map<OrderViewModel>)
+						.ToList();
+					break;
+				case "thismonth":
+					model.Orders = this._service.FromThisMonth(model)
+						.Select(this._mapper.Map<OrderViewModel>)
+						.ToList();
+					break;
+				case "thisyear":
+					model.Orders = this._service.FromThisYear(model)
+						.Select(this._mapper.Map<OrderViewModel>)
+						.ToList();
+					break;
+				case "alltime":
+					model.Orders = this._service.FinishedOrders(model)
+						.Select(this._mapper.Map<OrderViewModel>)
+						.ToList();
+					break;
+				default:
+					model.Orders = this._service.GetOrders(model)
+						.Select(this._mapper.Map<OrderViewModel>)
+						.ToList();
+					break;
+			}
+			
+			foreach (OrderViewModel order in model.Orders) {
+				order.Username = (await this._userManager.FindByIdAsync(order.UserId)).UserName;
+				order.Plan = _mapper.Map<PlanViewModel>(plans.FirstOrDefault(plan => plan.Number == order.PlanNumber));
+			}
+			return View(model);
+		}
 	}
 }
