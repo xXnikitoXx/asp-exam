@@ -10,6 +10,7 @@ using Project.Models;
 using Project.Services.Native;
 using AutoMapper;
 using Project.MappingConfiguration;
+using System;
 
 namespace Project
 {
@@ -29,11 +30,13 @@ namespace Project
 					Configuration.GetConnectionString("DefaultConnection")));
 			services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
 				.AddEntityFrameworkStores<ApplicationDbContext>();
+			services.Configure<SecurityStampValidatorOptions>(options => options.ValidationInterval = TimeSpan.FromSeconds(0));
 
 			MapperConfiguration mapperConfig = new MapperConfiguration(mc => mc.AddProfile(new ApplicationProfile()));
 			services.AddSingleton(mapperConfig.CreateMapper());
 			
 			services.AddScoped<IRoleClient, RoleClient>();
+			services.AddScoped<IAccountClient, AccountClient>();
 			services.AddScoped<IAdminClient, AdminClient>();
 			services.AddScoped<IOrderClient, OrderClient>();
 			services.AddScoped<IVPSClient, VPSClient>();
