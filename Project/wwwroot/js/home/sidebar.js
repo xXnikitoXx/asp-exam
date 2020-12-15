@@ -3,20 +3,22 @@ let menu = new Vue({
 	data() {
 		return {
 			homeButton: [
-				{ text: "Начало", icon: "fas fa-home", link: "/panel", active: false }
+				{ text: "Начало", icon: "fas fa-home", link: "/Panel" }
 			],
 			clientDropdown: [
-				{ text: "VPS Servers", link: "/vps", active: false }
+				{ text: "VPS Сървъри", link: "/VPS" },
+				{ text: "Квитанции", link: "/Tickets" },
+				{ text: "Форум", link: "/Posts" },
 			],
 			buyButton: [
-				{ text: "Купи VPS Сървър", icon: "fas fa-server", link: "/", active: false }
+				{ text: "Купи VPS Сървър", icon: "fas fa-server", link: "/" }
 			],
 			mainButton: [
-				{ text: "Главен сайт", icon: "fas fa-link", link: "https://uhost.pw", target: "_blank", active: false }
+				{ text: "Главен сайт", icon: "fas fa-link", link: "https://uhost.pw", target: "_blank" }
 			],
 			helpButtons: [
-				{ text: "Discord Сървър", link: "https://discord.uhost.pw/", target: "_blank", active: false },
-				{ text: "Support Билети", link: "https://uhost.pw/clientarea/submitticket.php", target: "_blank", active: false }
+				{ text: "Discord Сървър", link: "https://discord.uhost.pw/", target: "_blank" },
+				{ text: "Support Билети", link: "https://uhost.pw/clientarea/submitticket.php", target: "_blank" }
 			]
 		};
 	},

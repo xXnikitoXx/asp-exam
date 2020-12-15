@@ -108,7 +108,11 @@
 							@foreach (OrderViewModel order in Model.Orders) {
 								<tr>
 									<td>
-										<a href="/Admin/User?UserName=@order.Username">@order.Username</a>
+										@if (@order.Username == "{{DELETED}}") {
+											<span>« Изтрит »</span>
+										} else {
+											<a href="/Admin/User?UserName=@order.Username">@order.Username</a>
+										}
 									</td>
 									<td>@order.TimeStarted</td>
 									<td>@(order.TimeFinished.Year == 1 ? "-" : order.TimeFinished.ToString())</td>

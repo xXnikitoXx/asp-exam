@@ -35,7 +35,7 @@
 								Начало
 							</li>
 							<li class="sidebar-item" v-for="button in homeButton">
-								<a class="sidebar-link" :href="button.link" :class="{ active: button.active }">
+								<a class="sidebar-link" :href="button.link">
 									<i :class="'ni ' + button.icon"></i>
 									<span class="align-middle">{{button.text}}</span>
 								</a>
@@ -46,7 +46,7 @@
 								</a>
 								<ul id="ui" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
 									<li class="sidebar-item" v-for="button in clientDropdown">
-										<a class="sidebar-link" :href="button.link" :class="{ active: button.active }">{{button.text}}</a>
+										<a class="sidebar-link" :href="button.link">{{button.text}}</a>
 									</li>
 								</ul>
 							</li>
@@ -55,7 +55,7 @@
 							Услуги
 						</li>
 						<li class="sidebar-item" v-for="button in buyButton">
-							<a class="sidebar-link" :href="button.link" :class="{ active: button.active }">
+							<a class="sidebar-link" :href="button.link">
 								<i :class="'ni ' + button.icon"></i>
 								<span class="align-middle">{{button.text}}</span>
 							</a>
@@ -64,7 +64,7 @@
 							Полезни линкове
 						</li>
 						<li class="sidebar-item" v-for="button in mainButton">
-							<a class="sidebar-link" :href="button.link" :target="button.target" :class="{ active: button.active }">
+							<a class="sidebar-link" :href="button.link" :target="button.target">
 								<i :class="'ni ' + button.icon"></i>
 								<span class="align-middle">{{button.text}}</span>
 							</a>
@@ -75,7 +75,7 @@
 							</a>
 							<ul id="help" class="sidebar-dropdown list-unstyled collapse " data-parent="#sidebar">
 								<li class="sidebar-item" v-for="button in helpButtons">
-									<a class="sidebar-link" :href="button.link" :target="button.target" :class="{ active: button.active }">{{button.text}}</a>
+									<a class="sidebar-link" :href="button.link" :target="button.target">{{button.text}}</a>
 								</li>
 							</ul>
 						</li>

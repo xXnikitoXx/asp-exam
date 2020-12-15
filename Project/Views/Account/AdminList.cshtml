@@ -1,0 +1,103 @@
+@model UsersViewModel
+@{
+	ViewData["Title"] = "Регистрирани потребители";
+	ViewData["PaginationUrl"] = "/Admin/Users";
+	ViewData["Page"] = Model.Page;
+	ViewData["Pages"] = Model.Pages;
+	ViewData["Show"] = Model.Show;
+}
+
+<style>
+	.pagination {
+		justify-content: center;
+	}
+</style>
+
+<div class="row">
+	<div class="col-12">
+		<div class="card">
+			<div class="card-header">
+				<a class="btn btn-info" href="/Admin"><i class="fas fa-chevron-left"></i> Назад</a>
+				<div class="row">
+					<div class="col-md-2">
+						Брой: @Model.Total
+					</div>
+					<div class="col-md-10">
+						<span class="badge bg-primary">Администратори - @Model.AdminsCount</span>
+						<span class="badge bg-secondary">Потребители - @Model.UsersCount</span>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-auto">
+						<label>Потребители на страница</label>
+						<select class="form-control" asp-for="Show" onchange="location.href = '/Admin/Users?Page=1&Show=' + this.value;">
+							<option value="20">20</option>
+							<option value="40">40</option>
+							<option value="80">80</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<hr />
+			<div class="card-body text-center">
+				<div class="container-fluid p-0">
+					<div class="row">
+						<div class="col-12">
+							@if (Model.Total == 0) {
+								<h3>За момента няма потребители.</h3>
+							} else {
+								<table id="datatables-reponsive" class="table table-striped" style="width:100%">
+									<thead>
+										<tr>
+											<th>Име</th>
+											<th>Имейл</th>
+											<th>Телефон</th>
+											<th>Админ</th>
+											<th></th>
+											<th>Контрол</th>
+										</tr>
+									</thead>
+									<tbody>
+										@foreach (UserViewModel user in Model.Users) {
+											<tr>
+												<td>@user.UserName</td>
+												<td>@user.Email</td>
+												<td>@(user.PhoneNumber == null ? "-" : user.PhoneNumber)</td>
+												<td>
+													<input class="form-check-input" type="checkbox" onclick="SwitchRole(event, '@user.Id')" @(user.IsAdmin ? "checked" : "")>
+												</td>
+												<td></td>
+												<td>
+													<a href="/Admin/User/Remove?Id=@user.Id" class="btn btn-danger"><i class="fas fa-times"></i></a>
+												</td>
+											</tr>
+										}
+									</tbody>
+								</table>
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+			@if (Model.Total > 0)
+			{
+				<div class="card-actions">
+					<partial name="/Views/Shared/_Pagination.cshtml" />
+				</div>
+			}
+		</div>
+	</div>
+</div>
+<div id="preview" class="modal fade show" tabindex="-1" role="dialog" style="padding-right: 17px; display: none;" aria-modal="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title"></h5>
+			</div>
+			<div class="modal-body m-3">
+				
+			</div>
+		</div>
+	</div>
+</div>
+<script src="/js/users/switch.js"></script>
