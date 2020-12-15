@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 using Project.Models;
 
-namespace Project.Data
-{
-	public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
-	{
+namespace Project.Data {
+	public class ApplicationDbContext : IdentityDbContext<ApplicationUser> {
 		#region Tables
 
 		public DbSet<Activity> Activities { get; set; }
@@ -36,14 +30,12 @@ namespace Project.Data
 
 		#endregion
 
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
-		{
+		protected override void OnModelCreating(ModelBuilder modelBuilder) {
 			base.OnModelCreating(modelBuilder);
 
 			#region EntityModels
 
-			modelBuilder.Entity<ApplicationUser>(entity =>
-			{
+			modelBuilder.Entity<ApplicationUser>(entity => {
 				entity.HasKey(user => user.Id);
 
 				entity.Property(user => user.JoinDate)
@@ -81,8 +73,7 @@ namespace Project.Data
 					.OnDelete(DeleteBehavior.Cascade);
 			});
 
-			modelBuilder.Entity<VPS>(entity =>
-			{
+			modelBuilder.Entity<VPS>(entity => {
 				entity.HasAlternateKey(vps => vps.ExternalId);
 
 				entity.HasMany(vps => vps.Activities)
@@ -94,8 +85,7 @@ namespace Project.Data
 					.HasForeignKey(state => state.VPSId);
 			});
 
-			modelBuilder.Entity<Post>(entity =>
-			{
+			modelBuilder.Entity<Post>(entity => {
 				entity.HasMany(post => post.Answers)
 					.WithOne(answer => answer.ParentPost)
 					.HasForeignKey(answer => answer.ParentId)
@@ -121,12 +111,21 @@ namespace Project.Data
 				.Property(state => state.Time)
 				.HasDefaultValueSql("getdate()");
 
-			modelBuilder.Entity<Message>()
-				.Property(message => message.Time)
-				.HasDefaultValueSql("getdate()");
+			modelBuilder.Entity<Message>(entity => {
+				entity.Property(message => message.Time)
+					.HasDefaultValueSql("getdate()");
+				
+				entity.HasOne<Ticket>(message => message.Ticket)
+					.WithOne(ticket => ticket.Answer)
+					.HasForeignKey<Ticket>(ticket => ticket.AnswerId);
+			});
 
-			modelBuilder.Entity<Order>(entity =>
-			{
+			modelBuilder.Entity<Ticket>()
+				.HasOne<Message>(ticket => ticket.Answer)
+				.WithOne(message => message.Ticket)
+				.HasForeignKey<Message>(message => message.TicketId);
+
+			modelBuilder.Entity<Order>(entity => {
 				entity.Property(order => order.TimeStarted)
 					.HasDefaultValueSql("getdate()");
 
@@ -138,7 +137,7 @@ namespace Project.Data
 					.WithOne(vps => vps.Order)
 					.HasForeignKey(vps => vps.OrderId);
 			});
-			
+
 			#endregion
 
 			#region MappingModels
