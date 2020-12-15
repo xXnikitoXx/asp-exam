@@ -200,7 +200,8 @@ namespace Project.Controllers {
 			}
 			
 			foreach (OrderViewModel order in model.Orders) {
-				order.Username = (await this._userManager.FindByIdAsync(order.UserId)).UserName;
+				ApplicationUser user = await this._userManager.FindByIdAsync(order.UserId);
+				order.Username = user == null ? "{{DELETED}}" : user.UserName;
 				order.Plan = _mapper.Map<PlanViewModel>(plans.FirstOrDefault(plan => plan.Number == order.PlanNumber));
 			}
 			return View(model);

@@ -11,24 +11,32 @@ using Project.Models;
 using Project.Services.Native;
 using Project.ViewModels;
 
-namespace Project.Controllers
-{
+namespace Project.Controllers {
 	[Authorize]
-	public class AccountController : Controller
-	{
+	public class AccountController : Controller {
+		private readonly IAccountClient _service;
 		private readonly SignInManager<ApplicationUser> _signInManager;
+		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly IRoleClient _roleService;
 		private readonly IOrderClient _orderService;
 		private readonly IPlanClient _planService;
 		private readonly IVPSClient _vpsService;
 		private readonly IMapper _mapper;
 
-		public AccountController(SignInManager<ApplicationUser> signInManager,
+		public AccountController(
+			IAccountClient service,
+			SignInManager<ApplicationUser> signInManager,
+			UserManager<ApplicationUser> userManager,
+			IRoleClient roleService,
 			IOrderClient orderService,
 			IPlanClient planService,
 			IVPSClient vpsService,
-			IMapper mapper)
-		{
+			IMapper mapper
+		) {
+			this._service = service;
 			this._signInManager = signInManager;
+			this._userManager = userManager;
+			this._roleService = roleService;
 			this._orderService = orderService;
 			this._planService = planService;
 			this._vpsService = vpsService;
@@ -36,14 +44,12 @@ namespace Project.Controllers
 		}
 
 		[HttpGet("/Account")]
-		public async Task<IActionResult> Index()
-		{
+		public async Task<IActionResult> Index() {
 			List<VPS> vpss = await _vpsService.GetVPSs(User);
 			List<Order> orders = await _orderService.GetOrders(User);
 			List<Models.Plan> plans = this._planService.GetPlans();
 
-			AccountViewModel model = new AccountViewModel
-			{
+			AccountViewModel model = new AccountViewModel {
 				VPSCount = vpss.Count,
 				OrdersCount = orders.Count,
 				Orders = orders.OrderByDescending(order => order.TimeFinished)
@@ -88,10 +94,64 @@ namespace Project.Controllers
 		public IActionResult Register() => this.Redirect("/Identity/Account/Register");
 
 		[HttpGet("/Logout")]
-		public async Task<IActionResult> Logout()
-		{
+		public async Task<IActionResult> Logout() {
 			await _signInManager.SignOutAsync();
 			return RedirectToAction("Index", "Home");
+		}
+
+		[HttpGet("/Admin/Users")]
+		[Authorize(Roles = "Administrator")]
+		public IActionResult AdminList(int Page = 1, int Show = 20) {
+			UsersViewModel model = new UsersViewModel {
+				Page = Page,
+				Show = Show,
+			};
+			model.Users = this._roleService.GetUsers(model)
+				.Select(this._mapper.Map<UserViewModel>)
+				.Select(user => {
+					user.IsAdmin = Task.Run<bool>(async () => await this._roleService.IsAdmin(user.Id))
+						.GetAwaiter()
+						.GetResult();
+					return user;
+				})
+				.ToList();
+			return View(model);
+		}
+
+		[HttpPost("/Admin/Users/Switch")]
+		[Authorize(Roles = "Administrator")]
+		public async Task<IActionResult> Switch(string Id) {
+			bool isAdmin;
+			try {
+				isAdmin = await this._roleService.IsAdmin(Id);
+				if (isAdmin)
+					await this._roleService.DemoteToUser(Id);
+				else
+					await this._roleService.PromoteToAdmin(Id);
+			} catch (Exception) {
+				return NotFound();
+			}
+			return Json(!isAdmin);
+		}
+
+		[HttpGet("/Admin/User/Remove")]
+		[Authorize(Roles = "Administrator")]
+		public IActionResult RemovePage(string Id) {
+			ApplicationUser user = this._roleService.Find(Id);
+			if (user == null)
+				return Redirect("/404");
+			return View("Remove", this._mapper.Map<UserViewModel>(user));
+		}
+
+		[HttpDelete("/Admin/User/Remove")]
+		[Authorize(Roles = "Administrator")]
+		public async Task<IActionResult> Remove(string Id) {
+			try {
+				await this._service.RemoveUser(Id);
+			} catch (Exception) {
+				return BadRequest();
+			}
+			return Ok();
 		}
 	}
 }
