@@ -26,5 +26,8 @@ namespace Project.Models
 
 		public string UserId { get; set; }
 		public ApplicationUser User { get; set; }
+
+		public string AnswerId { get; set; }
+		public Message Answer { get; set; }
 	}
 }

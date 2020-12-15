@@ -22,5 +22,8 @@ namespace Project.Models
 		public DateTime Time { get; set; }
 
 		public ApplicationUser User { get; set; }
+
+		public string TicketId { get; set; }
+		public Ticket Ticket { get; set; }
 	}
 }
