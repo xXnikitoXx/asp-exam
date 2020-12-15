@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 
 namespace Project.Models
@@ -14,6 +15,9 @@ namespace Project.Models
 			this.Orders = new HashSet<Order>();
 			this.PromoCodes = new HashSet<UserPromoCode>();
 		}
+
+		public DateTime JoinDate { get; set; }
+		public DateTime LastLoginDate { get; set; }
 
 		public ICollection<VPS> VPSs { get; set; }
 		public ICollection<Post> Posts { get; set; }	

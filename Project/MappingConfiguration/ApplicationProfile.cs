@@ -10,6 +10,7 @@ namespace Project.MappingConfiguration
 	{
 		public ApplicationProfile()
 		{
+			CreateMap<ApplicationUser, UserViewModel>();
 			CreateMap<VPS, VPSViewModel>();
 			CreateMap<Models.Plan, PlanViewModel>();
 			CreateMap<PromoCode, PromoCodeViewModel>()

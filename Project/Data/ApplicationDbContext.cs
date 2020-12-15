@@ -46,15 +46,21 @@ namespace Project.Data
 			{
 				entity.HasKey(user => user.Id);
 
+				entity.Property(user => user.JoinDate)
+					.HasDefaultValueSql("getdate()");
+
+				entity.Property(user => user.LastLoginDate)
+					.HasDefaultValueSql("getdate()");
+
 				entity.HasMany(user => user.VPSs)
 					.WithOne(vps => vps.User)
 					.HasForeignKey(vps => vps.UserId)
-					.OnDelete(DeleteBehavior.Cascade);
+					.OnDelete(DeleteBehavior.SetNull);
 
 				entity.HasMany(user => user.Posts)
 					.WithOne(post => post.User)
 					.HasForeignKey(post => post.UserId)
-					.OnDelete(DeleteBehavior.Cascade);
+					.OnDelete(DeleteBehavior.SetNull);
 
 				entity.HasMany(user => user.Tickets)
 					.WithOne(ticket => ticket.User)
