@@ -24,10 +24,13 @@ namespace Project.Services.Native
 			this._userManager = userManager;
 		}
 
-		public async Task<Order> Find(string id) => await _context.Orders.FirstOrDefaultAsync(order => order.Id == id);
+		public async Task<Order> Find(string id) =>
+			await this._context.Orders.FirstOrDefaultAsync(order => order.Id == id);
 
-		public async Task<List<Order>> GetOrders(ClaimsPrincipal user) => GetOrders(await _userManager.GetUserAsync(user));
-		public async Task<List<Order>> GetOrders(ClaimsPrincipal user, OrdersViewModel pageInfo) => GetOrders(await _userManager.GetUserAsync(user), pageInfo);
+		public async Task<List<Order>> GetOrders(ClaimsPrincipal user) =>
+			GetOrders(await _userManager.GetUserAsync(user));
+		public async Task<List<Order>> GetOrders(ClaimsPrincipal user, OrdersViewModel pageInfo) =>
+			GetOrders(await _userManager.GetUserAsync(user), pageInfo);
 
 		public List<Order> GetOrders(OrdersViewModel pageInfo) {
 			IQueryable<Order> orders = this._context.Orders.AsQueryable();
@@ -61,8 +64,10 @@ namespace Project.Services.Native
 			return orders.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
 		}
 
-		public IQueryable<Order> FinishedOrders() => this._context.Orders.Where(order => order.State == OrderState.Finished);
-		public IQueryable<Order> FinishedOrders(ApplicationUser user) => this._context.Orders.Where(order => order.State == OrderState.Finished && order.UserId == user.Id);
+		public IQueryable<Order> FinishedOrders() =>
+			this._context.Orders.Where(order => order.State == OrderState.Finished);
+		public IQueryable<Order> FinishedOrders(ApplicationUser user) =>
+			this._context.Orders.Where(order => order.State == OrderState.Finished && order.UserId == user.Id);
 		public List<Order> FinishedOrders(OrdersViewModel pageInfo) {
 			IQueryable<Order> orders = FinishedOrders();
 			pageInfo.Total = orders.Count();
@@ -179,7 +184,8 @@ namespace Project.Services.Native
 			await this._context.SaveChangesAsync();
 		}
 
-		public async Task UpdateState(string id, OrderState state) => await UpdateState(await Find(id), state);
+		public async Task UpdateState(string id, OrderState state) =>
+			await UpdateState(await Find(id), state);
 
 		public async Task UpdateState(Order order, OrderState state)
 		{
@@ -187,7 +193,8 @@ namespace Project.Services.Native
 			await _context.SaveChangesAsync();
 		}
 
-		public async Task AddVPS(string id, VPS vps) => await AddVPS(await Find(id), vps);
+		public async Task AddVPS(string id, VPS vps) =>
+			await AddVPS(await Find(id), vps);
 
 		public async Task AddVPS(Order order, VPS vps)
 		{
@@ -195,7 +202,8 @@ namespace Project.Services.Native
 			await _context.SaveChangesAsync();
 		}
 
-		public async Task RemoveVPS(string id, VPS vps) => await RemoveVPS(await Find(id), vps);
+		public async Task RemoveVPS(string id, VPS vps) =>
+			await RemoveVPS(await Find(id), vps);
 
 		public async Task RemoveVPS(Order order, VPS vps)
 		{
@@ -203,7 +211,8 @@ namespace Project.Services.Native
 			await _context.SaveChangesAsync();
 		}
 
-		public async Task UpdateVPSs(string id, List<VPS> vpss) => await UpdateVPSs(await Find(id), vpss);
+		public async Task UpdateVPSs(string id, List<VPS> vpss) =>
+			await UpdateVPSs(await Find(id), vpss);
 
 		public async Task UpdateVPSs(Order order, List<VPS> vpss)
 		{
