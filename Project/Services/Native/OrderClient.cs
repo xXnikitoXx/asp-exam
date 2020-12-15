@@ -62,6 +62,7 @@ namespace Project.Services.Native
 		}
 
 		public IQueryable<Order> FinishedOrders() => this._context.Orders.Where(order => order.State == OrderState.Finished);
+		public IQueryable<Order> FinishedOrders(ApplicationUser user) => this._context.Orders.Where(order => order.State == OrderState.Finished && order.UserId == user.Id);
 		public List<Order> FinishedOrders(OrdersViewModel pageInfo) {
 			IQueryable<Order> orders = FinishedOrders();
 			pageInfo.Total = orders.Count();

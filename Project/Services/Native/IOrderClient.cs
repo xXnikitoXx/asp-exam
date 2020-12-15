@@ -17,6 +17,7 @@ namespace Project.Services.Native
 		List<Order> GetOrders(ApplicationUser user);
 		List<Order> GetOrders(ApplicationUser user, OrdersViewModel pageInfo);
 		IQueryable<Order> FinishedOrders();
+		IQueryable<Order> FinishedOrders(ApplicationUser user);
 		List<Order> FinishedOrders(OrdersViewModel pageInfo);
 		double DailyIncome();
 		double MonthlyIncome();
