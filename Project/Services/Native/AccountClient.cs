@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Project.Data;
@@ -28,7 +29,12 @@ namespace Project.Services.Native {
 			this._orderService = orderService;
 		}
 
-		public async Task SignOut(ApplicationUser user) => await this._userManager.UpdateSecurityStampAsync(user);
+		public async Task SignOut(ApplicationUser user) =>
+			await this._userManager.UpdateSecurityStampAsync(user);
+		public async Task SignOut(ClaimsPrincipal user) =>
+			await this._userManager.UpdateSecurityStampAsync(await this._userManager.GetUserAsync(user));
+		public async Task SignOut(string id) =>
+			await this._userManager.UpdateSecurityStampAsync(await this._userManager.FindByIdAsync(id));
 
 		public async Task RemoveUser(string id) {
 			ApplicationUser user = this._context.Users.FirstOrDefault(user => user.Id == id);

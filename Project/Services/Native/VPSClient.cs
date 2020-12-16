@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Project.Data;
 using Project.Enums;
 using Project.Models;
+using Project.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,9 +26,24 @@ namespace Project.Services.Native
 
 		async Task<VPS> Find(string id) => await _context.VPSs.FirstOrDefaultAsync(vps => vps.Id == id);
 
-		public async Task<List<VPS>> GetVPSs(ClaimsPrincipal user) => GetVPSs(await _userManager.GetUserAsync(user));
+		public List<VPS> GetVPSs(VPSsViewModel pageInfo) {
+			IQueryable<VPS> vpss = this._context.VPSs.AsQueryable();
+			pageInfo.Total = vpss.Count();
+			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
+			return vpss.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
+		}
 
+		public async Task<List<VPS>> GetVPSs(ClaimsPrincipal user) => GetVPSs(await _userManager.GetUserAsync(user));
 		public List<VPS> GetVPSs(ApplicationUser user) => _context.VPSs.Where(vps => vps.UserId == user.Id).ToList();
+
+		public async Task<List<VPS>> GetVPSs(ClaimsPrincipal user, VPSsViewModel pageInfo) =>
+			GetVPSs(await this._userManager.GetUserAsync(user), pageInfo);
+		public List<VPS> GetVPSs(ApplicationUser user, VPSsViewModel pageInfo) {
+			IQueryable<VPS> vpss = this._context.VPSs.Where(vps => vps.UserId == user.Id);
+			pageInfo.Total = vpss.Count();
+			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
+			return vpss.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
+		}
 
 		public async Task RegisterVPS(VPS vps)
 		{
