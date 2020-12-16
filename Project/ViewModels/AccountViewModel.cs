@@ -13,6 +13,8 @@ namespace Project.ViewModels
 
 		public int VPSCount { get; set; }
 		public int OrdersCount { get; set; }
+		public int TicketsCount { get; set; }
+		public int PromoCodesCount { get; set; }
 		public int CreatedOrders { get; set; }
 		public int AwaitingOrders { get; set; }
 		public int CancelledOrders { get; set; }

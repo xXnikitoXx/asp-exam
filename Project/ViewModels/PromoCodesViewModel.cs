@@ -3,9 +3,7 @@ using System.Collections.Generic;
 namespace Project.ViewModels {
 	public class PromoCodesViewModel : ListViewModel
 	{
-		public PromoCodesViewModel() {
-			this.Codes = new List<PromoCodeViewModel>();
-		}
+		public PromoCodesViewModel() => this.Codes = new List<PromoCodeViewModel>();
 
 		public List<PromoCodeViewModel> Codes { get; set; }
 		public int Active { get; set; }
