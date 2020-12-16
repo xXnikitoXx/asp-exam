@@ -8,7 +8,7 @@ using System;
 
 public class PlanClient : IPlanClient
 {
-	private ApplicationDbContext _context;
+	private readonly ApplicationDbContext _context;
 
 	public PlanClient(ApplicationDbContext context) {
 		this._context = context;

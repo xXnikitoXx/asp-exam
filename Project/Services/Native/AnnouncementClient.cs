@@ -11,10 +11,11 @@ namespace Project.Services.Native {
 	{
 		private readonly ApplicationDbContext _context;
 
-		public Announcement GetAnnouncement(string id) => this._context.Announcements.FirstOrDefault(announcement => announcement.Id == id);
+		
 
 		public AnnouncementClient(ApplicationDbContext context) => this._context = context;
-
+		public Announcement GetAnnouncement(string id) =>
+			this._context.Announcements.FirstOrDefault(announcement => announcement.Id == id);
 		public List<Announcement> GetAnnouncements() => this._context.Announcements.ToList();
 		public List<Announcement> GetAnnouncements(AnnouncementsViewModel pageInfo) {
 			pageInfo.Total = this._context.Announcements.Count();

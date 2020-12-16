@@ -11,10 +11,9 @@ using Project.Models;
 using Project.ViewModels;
 
 namespace Project.Services.Native {
-	public class TicketClient : ITicketClient
-	{
-		private ApplicationDbContext _context;
-		private UserManager<ApplicationUser> _userManager;
+	public class TicketClient : ITicketClient {
+		private readonly ApplicationDbContext _context;
+		private readonly UserManager<ApplicationUser> _userManager;
 
 		public TicketClient (
 			ApplicationDbContext context,
@@ -76,21 +75,18 @@ namespace Project.Services.Native {
 			return tickets.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
 		}
 
-		public async Task RegisterTicket(Ticket ticket)
-		{
+		public async Task RegisterTicket(Ticket ticket) {
 			this._context.Tickets.Add(ticket);
 			await this._context.SaveChangesAsync();
 		}
 
-		public async Task UpdateTicket(Ticket ticket)
-		{
+		public async Task UpdateTicket(Ticket ticket) {
 			Ticket target = await Find(ticket.Id);
 			target = ticket;
 			await this._context.SaveChangesAsync();
 		}
 
-		public async Task RemoveTicket(Ticket ticket)
-		{
+		public async Task RemoveTicket(Ticket ticket) {
 			ApplicationUser user = this._context.Users.FirstOrDefault(user => user.Id == ticket.UserId);
 			if (user == null)
 				throw new Exception();

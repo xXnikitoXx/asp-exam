@@ -14,8 +14,8 @@ namespace Project.Services.Native
 {
 	public class VPSClient : IVPSClient
 	{
-		private ApplicationDbContext _context;
-		private UserManager<ApplicationUser> _userManager;
+		private readonly ApplicationDbContext _context;
+		private readonly UserManager<ApplicationUser> _userManager;
 
 		public VPSClient(ApplicationDbContext context,
 			UserManager<ApplicationUser> userManager)

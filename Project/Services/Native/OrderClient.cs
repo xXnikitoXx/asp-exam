@@ -14,8 +14,8 @@ namespace Project.Services.Native
 {
 	public class OrderClient : IOrderClient
 	{
-		private ApplicationDbContext _context;
-		private UserManager<ApplicationUser> _userManager;
+		private readonly ApplicationDbContext _context;
+		private readonly UserManager<ApplicationUser> _userManager;
 
 		public OrderClient(ApplicationDbContext context,
 			UserManager<ApplicationUser> userManager)

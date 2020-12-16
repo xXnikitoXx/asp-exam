@@ -115,6 +115,10 @@ namespace Project.Data {
 				entity.Property(message => message.Time)
 					.HasDefaultValueSql("getdate()");
 				
+				entity.HasOne(message => message.User)
+					.WithMany(user => user.Messages)
+					.HasForeignKey(message => message.UserId);
+
 				entity.HasOne<Ticket>(message => message.Ticket)
 					.WithOne(ticket => ticket.Answer)
 					.HasForeignKey<Ticket>(ticket => ticket.AnswerId);
