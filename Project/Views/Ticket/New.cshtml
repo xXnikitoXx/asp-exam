@@ -1,0 +1,42 @@
+@{
+	ViewData["Title"] = "Създаване на билет";
+}
+
+<div id="createTicket" class="row">
+	<div class="col-sm-10 col-md-8 col-lg-6 mx-auto d-table h-100">
+		<div class="card">
+			<div class="card-header text-center">
+				<h3 id="title" class="title">@ViewData["Title"]</h3>
+			</div>
+			<div class="card-body">
+				<div class="row mb-3">
+					<div class="col-12">
+						<label class="form-label">Тема</label>
+						<input id="subjectInput" type="text" class="form-control" placeholder="Тема">
+					</div>
+				</div>
+				<div class="row mb-3">
+					<div class="col-12">
+						<label class="form-label">Приоритет</label>
+						<select id="priorityInput" class="form-control mb-3">
+							<option value="Low">Нисък</option>
+							<option value="Medium">Среден</option>
+							<option value="High">Висок</option>
+						</select>
+					</div>
+				</div>
+				<div class="row mb-3">
+					<div class="col-12">
+						<label class="form-label">Съобщение</label>
+						<textarea id="messageInput" class="form-control" rows="3"></textarea>
+					</div>
+				</div>
+				<div class="text-center mt-3">
+					<a href="/Tickets" class="btn btn-primary"><i class="fas fa-chevron-left"></i> Назад</a>
+					<button onclick="CreateTicket();" class="btn btn-outline-success"><i class="fas fa-plus"></i> Добави</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="/js/ticket/create.js"></script>

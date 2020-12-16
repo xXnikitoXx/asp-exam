@@ -1,0 +1,84 @@
+@using Project.Enums
+@model UserViewModel
+@{
+	ViewData["Title"] = "Детайли за потребител";
+}
+
+<style>
+	.col-4 .card {
+		padding: 5px;
+	}
+
+	@@media all and (max-width: 1415px) {
+		.card-body .col-md-3 {
+			width: 50%;
+		}
+	}
+
+	@@media all and (max-width:560px) {
+		.card-body .col-md-3 {
+			width: 100%;
+		}
+	}
+</style>
+
+<div class="container-fluid align-middle p-0">
+	<div class="row">
+		<div class="col-md-6 offset-md-3">
+			<div class="card mb-3">
+				<div class="card-header">
+					<a class="btn btn-info" href="/Admin/Users"><i class="fas fa-chevron-left"></i> Назад</a>
+					<h1>@ViewData["Title"]</h1>
+				</div>
+				<div class="card-body">
+					<h2>Име: @Model.UserName</h2>
+					<h3 class="text-muted mb-2">Имейл: @Model.Email</h3>
+					<h4 class="text-muted mb-2">Дата на присъединяване: @Model.JoinDate</h4>
+				</div>
+				<hr class="my-0">
+				<div class="card-body text-center row">
+					<div class="col-4">
+						<div class="card compact shadow-extra green">Сървъри: @Model.Account.VPSCount</div>
+					</div>
+					<div class="col-4">
+						<div class="card compact shadow-extra yellow">Поръчки: @Model.Account.OrdersCount</div>
+					</div>
+					<div class="col-4">
+						<div class="card compact shadow-extra aqua">Промо кодове: @Model.Account.PromoCodesCount</div>
+					</div>
+					<div class="col-4">
+						<div class="card compact shadow-extra red">Билети: @Model.Account.TicketsCount</div>
+					</div>
+					<div class="col-4">
+						<div class="card compact shadow-extra blue">Инвестиции: @Model.Account.TotalInvestments.ToString("F2")лв.</div>
+					</div>
+					<div class="col-4">
+						<div class="card compact shadow-extra purple">Месечна сметка: @Model.Account.MonthlyBill.ToString("F2")лв.</div>
+					</div>
+				</div>
+				<hr class="my-0">
+				<div class="card-body text-center row">
+					<div class="col-4">
+						<label class="form-check m-0">
+							<input onclick="SwitchRole(event, '@Model.Id');" id="activeCheck" type="checkbox" class="form-check-input" asp-for="IsAdmin">
+							<span class="form-check-label">Администратор</span>
+						</label>
+					</div>
+					<div class="col-4">
+						<button onclick="SignOut('@Model.Id');" class="btn btn-primary">Изход от сесия</button>
+					</div>
+					<div class="col-4 mb-3">
+						<a href="/Admin/User/Remove?Id=@Model.Id" class="btn btn-danger">Премахване</a>
+					</div>
+					<div class="col-12">
+						<span class="text-muted">
+							* При смяна на ролята на потребител, неговата сесия бива обновена и той трябва да влезе в акаунта си отново.
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="/js/users/switch.js"></script>
+<script src="/js/users/signOut.js"></script>
