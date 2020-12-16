@@ -35,16 +35,16 @@ namespace Project
 			MapperConfiguration mapperConfig = new MapperConfiguration(mc => mc.AddProfile(new ApplicationProfile()));
 			services.AddSingleton(mapperConfig.CreateMapper());
 			
-			services.AddScoped<IRoleClient, RoleClient>();
 			services.AddScoped<IAccountClient, AccountClient>();
 			services.AddScoped<IAdminClient, AdminClient>();
-			services.AddScoped<IOrderClient, OrderClient>();
-			services.AddScoped<IVPSClient, VPSClient>();
-			services.AddScoped<IPlanClient, PlanClient>();
-			services.AddScoped<IOrderClient, OrderClient>();
-			services.AddScoped<IPromoCodeClient, PromoCodeClient>();
 			services.AddScoped<IAnnouncementClient, AnnouncementClient>();
+			services.AddScoped<IMessageClient, MessageClient>();
+			services.AddScoped<IOrderClient, OrderClient>();
+			services.AddScoped<IPlanClient, PlanClient>();
+			services.AddScoped<IPromoCodeClient, PromoCodeClient>();
+			services.AddScoped<IRoleClient, RoleClient>();
 			services.AddScoped<ITicketClient, TicketClient>();
+			services.AddScoped<IVPSClient, VPSClient>();
 
 			services.AddAntiforgery();
 			services.AddControllersWithViews();
