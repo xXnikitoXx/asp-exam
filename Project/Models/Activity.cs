@@ -3,10 +3,8 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Project.Enums;
 
-namespace Project.Models
-{
-	public class Activity
-	{
+namespace Project.Models {
+	public class Activity {
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public string Id { get; set; }
@@ -16,7 +14,7 @@ namespace Project.Models
 		public string Message { get; set; }
 
 		[Required]
-		public MessageType Type { get; set; }
+		public NotificationType Type { get; set; }
 
 		public string URL { get; set; }
 

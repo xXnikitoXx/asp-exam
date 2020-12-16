@@ -62,11 +62,11 @@
 												<td>
 													@(new Func<string>(() => {
 														switch (announcement.Type) {
-															case MessageType.Primary: return "Основен";
-															case MessageType.Secondary: return "Второстепенен";
-															case MessageType.Success: return "Успех";
-															case MessageType.Danger: return "Опасност";
-															case MessageType.Warning: return "Внимание";
+															case NotificationType.Primary: return "Основен";
+															case NotificationType.Secondary: return "Второстепенен";
+															case NotificationType.Success: return "Успех";
+															case NotificationType.Danger: return "Опасност";
+															case NotificationType.Warning: return "Внимание";
 															default: return "Инфо";
 														}
 													}).Invoke())

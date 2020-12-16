@@ -15,7 +15,7 @@ namespace Project.Models
 		public string Title { get; set; }
 
 		[Required]
-		public MessageType Type { get; set; }
+		public NotificationType Type { get; set; }
 
 		[Required]
 		public string Content { get; set; }

@@ -1,5 +1,5 @@
 namespace Project.Enums {
-	public enum MessageType {
+	public enum NotificationType {
 		Primary = 0,
 		Secondary = 1,
 		Success = 2,
