@@ -6,7 +6,7 @@ const SwitchRole = (event, id) => {
 	let target = $(event.target);
 	let checkboxes = $(".form-check-input");
 	checkboxes.attr("disabled", true);
-	fetch("/Admin/Users/Switch", {
+	fetch("/Admin/User/Switch", {
 		method: "POST",
 		body: JsonToForm({ id }),
 	}).then(response => {
@@ -15,12 +15,14 @@ const SwitchRole = (event, id) => {
 			response.json()
 			.then(json => {
 				target.prop("checked", json);
-				let adminsText = adminsLabel.text().split(" - ");
-				let usersText = usersLabel.text().split(" - ");
-				let adminsCount = Number(adminsText[1]);
-				let usersCount = Number(usersText[1]);
-				adminsLabel.text(adminsText[0] + " - " + (adminsCount + (json ? 1 : -1)));
-				usersLabel.text(usersText[0] + " - " + (usersCount + (json ? -1 : 1)));
+				if (adminsLabel.length > 0 && usersLabel.length > 0) {
+					let adminsText = adminsLabel.text().split(" - ");
+					let usersText = usersLabel.text().split(" - ");
+					let adminsCount = Number(adminsText[1]);
+					let usersCount = Number(usersText[1]);
+					adminsLabel.text(adminsText[0] + " - " + (adminsCount + (json ? 1 : -1)));
+					usersLabel.text(usersText[0] + " - " + (usersCount + (json ? -1 : 1)));
+				}
 			});
 		else {
 			let htmlStruct = `<div id="result" class="alert alert-danger alert-dismissible" role="alert" style="transition: all .25s ease-in-out; opacity: 0;">

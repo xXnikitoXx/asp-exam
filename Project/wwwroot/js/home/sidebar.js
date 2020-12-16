@@ -7,7 +7,7 @@ let menu = new Vue({
 			],
 			clientDropdown: [
 				{ text: "VPS Сървъри", link: "/VPS" },
-				{ text: "Квитанции", link: "/Tickets" },
+				{ text: "Билети", link: "/Tickets" },
 				{ text: "Форум", link: "/Posts" },
 			],
 			buyButton: [
