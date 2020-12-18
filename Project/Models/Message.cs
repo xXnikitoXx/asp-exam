@@ -24,7 +24,18 @@ namespace Project.Models
 		public string UserId { get; set; }
 		public ApplicationUser User { get; set; }
 
+		public string SenderId { get; set; }
+		public ApplicationUser Sender { get; set; }
+
 		public string TicketId { get; set; }
 		public Ticket Ticket { get; set; }
+
+		public bool Final { get; set; }
+
+		public string PreviousMessageId { get; set; }
+		public Message PreviousMessage { get; set; }
+		
+		public string ReplyId { get; set; }
+		public Message Reply { get; set; }
 	}
 }

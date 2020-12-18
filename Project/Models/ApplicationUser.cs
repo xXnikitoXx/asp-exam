@@ -11,6 +11,7 @@ namespace Project.Models
 			this.Posts = new HashSet<Post>();
 			this.Tickets = new HashSet<Ticket>();
 			this.Messages = new HashSet<Message>();
+			this.SentMessages = new HashSet<Message>();
 			this.Activities = new HashSet<Activity>();
 			this.Orders = new HashSet<Order>();
 			this.PromoCodes = new HashSet<UserPromoCode>();
@@ -23,6 +24,7 @@ namespace Project.Models
 		public ICollection<Post> Posts { get; set; }	
 		public ICollection<Ticket> Tickets { get; set; }
 		public ICollection<Message> Messages { get; set; }
+		public ICollection<Message> SentMessages { get; set; }
 		public ICollection<Activity> Activities { get; set; }
 		public ICollection<Order> Orders { get; set; }
 		public ICollection<UserPromoCode> PromoCodes { get; set; }
