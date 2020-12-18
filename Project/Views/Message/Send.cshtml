@@ -1,0 +1,55 @@
+@{
+	ViewData["Title"] = "Ново съобщение";
+	if (ViewData["To"].ToString() == "{{ALL}}")
+		ViewData["To"] = "всички потребители";
+	if (Context.Request.Query.ContainsKey("To"))
+		ViewData["ReturnUrl"] = "/Admin/Users";
+	else
+		ViewData["ReturnUrl"] = "/Admin";
+}
+
+<div id="createMessage" class="row">
+	<div class="col-sm-10 col-md-8 col-lg-6 mx-auto d-table h-100">
+		<div class="card">
+			<div class="card-header text-center">
+				<h3 id="title" class="title">@ViewData["Title"]</h3>
+			</div>
+			<div class="card-body">
+				<div class="row mb-3">
+					<div class="col-12">
+						<h4 class="text-muted">Изпращане на съобщение до @ViewData["To"].</h4>
+					</div>
+				</div>
+				<div class="row mb-3">
+					<div class="col-12">
+						<label class="form-label">Статус</label>
+						<select id="statusInput" class="form-control mb-3">
+							<option value="None">Няма</option>
+							<option value="Info">Информация</option>
+							<option value="Success">Успешна операция</option>
+							<option value="Warning">Внимание</option>
+							<option value="Error">Грешка</option>
+						</select>
+					</div>
+				</div>
+				<div class="row mb-3">
+					<div class="">
+						<label class="form-label">URL</label>
+						<input id="urlInput" class="form-control" type="text">
+					</div>
+				</div>
+				<div class="row mb-3">
+					<div class="col-12">
+						<label class="form-label">Съдържание</label>
+						<textarea id="contentInput" class="form-control" rows="3"></textarea>
+					</div>
+				</div>
+				<div class="text-center mt-3">
+					<a href="@ViewData["ReturnUrl"]" class="btn btn-primary"><i class="fas fa-chevron-left"></i> Назад</a>
+					<button onclick="SendMessage();" class="btn btn-outline-success"><i class="fas fa-envelope"></i> Изпрати</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="/js/notifications/sendMessage.js"></script>
