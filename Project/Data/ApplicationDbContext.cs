@@ -119,9 +119,21 @@ namespace Project.Data {
 					.WithMany(user => user.Messages)
 					.HasForeignKey(message => message.UserId);
 
+				entity.HasOne(message => message.Sender)
+					.WithMany(sender => sender.SentMessages)
+					.HasForeignKey(message => message.SenderId);
+
 				entity.HasOne<Ticket>(message => message.Ticket)
 					.WithOne(ticket => ticket.Answer)
 					.HasForeignKey<Ticket>(ticket => ticket.AnswerId);
+
+				entity.HasOne(message => message.Reply)
+					.WithOne(reply => reply.PreviousMessage)
+					.HasForeignKey<Message>(reply => reply.PreviousMessageId);
+
+				entity.HasOne(message => message.PreviousMessage)
+					.WithOne(prev => prev.Reply)
+					.HasForeignKey<Message>(prev => prev.ReplyId);
 			});
 
 			modelBuilder.Entity<Ticket>()
