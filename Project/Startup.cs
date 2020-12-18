@@ -11,20 +11,16 @@ using Project.Services.Native;
 using AutoMapper;
 using Project.MappingConfiguration;
 using System;
+using Project.Hubs;
 
-namespace Project
-{
-	public class Startup
-	{
-		public Startup(IConfiguration configuration)
-		{
+namespace Project {
+	public class Startup {
+		public Startup(IConfiguration configuration) =>
 			Configuration = configuration;
-		}
 
 		public IConfiguration Configuration { get; }
 
-		public void ConfigureServices(IServiceCollection services)
-		{
+		public void ConfigureServices(IServiceCollection services) {
 			services.AddDbContext<ApplicationDbContext>(options =>
 				options.UseSqlServer(
 					Configuration.GetConnectionString("DefaultConnection")));
@@ -34,6 +30,7 @@ namespace Project
 
 			MapperConfiguration mapperConfig = new MapperConfiguration(mc => mc.AddProfile(new ApplicationProfile()));
 			services.AddSingleton(mapperConfig.CreateMapper());
+			services.AddSingleton<IUserStatusClient, UserStatusClient>();
 			
 			services.AddScoped<IAccountClient, AccountClient>();
 			services.AddScoped<IAdminClient, AdminClient>();
@@ -46,20 +43,19 @@ namespace Project
 			services.AddScoped<ITicketClient, TicketClient>();
 			services.AddScoped<IVPSClient, VPSClient>();
 
+			services.AddScoped<MessageHub>();
+
 			services.AddAntiforgery();
 			services.AddControllersWithViews();
 			services.AddRazorPages();
+			services.AddSignalR();
 		}
 
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext context)
-		{
-			if (env.IsDevelopment())
-			{
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext context) {
+			if (env.IsDevelopment()) {
 				context.Database.EnsureCreated();
 				app.UseDeveloperExceptionPage();
-			}
-			else
-			{
+			} else {
 				app.UseExceptionHandler("/Error");
 				// app.UseHsts();
 			}
@@ -81,8 +77,7 @@ namespace Project
 			app.UseAuthentication();
 			app.UseAuthorization();
 
-			app.UseEndpoints(endpoints =>
-			{
+			app.UseEndpoints(endpoints => {
 				endpoints.MapControllerRoute(
 					name: "default",
 					pattern: "{controller=Home}/{action=Index}/{id?}"
@@ -92,6 +87,7 @@ namespace Project
 					pattern: "Order/List{Page=1}&{Show=20}"
 				);
 				endpoints.MapRazorPages();
+				endpoints.MapHub<MessageHub>("/Messages");
 			});
 		}
 	}
