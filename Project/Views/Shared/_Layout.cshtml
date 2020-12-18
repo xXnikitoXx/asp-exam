@@ -13,6 +13,7 @@
 		<script src="~/lib/jquery/dist/jquery.min.js"></script>
 		<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 		<script src="~/js/vue.js"></script>
+		<script src="~/js/vue2-timeago.js"></script>
 		<script src="~/js/site.js"></script>
 		<style>
 			.card > hr { margin: 0 !important; }
@@ -25,37 +26,15 @@
 			.card.red { background-color: #dc3545; }
 			.card.purple { background-color: purple; }
 			.card.aqua { background-color: #0cc; }
+			.card.orange { background-color: #f35b04; }
 
-			.card.blue,
-			.card.green,
-			.card.yellow,
-			.card.red,
-			.card.purple,
-			.card.aqua
-			{ color: #fff; }
-
-			.card.blue h1,
-			.card.green h1,
-			.card.yellow h1,
-			.card.red h1,
-			.card.purple h1,
-			.card.aqua h1
-			{ color: #fff; }
-
-			.card.blue h5,
-			.card.green h5,
-			.card.yellow h5,
-			.card.red h5,
-			.card.purple h5,
-			.card.aqua h5
-			{ color: #fff; }
-
-			.card.blue a,
-			.card.green a,
-			.card.yellow a,
-			.card.red a,
-			.card.purple a,
-			.card.aqua a
+			.card.blue, .card.blue h1, .card.blue h3, .card.blue h5, .card.blue a,
+			.card.green, .card.green h1, .card.green h3, .card.green h5, .card.green a,
+			.card.yellow, .card.yellow h1, .card.yellow h3, .card.yellow h5, .card.yellow a,
+			.card.red, .card.red h1, .card.red h3, .card.red h5, .card.red a,
+			.card.purple, .card.purple h1, .card.green h3, .card.purple h5, .card.purple a,
+			.card.aqua, .card.aqua h1, .card.aqua purple, .card.aqua h5, .card.aqua a,
+			.card.orange, .card.orange h1, .card.orange h3, .card.orange h5, .card.orange a
 			{ color: #fff; text-decoration: none; }
 
 			.circle {
@@ -72,10 +51,20 @@
 				overflow-x: hidden;
 			}
 
-			.card.compact .circle {
-				width: 50px;
-				height: 50px;
+			.card.compact .circle, .dropdown-menu .circle {
+				width: 40px;
+				height: 40px;
 			}
+
+			.dropdown-menu .circle { background-color: #28a745; }
+
+			.dropdown-menu .circle h3 {
+				color: #fff;
+				text-align: center;
+				text-transform: uppercase;
+			}
+
+			.indicator.small { width: 12px; height: 12px; }
 		</style>
 	</head>
 	<body>
@@ -146,8 +135,11 @@
 					</a>
 					<div class="navbar-collapse collapse">
 						<ul class="navbar-nav navbar-align">
-							<partial name="_NavbarActivities" />
-							<partial name="_NavbarMessages" />
+							@if (SignInManager.IsSignedIn(User)) {
+								<partial name="_NavbarActivities" />
+								<partial name="_NavbarMessages" />
+							}
+							
 							<partial name="_NavbarUser" />
 						</ul>
 					</div>
@@ -196,9 +188,11 @@
 				</footer>
 			</div>
 		</div>
+		<script src="~/lib/signalr/signalr.js" asp-append-version="true"></script>
 		<script src="~/js/app.js" asp-append-version="true"></script>
 		<script src="~/js/home/navbar.js" asp-append-version="true"></script>
 		<script src="~/js/home/sidebar.js" asp-append-version="true"></script>
+		<script src="~/js/notifications/messages.js" asp-append-version="true"></script>
 		@RenderSection("Scripts", required: false)
 	</body>
 </html>

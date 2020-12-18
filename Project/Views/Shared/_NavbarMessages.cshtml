@@ -1,67 +1,44 @@
-<li class="nav-item dropdown">
-    <a class="nav-icon dropdown-toggle" href="#" id="messagesDropdown" data-toggle="dropdown">
-        <div class="position-relative">
-            <i class="align-middle" data-feather="message-square"></i>
-        </div>
-    </a>
-    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right py-0" aria-labelledby="messagesDropdown">
-        <div class="dropdown-menu-header">
-            <div class="position-relative">
-                4 New Messages
-            </div>
-        </div>
-        <div class="list-group">
-            <a href="#" class="list-group-item">
-                <div class="row g-0 align-items-center">
-                    <div class="col-2">
-                        <img src="img/avatars/avatar-5.jpg" class="avatar img-fluid rounded-circle" alt="Vanessa Tucker">
-                    </div>
-                    <div class="col-10 pl-2">
-                        <div class="text-dark">Vanessa Tucker</div>
-                        <div class="text-muted small mt-1">Nam pretium turpis et arcu. Duis arcu tortor.</div>
-                        <div class="text-muted small mt-1">15m ago</div>
-                    </div>
-                </div>
-            </a>
-            <a href="#" class="list-group-item">
-                <div class="row g-0 align-items-center">
-                    <div class="col-2">
-                        <img src="img/avatars/avatar-2.jpg" class="avatar img-fluid rounded-circle" alt="William Harris">
-                    </div>
-                    <div class="col-10 pl-2">
-                        <div class="text-dark">William Harris</div>
-                        <div class="text-muted small mt-1">Curabitur ligula sapien euismod vitae.</div>
-                        <div class="text-muted small mt-1">2h ago</div>
-                    </div>
-                </div>
-            </a>
-            <a href="#" class="list-group-item">
-                <div class="row g-0 align-items-center">
-                    <div class="col-2">
-                        <img src="img/avatars/avatar-4.jpg" class="avatar img-fluid rounded-circle" alt="Christina Mason">
-                    </div>
-                    <div class="col-10 pl-2">
-                        <div class="text-dark">Christina Mason</div>
-                        <div class="text-muted small mt-1">Pellentesque auctor neque nec urna.</div>
-                        <div class="text-muted small mt-1">4h ago</div>
-                    </div>
-                </div>
-            </a>
-            <a href="#" class="list-group-item">
-                <div class="row g-0 align-items-center">
-                    <div class="col-2">
-                        <img src="img/avatars/avatar-3.jpg" class="avatar img-fluid rounded-circle" alt="Sharon Lessman">
-                    </div>
-                    <div class="col-10 pl-2">
-                        <div class="text-dark">Sharon Lessman</div>
-                        <div class="text-muted small mt-1">Aenean tellus metus, bibendum sed, posuere ac, mattis non.</div>
-                        <div class="text-muted small mt-1">5h ago</div>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="dropdown-menu-footer">
-            <a href="#" class="text-muted">Show all messages</a>
-        </div>
-    </div>
+<li id="messages" class="nav-item dropdown">
+	<a class="nav-icon dropdown-toggle" id="messagesDropdown" data-toggle="dropdown" v-on:click="messagesSeen = true">
+		<div class="position-relative">
+			<i class="align-middle" data-feather="message-square"></i>
+			<span v-if="!messagesSeen" class="indicator small"></span>
+		</div>
+	</a>
+	<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right py-0" aria-labelledby="messagesDropdown">
+		<div class="dropdown-menu-header">
+			<div class="position-relative">
+				Съобщения
+			</div>
+		</div>
+		<div class="list-group">
+			<template v-if="messages.length > 0">
+				<a :href="message.url" class="list-group-item" v-for="message of messages">
+					<div class="row g-0 align-items-center">
+						<div class="col-2">
+							<div :class="'circle pt-2 bg-' + message.status">
+								<h3>{{message.avatar}}</h3>
+							</div>
+						</div>
+						<div class="col-10 pl-2">
+							<div class="text-dark">{{message.title}}</div>
+							<div class="text-muted mt-1">{{message.content}}</div>
+							<div class="text-muted small mt-1">
+								<i class="fa fa-clock"></i>
+								<time-ago :refresh="60" :datetime="message.time" locale="bg" tooltip></time-ago>
+							</div>
+						</div>
+					</div>
+				</a>
+			</template>
+			<template v-else>
+				<h3 class="p-3 align-text-center">За момента нямате съобщения.</h3>
+			</template>
+		</div>
+		<template v-if="messages.length > 0">
+			<div class="dropdown-menu-footer">
+				<a :href="allMessages" class="text-muted">Покажи всички</a>
+			</div>
+		</template>
+	</div>
 </li>
