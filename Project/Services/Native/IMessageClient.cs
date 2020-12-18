@@ -17,6 +17,8 @@ namespace Project.Services.Native {
 		IQueryable<Message> Answers(ApplicationUser user);
 		List<Message> Answers(MessagesViewModel pageInfo);
 		Task RegisterMessage(Message message);
+		Task RegisterMessage(Message message, ApplicationUser target);
+		Task RegisterMessage(Message message, ApplicationUser source, ApplicationUser target);
 		Task UpdateMessage(Message message);
 		Task RemoveMessage(string id);
 		Task RemoveMessage(Message message);

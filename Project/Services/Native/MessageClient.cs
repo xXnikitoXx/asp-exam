@@ -85,6 +85,22 @@ namespace Project.Services.Native {
 			await this._context.SaveChangesAsync();
 		}
 
+		public async Task RegisterMessage(Message message, ApplicationUser target) {
+			message.User = target;
+			target.Messages.Add(message);
+			this._context.Messages.Add(message);
+			await this._context.SaveChangesAsync();
+		}
+
+		public async Task RegisterMessage(Message message, ApplicationUser source, ApplicationUser target) {
+			target.Messages.Add(message);
+			source.SentMessages.Add(message);
+			message.User = target;
+			message.Sender = source;
+			this._context.Messages.Add(message);
+			await this._context.SaveChangesAsync();
+		}
+
 		public async Task UpdateMessage(Message message) {
 			Message target = this._context.Messages.FirstOrDefault(msg => msg.Id == message.Id);
 			if (target == null)

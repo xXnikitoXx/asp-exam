@@ -15,6 +15,8 @@ namespace Project.MappingConfiguration
 			CreateMap<Models.Plan, PlanViewModel>();
 			CreateMap<Ticket, TicketViewModel>();
 			CreateMap<Message, MessageViewModel>();
+			CreateMap<Message, NotificationMessageViewModel>()
+				.ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Sender.UserName));
 			CreateMap<PromoCode, PromoCodeViewModel>()
 				.ForMember(dest => dest.Usage, opt => opt.MapFrom(src => src.Orders.Count));
 			CreateMap<Order, OrderViewModel>()
@@ -26,6 +28,8 @@ namespace Project.MappingConfiguration
 				.ForMember(dest => dest.Type, opt => opt.MapFrom(src => (NotificationType)Enum.Parse(typeof(NotificationType), src.Type)));
 			CreateMap<TicketCreateInputModel, Ticket>()
 				.ForMember(dest => dest.Priority, opt => opt.MapFrom(src => (Priority)Enum.Parse(typeof(Priority), src.Priority)));
+			CreateMap<MessageCreateInputModel, Message>()
+				.ForMember(dest => dest.Status, opt => opt.MapFrom(src => (MessageStatus)Enum.Parse(typeof(MessageStatus), src.Status)));
 		}
 	}
 }
