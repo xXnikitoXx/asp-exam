@@ -3,9 +3,7 @@ using Project.Enums;
 using Project.Models;
 
 namespace Project.ViewModels {
-	public class MessageViewModel {
-		public string Id { get; set; }
-
+	public class NotificationMessageViewModel {
 		public MessageStatus Status { get; set; }
 
 		public string Content { get; set; }
@@ -15,12 +13,6 @@ namespace Project.ViewModels {
 		public DateTime Time { get; set; }
 
 		public string UserId { get; set; }
-		public ApplicationUser User { get; set; }
-
-		public string SenderId { get; set; }
-		public ApplicationUser Sender { get; set; }
-
-		public string TicketId { get; set; }
-		public Ticket Ticket { get; set; }
+		public string Username { get; set; }
 	}
 }
