@@ -27,9 +27,6 @@ namespace Project.Models
 		public string Name { get; set; }
 
 		[Required]
-		public Enums.Plan Plan { get; set; }
-
-		[Required]
 		public Location Location { get; set; }
 		
 		[Required]
