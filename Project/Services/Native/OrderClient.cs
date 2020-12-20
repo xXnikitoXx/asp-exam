@@ -10,16 +10,15 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Project.Services.Native
-{
-	public class OrderClient : IOrderClient
-	{
+namespace Project.Services.Native {
+	public class OrderClient : IOrderClient {
 		private readonly ApplicationDbContext _context;
 		private readonly UserManager<ApplicationUser> _userManager;
 
-		public OrderClient(ApplicationDbContext context,
-			UserManager<ApplicationUser> userManager)
-		{
+		public OrderClient(
+			ApplicationDbContext context,
+			UserManager<ApplicationUser> userManager
+		) {
 			this._context = context;
 			this._userManager = userManager;
 		}
@@ -106,7 +105,8 @@ namespace Project.Services.Native
 			.ToList();
 
 		public List<Order> FromToday(OrdersViewModel pageInfo) {
-			IQueryable<Order> orders = FinishedOrders().Where(order => order.TimeFinished.Year == Year && order.TimeFinished.Month == Month && order.TimeFinished.Day == Day);
+			IQueryable<Order> orders = FinishedOrders()
+				.Where(order => order.TimeFinished.Year == Year && order.TimeFinished.Month == Month && order.TimeFinished.Day == Day);
 			pageInfo.Total = orders.Count();
 			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
 			pageInfo.CreatedOrders = orders.Count(order => order.State == OrderState.Created);
@@ -155,8 +155,7 @@ namespace Project.Services.Native
 			return orders.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
 		}
 
-		public async Task RegisterOrder(Order order)
-		{
+		public async Task RegisterOrder(Order order) {
 			_context.Orders.Add(order);
 			_context.Users.FirstOrDefault(user => user.Id == order.User.Id)
 				.Orders.Add(order);
@@ -164,8 +163,7 @@ namespace Project.Services.Native
 		}
 		public async Task RemoveOrder(string id) => await RemoveOrder(await Find(id));
 
-		public async Task RemoveOrder(Order order)
-		{
+		public async Task RemoveOrder(Order order) {
 			OrderState[] allowedStates = new OrderState[] {
 				OrderState.Cancelled,
 				OrderState.Created,
@@ -187,26 +185,26 @@ namespace Project.Services.Native
 		public async Task UpdateState(string id, OrderState state) =>
 			await UpdateState(await Find(id), state);
 
-		public async Task UpdateState(Order order, OrderState state)
-		{
+		public async Task UpdateState(Order order, OrderState state) {
 			order.State = state;
+			if (state == OrderState.Cancelled || state == OrderState.Finished || state == OrderState.Expired)
+				order.TimeFinished = DateTime.Now;
 			await _context.SaveChangesAsync();
 		}
 
 		public async Task AddVPS(string id, VPS vps) =>
 			await AddVPS(await Find(id), vps);
 
-		public async Task AddVPS(Order order, VPS vps)
-		{
+		public async Task AddVPS(Order order, VPS vps) {
 			order.VPSs.Add(vps);
+			vps.Order = order;
 			await _context.SaveChangesAsync();
 		}
 
 		public async Task RemoveVPS(string id, VPS vps) =>
 			await RemoveVPS(await Find(id), vps);
 
-		public async Task RemoveVPS(Order order, VPS vps)
-		{
+		public async Task RemoveVPS(Order order, VPS vps) {
 			order.VPSs.Remove(vps);
 			await _context.SaveChangesAsync();
 		}
@@ -214,8 +212,7 @@ namespace Project.Services.Native
 		public async Task UpdateVPSs(string id, List<VPS> vpss) =>
 			await UpdateVPSs(await Find(id), vpss);
 
-		public async Task UpdateVPSs(Order order, List<VPS> vpss)
-		{
+		public async Task UpdateVPSs(Order order, List<VPS> vpss) {
 			order.VPSs = vpss;
 			await _context.SaveChangesAsync();
 		}
