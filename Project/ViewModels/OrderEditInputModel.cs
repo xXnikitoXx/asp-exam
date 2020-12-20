@@ -1,13 +1,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Project.Enums;
 
 namespace Project.ViewModels {
 	public class OrderEditInputModel {
-		public OrderEditInputModel() {
+		public OrderEditInputModel() =>
 			this.Codes = new List<string>();
-		}
 		
 		[DefaultValue(1)]
 		[Range(1, 5)]
@@ -15,13 +13,9 @@ namespace Project.ViewModels {
 
 		[DefaultValue("Nuremberg_Germany")]
 		public string Location { get; set; }
-
 		public List<string> Codes { get; set; }
-
 		public int ProductId { get; set; }
-
 		public bool New { get; set; }
-
 		public string OrderId{ get; set; }
 	}
 }

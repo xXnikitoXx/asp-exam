@@ -2,7 +2,8 @@ using System.Collections.Generic;
 
 namespace Project.ViewModels {
 	public class TicketsViewModel : ListViewModel {
-		public TicketsViewModel() => this.Tickets = new List<TicketViewModel>();
+		public TicketsViewModel() =>
+			this.Tickets = new List<TicketViewModel>();
 
 		public List<TicketViewModel> Tickets { get; set; }
 		public int LowPriorityCount { get; set; }

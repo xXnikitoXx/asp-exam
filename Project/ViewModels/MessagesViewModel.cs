@@ -2,7 +2,8 @@ using System.Collections.Generic;
 
 namespace Project.ViewModels {
 	public class MessagesViewModel : ListViewModel {
-		public MessagesViewModel() => this.Messages = new List<MessageViewModel>();
+		public MessagesViewModel() =>
+			this.Messages = new List<MessageViewModel>();
 
 		public List<MessageViewModel> Messages { get; set; }
 

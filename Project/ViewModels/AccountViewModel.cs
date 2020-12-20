@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace Project.ViewModels
-{
-	public class AccountViewModel
-	{
-		public AccountViewModel() {
+namespace Project.ViewModels {
+	public class AccountViewModel {
+		public AccountViewModel() =>
 			this.Orders = new List<OrderViewModel>();
-		}
 
 		public int VPSCount { get; set; }
 		public int OrdersCount { get; set; }

@@ -1,16 +1,9 @@
-﻿using Project.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace Project.ViewModels
-{
-	public class OrdersViewModel : ListViewModel
-	{
-		public OrdersViewModel() {
+namespace Project.ViewModels {
+	public class OrdersViewModel : ListViewModel {
+		public OrdersViewModel() =>
 			this.Orders = new List<OrderViewModel>();
-		}
 
 		public List<OrderViewModel> Orders { get; set; }
 		public int CreatedOrders { get; set; }

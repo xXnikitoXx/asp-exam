@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Project.ViewModels
-{
+namespace Project.ViewModels {
 	public class MessageCreateInputModel {
 		public string Status { get; set; }
+
 		[Required]
 		[StringLength(200, MinimumLength = 5)]
 		public string Content { get; set; }
