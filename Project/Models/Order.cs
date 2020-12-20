@@ -44,11 +44,12 @@ namespace Project.Models
 		[Required]
 		public OrderState State { get; set; }
 
+		public string PaymentId { get; set; }
+		public Payment Payment { get; set; }
+
 		public string UserId { get; set; }
 		public ApplicationUser User { get; set; }
-
 		public ICollection<VPS> VPSs { get; set; }
-
 		public ICollection<PromoCodeOrder> PromoCodes { get; set; }
 	}
 }

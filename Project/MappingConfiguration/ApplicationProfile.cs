@@ -30,6 +30,9 @@ namespace Project.MappingConfiguration
 				.ForMember(dest => dest.Priority, opt => opt.MapFrom(src => (Priority)Enum.Parse(typeof(Priority), src.Priority)));
 			CreateMap<MessageCreateInputModel, Message>()
 				.ForMember(dest => dest.Status, opt => opt.MapFrom(src => (MessageStatus)Enum.Parse(typeof(MessageStatus), src.Status)));
+			CreateMap<PaymentInputModel, Payment>()
+				.ForMember(dest => dest.PayPalPayment, opt => opt.MapFrom(src => src.PaymentId))
+				.ForMember(dest => dest.PayPalPayer, opt => opt.MapFrom(src => src.PayerId));
 		}
 	}
 }

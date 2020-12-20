@@ -11,6 +11,7 @@ namespace Project.Data {
 		public new DbSet<ApplicationUser> Users { get; set; }
 		public DbSet<Message> Messages { get; set; }
 		public DbSet<Order> Orders { get; set; }
+		public DbSet<Payment> Payments { get; set; }
 		public DbSet<Plan> Plans { get; set; }
 		public DbSet<Post> Posts { get; set; }
 		public DbSet<PromoCode> PromoCodes { get; set; }
@@ -70,6 +71,11 @@ namespace Project.Data {
 				entity.HasMany(user => user.Orders)
 					.WithOne(order => order.User)
 					.HasForeignKey(order => order.UserId)
+					.OnDelete(DeleteBehavior.Cascade);
+
+				entity.HasMany(user => user.Payments)
+					.WithOne(payment => payment.User)
+					.HasForeignKey(payment => payment.UserId)
 					.OnDelete(DeleteBehavior.Cascade);
 			});
 
@@ -152,6 +158,23 @@ namespace Project.Data {
 				entity.HasMany(order => order.VPSs)
 					.WithOne(vps => vps.Order)
 					.HasForeignKey(vps => vps.OrderId);
+
+				entity.HasOne<Payment>(order => order.Payment)
+					.WithOne(payment => payment.Order)
+					.HasForeignKey<Payment>(payment => payment.OrderId);
+			});
+
+			modelBuilder.Entity<Payment>(entity => {
+				entity.Property(payment => payment.Time)
+					.HasDefaultValueSql("getdate()");
+
+				entity.HasOne(payment => payment.User)
+					.WithMany(user => user.Payments)
+					.HasForeignKey(payment => payment.UserId);
+
+				entity.HasOne<Order>(payment => payment.Order)
+					.WithOne(order => order.Payment)
+					.HasForeignKey<Order>(order => order.PaymentId);
 			});
 
 			#endregion

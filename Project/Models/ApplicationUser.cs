@@ -15,6 +15,7 @@ namespace Project.Models
 			this.Activities = new HashSet<Activity>();
 			this.Orders = new HashSet<Order>();
 			this.PromoCodes = new HashSet<UserPromoCode>();
+			this.Payments = new HashSet<Payment>();
 		}
 
 		public DateTime JoinDate { get; set; }
@@ -28,5 +29,6 @@ namespace Project.Models
 		public ICollection<Activity> Activities { get; set; }
 		public ICollection<Order> Orders { get; set; }
 		public ICollection<UserPromoCode> PromoCodes { get; set; }
+		public ICollection<Payment> Payments { get; set; }
 	}
 }
