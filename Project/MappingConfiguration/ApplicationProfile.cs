@@ -14,6 +14,7 @@ namespace Project.MappingConfiguration
 			CreateMap<VPS, VPSViewModel>();
 			CreateMap<Models.Plan, PlanViewModel>();
 			CreateMap<Ticket, TicketViewModel>();
+			CreateMap<Payment, PaymentViewModel>();
 			CreateMap<Message, MessageViewModel>();
 			CreateMap<Message, NotificationMessageViewModel>()
 				.ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Sender.UserName));
