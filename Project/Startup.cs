@@ -12,6 +12,7 @@ using AutoMapper;
 using Project.MappingConfiguration;
 using System;
 using Project.Hubs;
+using Project.Services.PayPal;
 
 namespace Project {
 	public class Startup {
@@ -31,12 +32,14 @@ namespace Project {
 			MapperConfiguration mapperConfig = new MapperConfiguration(mc => mc.AddProfile(new ApplicationProfile()));
 			services.AddSingleton(mapperConfig.CreateMapper());
 			services.AddSingleton<IUserStatusClient, UserStatusClient>();
+			services.AddSingleton<PayPalPaymentClient>();
 			
 			services.AddScoped<IAccountClient, AccountClient>();
 			services.AddScoped<IAdminClient, AdminClient>();
 			services.AddScoped<IAnnouncementClient, AnnouncementClient>();
 			services.AddScoped<IMessageClient, MessageClient>();
 			services.AddScoped<IOrderClient, OrderClient>();
+			services.AddScoped<IPaymentClient, PaymentClient>();
 			services.AddScoped<IPlanClient, PlanClient>();
 			services.AddScoped<IPromoCodeClient, PromoCodeClient>();
 			services.AddScoped<IRoleClient, RoleClient>();
