@@ -7,10 +7,11 @@ Virtual private servers are provided by [UltimateHost](https://www.uhost.pw).
 * back-end - [ASP.NET Core 5.0](https://dotnet.microsoft.com/apps/aspnet).  
 * front-end - [jQuery](https://jquery.com/), [Vue.js](https://vuejs.org/) and [Bootstrap](https://getbootstrap.com/).
 * database - [Microsoft SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
+* payment gateway - [PayPal](https://developer.paypal.com/docs/api/rest-sdks/)
 
 The app is temporary hosted behind customized [Redbird Reverse Proxy](https://github.com/OptimalBits/redbird) and accessible on https://voxic.tk
 
 ## Screenshots
 * [Admin Panel](/Screenshots/admin.md)
-* [User Panel](/Screenshots/admin.md)
+* [User Panel](/Screenshots/user.md)
 * [Database Diagram](/Screenshots/databaseDiagram.png)
