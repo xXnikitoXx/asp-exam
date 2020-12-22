@@ -1,21 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Project.Data;
 using Project.Models;
 using Project.Services.Native;
 using Project.ViewModels;
-using Project.Enums;
 using System.Threading.Tasks;
 using System;
 using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
 
-namespace Project.Controllers
-{
+namespace Project.Controllers {
 	[Authorize(Roles = "Administrator")]
-	public class PromoCodeController : Controller
-	{
+	public class PromoCodeController : Controller {
 		private readonly ApplicationDbContext _context;
 		private readonly IPromoCodeClient _service;
 		private readonly IMapper _mapper;
@@ -31,8 +28,7 @@ namespace Project.Controllers
 		}
 
 		[HttpGet("/Admin/Codes")]
-		public IActionResult Index(int Page = 1, int Show = 10)
-		{
+		public IActionResult Index(int Page = 1, int Show = 10) {
 			PromoCodesViewModel model = new PromoCodesViewModel {
 				Page = Page,
 				Show = Show,
@@ -49,8 +45,7 @@ namespace Project.Controllers
 			try {
 				PromoCode code = await this._service.CreateCode();
 				return Redirect("/Admin/Codes/Details?Id=" + code.Id);
-			} catch (Exception)
-			{
+			} catch (Exception) {
 				return StatusCode(500);
 			}
 		}
@@ -102,6 +97,24 @@ namespace Project.Controllers
 				return BadRequest();
 			await this._service.RemoveCode(target);
 			return Ok();
+		}
+
+		[AllowAnonymous]
+		[HttpGet("/PromoCode/Discount")]
+		public IActionResult Discount(double Price, List<string> Codes) {
+			List<PromoCode> promoCodes = this._service.Codes
+				.Where(code => Codes.Contains(code.Code))
+				.ToList();
+			return Json(this._service.GetDiscount(Price, promoCodes));
+		}
+
+		[AllowAnonymous]
+		[HttpGet("/PromoCode/FinalPrice")]
+		public IActionResult FinalPrice(double Price, List<string> Codes) {
+			List<PromoCode> promoCodes = this._service.Codes
+				.Where(code => Codes.Contains(code.Code))
+				.ToList();
+			return Json(this._service.GetFinalPrice(Price, promoCodes));
 		}
 	}
 }

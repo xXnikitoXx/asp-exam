@@ -21,6 +21,8 @@ namespace Project.Controllers {
 		private readonly IOrderClient _service;
 		private readonly IPlanClient _planService;
 		private readonly IPromoCodeClient _codeService;
+		private readonly IPaymentClient _paymentService;
+		private readonly IVPSClient _vpsService;
 		private readonly IMapper _mapper;
 
 		public OrderController(
@@ -29,6 +31,8 @@ namespace Project.Controllers {
 			IOrderClient service,
 			IPlanClient planService,
 			IPromoCodeClient codeService,
+			IPaymentClient paymentService,
+			IVPSClient vpsService,
 			IMapper mapper
 		) {
 			this._userManager = userManager;
@@ -36,6 +40,8 @@ namespace Project.Controllers {
 			this._service = service;
 			this._planService = planService;
 			this._codeService = codeService;
+			this._paymentService = paymentService;
+			this._vpsService = vpsService;
 			this._mapper = mapper;
 		}
 
@@ -47,7 +53,6 @@ namespace Project.Controllers {
 				order.Plan = this._planService
 					.GetPlans()
 					.FirstOrDefault(plan => plan.Number == order.PlanNumber);
-				return this.View(this._mapper.Map<OrderViewModel>(order));
 			} else {
 				Models.Plan target = this._planService.GetPlans().FirstOrDefault(plan => plan.Number == ProductId);
 				if (order != null) 
@@ -61,7 +66,11 @@ namespace Project.Controllers {
 				if (New)
 					ViewData.Add("Message", $"Поръчката Ви беше върната по подразбиране.");
 			}
-			return this.View(this._mapper.Map<OrderViewModel>(order));
+			OrderViewModel model = this._mapper.Map<OrderViewModel>(order);
+			model.PromoCodes = this._codeService.GetPromoCodes(order)
+				.Select(this._mapper.Map<PromoCodeViewModel>)
+				.ToList();
+			return View();
 		}
 
 		public async Task<IActionResult> Details(string OrderId, bool New = false) {
@@ -84,7 +93,19 @@ namespace Project.Controllers {
 				.FirstOrDefault(plan => plan.Number == order.PlanNumber);
 			if (order.State == OrderState.Created && !New)
 				ViewData.Add("Message", $"Заредена е Ваша запазена поръчка за този продукт. Натиснете <a href=\"/order/details?orderId={order.Id}&new=true\">ТУК</a> ако искате да започнете на чист шаблон.");
-			return View("Index", this._mapper.Map<OrderViewModel>(order));
+			OrderViewModel model = this._mapper.Map<OrderViewModel>(order);
+			model.PromoCodes = this._codeService.GetPromoCodes(order)
+				.Select(this._mapper.Map<PromoCodeViewModel>)
+				.ToList();
+			if (model.State == OrderState.Finished) {
+				model.Payment = this._mapper.Map<PaymentViewModel>(this._paymentService.GetPayment(order));
+				model.Payment.AssociatedVPSs = (await this._vpsService.GetVPSs(User))
+					.Where(vps => vps.OrderId == order.Id)
+					.OrderBy(vps => vps.Name)
+					.Select(this._mapper.Map<VPSViewModel>)
+					.ToList();
+			}
+			return View("Index", model);
 		}
 
 		[HttpPatch]
@@ -131,7 +152,7 @@ namespace Project.Controllers {
 			return View(model);
 		}
 
-		[HttpGet("/order/remove")]
+		[HttpGet("/Order/Remove")]
 		public async Task<IActionResult> RemovePage(string Id) {
 			Order target = (await this._service.GetOrders(User))
 				.FirstOrDefault(order => order.Id == Id);
@@ -150,6 +171,20 @@ namespace Project.Controllers {
 				return NotFound();
 			await this._service.RemoveOrder(target);
 			return Ok();
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> SetCodes(string OrderId, List<string> codes) {
+			ApplicationUser user = await this._userManager.GetUserAsync(User);
+			Order target = this._service.GetOrders(user)
+				.FirstOrDefault(order => order.Id == OrderId && order.State != OrderState.Finished);
+			if (target == null)
+				return NotFound();
+			List<PromoCode> promoCodes = this._codeService.Codes.Where(code => codes.Contains(code.Code)).ToList();
+			promoCodes.RemoveAll(code => target.PromoCodes.Any(orderCode => orderCode.PromoCode.Code == code.Code));
+			promoCodes.RemoveAll(code => user.PromoCodes.Any(userCode => userCode.PromoCode.Code == code.Code));
+			await this._codeService.SetCodes(promoCodes, target);
+			return Json(this._codeService.GetDiscount(target.OriginalPrice, target.PromoCodes.ToList()));
 		}
 
 		[HttpGet("/Admin/Order")]

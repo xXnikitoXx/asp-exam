@@ -36,6 +36,7 @@ namespace Project.Controllers {
 				OrdersCount = this._service.OrdersCount(),
 				PromoCodesCount = this._service.PromoCodesCount(),
 				TicketsCount = this._service.TicketsCount(),
+				PlansCount = this._service.PlansCount(),
 				DailyIncome = this._orderService.DailyIncome(),
 				MonthlyIncome = this._orderService.MonthlyIncome(),
 				YearlyIncome = this._orderService.YearlyIncome(),
