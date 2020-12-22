@@ -2,9 +2,9 @@ const SaveOrder = () => {
 	fetch(location.href, {
 		method: "PATCH",
 		body: JsonToForm({
-			Amount: Number($("#amount").val()),
-			Location: $("input[name=location]:checked").val(),
-			Codes: $("#codes").text().split(", "),
+			Amount: order.amount,
+			Location: order.location,
+			Codes: order.codes,
 		})
 	})
 	.then(response => {
@@ -18,11 +18,12 @@ const SaveOrder = () => {
 			</div>
 		</div>`;
 
-		if (response.status == 200)
+		if (response.status == 200) {
+			order.saved = true;
 			htmlStruct = htmlStruct
 				.replace(/{{type}}/g, "success")
 				.replace(/{{message}}/g, "Данните за поръчката бяха запазени успешно! 🤩");
-		else
+		} else
 			htmlStruct = htmlStruct
 				.replace(/{{type}}/g, "danger")
 				.replace(/{{message}}/g, "Възникна грешка! 😖");
