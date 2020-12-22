@@ -1,45 +1,55 @@
-﻿@{
+﻿@model VPSsViewModel
+@{
 	ViewData["Title"] = "Сървъри";
+	ViewData["PaginationUrl"] = "/VPS";
+	ViewData["Page"] = Model.Page;
+	ViewData["Pages"] = Model.Pages;
+	ViewData["Show"] = Model.Show;
 }
 
-<div class="col-12">
-	<div class="card">
-		<div class="card-header">
-			<h1 class="h3 mb-3">@ViewData["Title"]</h1>
-			<h6 class="card-subtitle text-muted">Общо XX</h6>
-			<span class="badge bg-success">На линия - X</span>
-			<span class="badge bg-secondary">Извън линия - X</span>
-			<span class="badge bg-danger">Неочакван срив - X</span>
-			<span class="badge bg-warning">В ремонт - X</span>
-		</div>
-		<div class="card-body text-center">
-			<div class="container-fluid p-0">
-				<div class="row">
-					<div class="col-12">
-						<div class="card">
-							<div class="card-body">
-								<table id="datatables-reponsive" class="table table-striped" style="width:100%">
-									<thead>
+<style>
+	select.form-control { text-align: center; }
+	.pagination { justify-content: center; }
+</style>
+
+<div class="row">
+	<div class="col-12">
+		<div class="card">
+			<div class="card-header">
+				<h1 class="h3 mb-3">@ViewData["Title"]</h1>
+				<h6 class="card-subtitle text-muted">Общо XX</h6>
+				<span class="badge bg-success">На линия - X</span>
+				<span class="badge bg-secondary">Извън линия - X</span>
+				<span class="badge bg-danger">Неочакван срив - X</span>
+				<span class="badge bg-warning">В ремонт - X</span>
+			</div>
+			<div class="card-body text-center">
+				<div class="container-fluid p-0">
+					<div class="row">
+						<div class="card-body">
+							<table id="datatables-reponsive" class="table table-striped" style="width:100%">
+								<thead>
+									<tr>
+										<th>Име на сървъра</th>
+										<th>План</th>
+										<th>Локация</th>
+										<th>IP Адрес</th>
+										<th>OS</th>
+										<th>RAM Памет</th>
+										<th>Пространство</th>
+										<th>Управление</th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach (VPSViewModel vps in Model.VPSs) {
 										<tr>
-											<th>Име на сървъра</th>
-											<th>План</th>
-											<th>Локация</th>
-											<th>IP Адрес</th>
-											<th>OS</th>
-											<th>RAM Памет</th>
-											<th>Пространство</th>
-											<th>Управление</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>vipervps</td>
-											<td>VPS-01</td>
-											<td>Germany</td>
-											<td>127.0.0.1</td>
-											<td><i class="fab fa-ubuntu"></i></td>
-											<td>2048 MB</td>
-											<td>20GB</td>
+											<td>@vps.Name</td>
+											<td>@vps.Plan.Name</td>
+											<td>@vps.Location.ToString().Replace("_", ", ")</td>
+											<td>-</td>
+											<td>-</td>
+											<td>@(vps.RAM * 1024) MB</td>
+											<td>@vps.SSD GB</td>
 											<td>
 												<button class="btn btn-success" type="button" data-toggle="tooltip" data-placement="top" title="Стартиране">
 													<i class="fas fa-play-circle"></i>
@@ -55,13 +65,19 @@
 												</a>
 											</td>
 										</tr>
-									</tbody>
-								</table>
-							</div>
+									}
+								</tbody>
+							</table>
 						</div>
 					</div>
 				</div>
 			</div>
+			@if (Model.Total > 0)
+			{
+				<div class="card-actions">
+					<partial name="_Pagination" />
+				</div>
+			}
 		</div>
 	</div>
 </div>

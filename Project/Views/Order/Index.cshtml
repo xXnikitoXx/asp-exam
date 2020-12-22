@@ -9,11 +9,36 @@
 	OrderState[] saveAllowedStates = new OrderState[] {
 		OrderState.Created,
 	};
+	double amount = Model.OriginalPrice;
+	foreach (PromoCodeViewModel code in Model.PromoCodes) {
+		switch (code.Type) {
+			case PromoCodeType.FixedAmount:
+				amount -= code.Value;
+				break;
+			case PromoCodeType.Percentage:
+				amount -= amount * code.Value;
+				break;
+			case PromoCodeType.PriceOverride:
+				amount = code.Value;
+				break;
+			case PromoCodeType.Free:
+				amount = 0;
+				break;
+		}
+	}
+	if (amount < 0)
+		amount = 0;
+	ViewData["Discount"] = Model.OriginalPrice - amount;
 }
 
 <style>
-	input[type="number"] {
-		text-align: center;
+	input[type="number"] { text-align: center; }
+	.btn { transition: all .25s linear; }
+	.btn.hidden {
+		padding: 0px;
+		height: 0px;
+		border-width: 0px;
+		transform: scaleY(0);
 	}
 </style>
 @if (ViewData["Message"] != null) {
@@ -26,7 +51,7 @@
 		</div>
 	</div>
 }
-<div class="row">
+<div id="order" class="row">
 	<div class="col-12 col-md-8">
 		<div class="card">
 			<div class="card-header">
@@ -41,7 +66,7 @@
 							<th>Име на продукт</th>
 							<th>Количество</th>
 							<th>Сървърна локация</th>
-							<th>Цена</th>
+							<th>Единична цена</th>
 							@if (removeAllowedStates.Contains(Model.State)) {
 								<th>Премахни</th>
 							}
@@ -51,7 +76,7 @@
 						<tr>
 							<td>@Model.Plan.Name</td>
 							<td>
-								<input type="number" id="amount" name="amount" min="1" max="5" asp-for="Amount">
+								<input type="number" id="amount" name="amount" min="1" max="5" asp-for="Amount" v-model="amount" v-on:change="update();">
 							</td>
 							<td class="table-action">
 								<fieldset class="mb-3">
@@ -59,7 +84,7 @@
 										<div class="col-sm-10">
 											@foreach (string s in typeof(Location).GetEnumNames()) {
 												<label class="form-check">
-													<input name="location" type="radio" class="form-check-input" value="@s" @(Model.Location.ToString() == s ? "checked" : "")>
+													<input name="location" type="radio" class="form-check-input" value="@s" @(Model.Location.ToString() == s ? "checked" : "") v-model="location" v-on:change="update();">
 													<span class="form-check-label">@s.Replace("_", ", ")</span>
 												</label>
 											}
@@ -67,7 +92,7 @@
 									</div>
 								</fieldset>
 							</td>
-							<td>@(Model.OriginalPrice.ToString("F2"))лв</td>
+							<td>{{price.toFixed(2)}}лв</td>
 							@if (removeAllowedStates.Contains(Model.State)) {
 								<td style="text-align: center;">
 									<a href="/Order/Remove?id=@Model.Id">
@@ -93,49 +118,25 @@
 							<thead>
 								<tr>
 									<th>Междинна сума: </th>
-									<th>Отстъпка: <code>@string.Join(", ", Model.PromoCodes.Select(code => code.Code).ToList())</code></th>
+									<th>Отстъпка: <code>{{codes.join(", ")}}</code></th>
 									<th>Обща сума: </th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td>@(Model.OriginalPrice.ToString("F2"))лв</td>
-									<td>
-										@(new Func<double>(() => {
-											double amount = Model.OriginalPrice;
-											foreach (PromoCodeViewModel code in Model.PromoCodes) {
-												switch (code.Type) {
-													case PromoCodeType.FixedAmount:
-														amount -= code.Value;
-														break;
-													case PromoCodeType.Percentage:
-														amount -= amount * code.Value;
-														break;
-													case PromoCodeType.PriceOverride:
-														amount = code.Value;
-														break;
-													case PromoCodeType.Free:
-														amount = 0;
-														break;
-												}
-											}
-											if (amount < 0)
-												amount = 0;
-											@ViewData["Change"] = amount.ToString("F2");
-											return Model.OriginalPrice - amount;
-										}).Invoke().ToString("F2"))лв
-									</td>
-									<td>@ViewData["Change"]лв</td>
+									<td>{{midPrice.toFixed(2)}}лв</td>
+									<td>{{discount.toFixed(2)}}лв</td>
+									<td>{{finalPrice.toFixed(2)}}лв</td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 					@if (saveAllowedStates.Contains(Model.State)) {
 						<div class="row m-1">
-							<button class="btn btn-outline-info" onclick="SaveOrder();">Запазване <i class="fas fa-save"></i></button>
+							<button class="btn btn-outline-info" onclick="SaveOrder();" :class="{ hidden: saved }">Запазване <i class="fas fa-save"></i></button>
 						</div>
 						<div class="row m-1">
-							<button class="btn btn-outline-success">Плащане <i class="fas fa-cart-plus"></i></button>
+							<a :href="saved ? '/Payment/Create?OrderId=@Model.Id' : '#'" class="btn btn-outline-success" :class="{ hidden: !saved }">Плащане <i class="fas fa-cart-plus"></i></a>
 						</div>
 					}
 				</div>
@@ -143,24 +144,84 @@
 		</div>
 	</div>
 </div>
-<div class="row">
-	<div class="col-12 col-lg-6">
-		<div class="card">
-			<div class="card-body">
-				<h5 class="card-title">Промо код</h5>
-				<p class="card-text">Въведете Вашият промо код тук и натиснете бутона "Приложи".</p>
-				<div class="row">
-					<div class="col-9">
-						<input type="text" class="form-control" placeholder="Промо код">
+@if (saveAllowedStates.Contains(Model.State)) {
+	<div class="row">
+		<div class="col-12 col-lg-6">
+			<div class="card">
+				<div class="card-body">
+					<h5 class="card-title">Промо код</h5>
+					<p class="card-text">Въведете Вашият промо код тук и натиснете бутона "Приложи".</p>
+					<div class="row">
+						<div class="col-md-8 col-sm-12">
+							<input id="codesInput" type="text" class="form-control" placeholder="Промо код">
+						</div>
+						<div class="col-md-4 col-sm-12">
+							<button class="btn btn-outline-primary" onclick="order.applyCodes();">Приложи <i class="fas fa-arrow-circle-right"></i></button>
+							<button class="btn btn-outline-danger" onclick="order.removeCodes();">Премахни <i class="fas fa-times-circle"></i></button>
+						</div>
 					</div>
-					<div class="col-3">
-						<button class="btn btn-outline-primary">Приложи кода <i class="fas fa-arrow-circle-right"></i></button>
-					</div>
+					<p id="codeError" class="card-text" style="color: red; display: none;">Невалиден промо код!</p>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
+} else if (Model.State == OrderState.Finished && Model.Payment != null) {
+	<div class="row">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-body">
+					<h3 class="card-title">Плащане</h3>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Дата</th>
+								<th>PayPal номер на плащане</th>
+								<th>PayPal номер на платец</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>@Model.Payment.Time</td>
+								<td>@Model.Payment.PayPalPayment</td>
+								<td>@Model.Payment.PayPalPayer</td>
+							</tr>
+						</tbody>
+					</table>
+					<hr>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Създадени сървъри</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (VPSViewModel vps in @Model.Payment.AssociatedVPSs) {
+								<tr>
+									<td>
+										<a href="/VPS/Manage?Id=@vps.Id">@vps.Name</a>
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+<script src="/js/order/price.js"></script>
+<script>
+	order.id = "@Model.Id";
+	order.amount = @Model.Amount;
+	order.midPrice = @Model.OriginalPrice;
+	order.price = order.Having(order.amount, order.midPrice).Get.PriceFor(1);
+	order.discount = @ViewData["Discount"];
+	order.finalPrice = @Model.FinalPrice;
+	order.location = "@Model.Location";
+	order.codes = [ "@string.Join("\", \"", Model.PromoCodes.Select(code => code.Code))" ];
+	order.update(-1);
+</script>
 @if (saveAllowedStates.Contains(Model.State)) {
 	<script src="/js/order/save.js"></script>
 }

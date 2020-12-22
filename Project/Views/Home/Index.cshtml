@@ -36,9 +36,9 @@
 										</div>
 										<div class="mt-auto">
 											@if (SignInManager.IsSignedIn(User)) {
-												<a href="/order?productId=@(plan.Number)" class="btn btn-lg btn-outline-primary">Поръчай</a>
+												<a href="/order?productId=@(plan.Number)" class="btn btn-lg btn-outline-primary">Поръчай <i class="fas fa-cart-plus"></i></a>
 											} else {
-												<a href="/login" class="btn btn-lg btn-outline-primary">Поръчай</a>
+												<a href="/login" class="btn btn-lg btn-outline-primary">Поръчай <i class="fas fa-cart-plus"></i></a>
 											}
 										</div>
 									</div>
