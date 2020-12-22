@@ -1,0 +1,40 @@
+@model PaymentViewModel
+@{
+	ViewData["Title"] = "Успешно плащане!";
+}
+
+<div id="addAnnouncement" class="row">
+	<div class="col-sm-10 col-md-8 col-lg-6 mx-auto d-table h-100">
+		<div class="card">
+			<div class="card-header text-center">
+				<partial name="_SuccessCheck">
+				<h3 id="title" class="title">@ViewData["Title"]</h3>
+			</div>
+			<div class="card-body text-center">
+				<div class="row mb-3">
+					<div class="col-12">
+						<h4 class="form-label">Благодарим Ви, че се доверихте на нас!</h4>
+					</div>
+				</div>
+				<div class="mt-3">
+					<a href="/Order/Details?OrderId=@Model.OrderId" class="btn btn-outline-info">
+						<i class="fas fa-money-check-alt"></i> Плеглед на поръчката
+					</a>
+					<a href="/VPS" class="btn btn-outline-success">
+						<i class="fas fa-server"></i> Преглед на сървърите
+					</a>
+				</div>
+				<hr>
+				<div class="row">
+					@foreach (VPSViewModel vps in Model.AssociatedVPSs) {
+						<div class="col-4">
+							<a href="/VPS/Manage?Id=@vps.Id" class="btn btn-primary">
+								<i class="fas fa-server"></i> Преглед на @vps.Name
+							</a>
+						</div>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
