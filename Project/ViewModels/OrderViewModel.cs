@@ -20,5 +20,6 @@ namespace Project.ViewModels {
 		public string Username { get; set; }
 		public PlanViewModel Plan { get; set; }
 		public OrderState State { get; set; }
+		public PaymentViewModel Payment { get; set; }
 	}
 }

@@ -6,6 +6,7 @@ namespace Project.ViewModels {
 		public int OrdersCount { get; set; }
 		public int PromoCodesCount { get; set; }
 		public int TicketsCount { get; set; }
+		public int PlansCount { get; set; }
 		public double DailyIncome { get; set; }
 		public double MonthlyIncome { get; set; }
 		public double YearlyIncome { get; set; }

@@ -11,7 +11,7 @@ namespace Project.ViewModels {
 
 		public string Id { get; set; }
 		public string Name { get; set; }
-		public Enums.Plan Plan { get; set; }
+		public PlanViewModel Plan { get; set; }
 		public Location Location { get; set; }
 		public string IP { get; set; }
 		public byte Cores { get; set; }
@@ -20,5 +20,6 @@ namespace Project.ViewModels {
 		public List<Activity> Activities { get; set; }
 		public List<State> States { get; set; }
 		public string OrderId { get; set; }
+		public OrderViewModel Order { get; set; }
 	}
 }
