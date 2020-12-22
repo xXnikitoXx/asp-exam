@@ -1,7 +1,7 @@
-@model UsersViewModel
+@model PlansViewModel
 @{
-	ViewData["Title"] = "Регистрирани потребители";
-	ViewData["PaginationUrl"] = "/Admin/Users";
+	ViewData["Title"] = "Планове";
+	ViewData["PaginationUrl"] = "/Admin/Plans";
 	ViewData["Page"] = Model.Page;
 	ViewData["Pages"] = Model.Pages;
 	ViewData["Show"] = Model.Show;
@@ -20,18 +20,14 @@
 					<div class="col-md-2">
 						Брой: @Model.Total
 					</div>
-					<div class="col-md-10">
-						<span class="badge bg-primary">Администратори - @Model.AdminsCount</span>
-						<span class="badge bg-secondary">Потребители - @Model.UsersCount</span>
-					</div>
 				</div>
 				<div class="row">
 					<div class="col-auto">
-						<label>Потребители на страница</label>
-						<select class="form-control" asp-for="Show" onchange="location.href = '/Admin/Users?Page=1&Show=' + this.value;">
+						<label>Планове на страница</label>
+						<select class="form-control" asp-for="Show" onchange="location.href = '/Admin/Plans?Page=1&Show=' + this.value;">
+							<option value="10">10</option>
 							<option value="20">20</option>
 							<option value="40">40</option>
-							<option value="80">80</option>
 						</select>
 					</div>
 				</div>
@@ -48,26 +44,24 @@
 									<thead>
 										<tr>
 											<th>Име</th>
-											<th>Имейл</th>
-											<th>Телефон</th>
-											<th>Админ</th>
-											<th></th>
+											<th>Ядра</th>
+											<th>Оперативна памет</th>
+											<th>Пространство</th>
+											<th>Цена</th>
 											<th>Контрол</th>
 										</tr>
 									</thead>
 									<tbody>
-										@foreach (UserViewModel user in Model.Users) {
+										@foreach (PlanViewModel plan in Model.Plans) {
 											<tr>
-												<td>@user.UserName</td>
-												<td>@user.Email</td>
-												<td>@(user.PhoneNumber == null ? "-" : user.PhoneNumber)</td>
+												<td>@plan.Name</td>
+												<td>@plan.Cores</td>
+												<td>@plan.RAM GB</td>
+												<td>@plan.SSD GB</td>
+												<td>@plan.Price.ToString("F2")лв.</td>
 												<td>
-													<input class="form-check-input" type="checkbox" onclick="SwitchRole(event, '@user.Id')" @(user.IsAdmin ? "checked" : "")>
-												</td>
-												<td></td>
-												<td>
-													<a href="/Admin/User?UserName=@user.UserName" class="btn btn-primary"><i class="fas fa-eye"></i></a>
-													<a href="/Admin/User/Remove?Id=@user.Id" class="btn btn-danger"><i class="fas fa-times"></i></a>
+													<a href="/Admin/Plan?Number=@plan.Number" class="btn btn-primary"><i class="fas fa-eye"></i></a>
+													<a href="/Admin/Plan/Remove?Id=@plan.Number" class="btn btn-danger"><i class="fas fa-times"></i></a>
 												</td>
 											</tr>
 										}
@@ -78,7 +72,8 @@
 					</div>
 				</div>
 			</div>
-			@if (Model.Total > 0) {
+			@if (Model.Total > 0)
+			{
 				<div class="card-actions">
 					<partial name="/Views/Shared/_Pagination.cshtml" />
 				</div>
@@ -86,4 +81,3 @@
 		</div>
 	</div>
 </div>
-<script src="/js/users/switch.js"></script>
