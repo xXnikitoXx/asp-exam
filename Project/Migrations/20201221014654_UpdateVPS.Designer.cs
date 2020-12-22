@@ -10,7 +10,7 @@ using Project.Data;
 namespace Project.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201220050921_UpdateVPS")]
+    [Migration("20201221014654_UpdateVPS")]
     partial class UpdateVPS
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -618,8 +618,7 @@ namespace Project.Migrations
                         .HasColumnType("tinyint");
 
                     b.Property<string>("ExternalId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IP")
                         .IsRequired()
@@ -647,8 +646,6 @@ namespace Project.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasAlternateKey("ExternalId");
 
                     b.HasIndex("OrderId");
 
@@ -732,7 +729,8 @@ namespace Project.Migrations
 
                     b.HasOne("Project.Models.ApplicationUser", "Sender")
                         .WithMany("SentMessages")
-                        .HasForeignKey("SenderId");
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Project.Models.Ticket", "Ticket")
                         .WithOne("Answer")
@@ -740,7 +738,8 @@ namespace Project.Migrations
 
                     b.HasOne("Project.Models.ApplicationUser", "User")
                         .WithMany("Messages")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("PreviousMessage");
 
@@ -789,8 +788,7 @@ namespace Project.Migrations
                 {
                     b.HasOne("Project.Models.Post", "ParentPost")
                         .WithMany("Answers")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("ParentId");
 
                     b.HasOne("Project.Models.ApplicationUser", "User")
                         .WithMany("Posts")
@@ -835,7 +833,7 @@ namespace Project.Migrations
                     b.HasOne("Project.Models.ApplicationUser", "User")
                         .WithMany("Tickets")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("User");
                 });

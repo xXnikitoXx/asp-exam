@@ -58,10 +58,17 @@ namespace Project.Data {
 				entity.HasMany(user => user.Tickets)
 					.WithOne(ticket => ticket.User)
 					.HasForeignKey(ticket => ticket.UserId)
-					.OnDelete(DeleteBehavior.Cascade);
+					.OnDelete(DeleteBehavior.SetNull);
 
 				entity.HasMany(user => user.Messages)
-					.WithOne(message => message.User);
+					.WithOne(message => message.User)
+					.HasForeignKey(message => message.UserId)
+					.OnDelete(DeleteBehavior.NoAction);
+
+				entity.HasMany(user => user.SentMessages)
+					.WithOne(message => message.Sender)
+					.HasForeignKey(message => message.SenderId)
+					.OnDelete(DeleteBehavior.NoAction);
 
 				entity.HasMany(user => user.Activities)
 					.WithOne(activity => activity.User)
@@ -80,8 +87,6 @@ namespace Project.Data {
 			});
 
 			modelBuilder.Entity<VPS>(entity => {
-				entity.HasAlternateKey(vps => vps.ExternalId);
-
 				entity.HasMany(vps => vps.Activities)
 					.WithOne(activity => activity.VPS)
 					.HasForeignKey(activity => activity.VPSId);
@@ -94,8 +99,7 @@ namespace Project.Data {
 			modelBuilder.Entity<Post>(entity => {
 				entity.HasMany(post => post.Answers)
 					.WithOne(answer => answer.ParentPost)
-					.HasForeignKey(answer => answer.ParentId)
-					.OnDelete(DeleteBehavior.NoAction);
+					.HasForeignKey(answer => answer.ParentId);
 
 				entity.Property(post => post.Time)
 					.HasDefaultValueSql("getdate()");
@@ -123,11 +127,13 @@ namespace Project.Data {
 				
 				entity.HasOne(message => message.User)
 					.WithMany(user => user.Messages)
-					.HasForeignKey(message => message.UserId);
+					.HasForeignKey(message => message.UserId)
+					.OnDelete(DeleteBehavior.NoAction);
 
 				entity.HasOne(message => message.Sender)
 					.WithMany(sender => sender.SentMessages)
-					.HasForeignKey(message => message.SenderId);
+					.HasForeignKey(message => message.SenderId)
+					.OnDelete(DeleteBehavior.NoAction);
 
 				entity.HasOne<Ticket>(message => message.Ticket)
 					.WithOne(ticket => ticket.Answer)
