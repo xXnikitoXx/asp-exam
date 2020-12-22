@@ -4,13 +4,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Project.Models
-{
-	public class Order
-	{
+namespace Project.Models {
+	public class Order {
 		public Order() {
 			this.VPSs = new HashSet<VPS>();
 			this.PromoCodes = new HashSet<PromoCodeOrder>();
@@ -22,7 +18,6 @@ namespace Project.Models
 
 		[Required]
 		public DateTime TimeStarted { get; set; }
-
 		public DateTime TimeFinished { get; set; }
 
 		[Required]
@@ -33,9 +28,7 @@ namespace Project.Models
 
 		[Required]
 		public double FinalPrice { get; set; }
-
 		public int PlanNumber { get; set; }
-
 		public Models.Plan Plan { get; set; }
 
 		[DefaultValue(Location.Nuremberg_Germany)]
@@ -43,10 +36,8 @@ namespace Project.Models
 
 		[Required]
 		public OrderState State { get; set; }
-
 		public string PaymentId { get; set; }
 		public Payment Payment { get; set; }
-
 		public string UserId { get; set; }
 		public ApplicationUser User { get; set; }
 		public ICollection<VPS> VPSs { get; set; }

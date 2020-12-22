@@ -1,13 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Project.Models
-{
-	public class Plan
-	{
-		public Plan() {
+namespace Project.Models {
+	public class Plan {
+		public Plan() =>
 			this.Orders = new HashSet<Order>();
-		}
 
 		[Required]
 		public int Number { get; set; }
@@ -26,7 +23,6 @@ namespace Project.Models
 
 		[Required]
 		public double Price { get; set; }
-
 		public ICollection<Order> Orders { get; set; }
 	}
 }

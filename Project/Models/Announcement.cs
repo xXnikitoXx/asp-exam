@@ -2,10 +2,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Project.Enums;
 
-namespace Project.Models
-{
-	public class Announcement
-	{
+namespace Project.Models {
+	public class Announcement {
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public string Id { get; set; }

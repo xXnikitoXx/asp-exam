@@ -2,15 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal;
 using Project.Enums;
 
-namespace Project.Models
-{
-	public class VPS
-	{
+namespace Project.Models {
+	public class VPS {
 		public VPS() {
 			this.Activities = new HashSet<Activity>();
 			this.States = new HashSet<State>();
@@ -19,7 +14,6 @@ namespace Project.Models
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public string Id { get; set; }
-
 		public string ExternalId { get; set; }
 
 		[Required]
@@ -41,14 +35,10 @@ namespace Project.Models
 
 		[Required]
 		public ushort SSD { get; set; }
-
 		public string UserId { get; set; }
 		public ApplicationUser User { get; set; }
-
 		public ICollection<Activity> Activities { get; set; }
-		
 		public ICollection<State> States { get; set; }
-
 		public string OrderId { get; set; }
 		public Order Order { get; set; }
 	}

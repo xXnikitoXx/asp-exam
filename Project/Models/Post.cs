@@ -2,16 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Project.Models
-{
-	public class Post
-	{
-		public Post() {
+namespace Project.Models {
+	public class Post {
+		public Post() =>
 			this.Answers = new HashSet<Post>();
-		}
 
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -23,15 +18,11 @@ namespace Project.Models
 
 		[Required]
 		public string Message { get; set; }
-
 		public DateTime Time { get; set; }
-
 		public string ParentId { get; set; }
 		public Post ParentPost { get; set; }
-
 		public string UserId { get; set; }
 		public ApplicationUser User { get; set; }
-
 		public ICollection<Post> Answers { get; set; }
 	}
 }

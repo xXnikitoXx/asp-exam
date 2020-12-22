@@ -2,10 +2,8 @@
 using System;
 using System.Collections.Generic;
 
-namespace Project.Models
-{
-	public class ApplicationUser : IdentityUser
-	{
+namespace Project.Models {
+	public class ApplicationUser : IdentityUser {
 		public ApplicationUser() {
 			this.VPSs = new HashSet<VPS>();
 			this.Posts = new HashSet<Post>();
@@ -20,7 +18,6 @@ namespace Project.Models
 
 		public DateTime JoinDate { get; set; }
 		public DateTime LastLoginDate { get; set; }
-
 		public ICollection<VPS> VPSs { get; set; }
 		public ICollection<Post> Posts { get; set; }	
 		public ICollection<Ticket> Tickets { get; set; }

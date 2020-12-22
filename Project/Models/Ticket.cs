@@ -2,10 +2,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Project.Enums;
 
-namespace Project.Models
-{
-	public class Ticket
-	{
+namespace Project.Models {
+	public class Ticket {
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public string Id { get; set; }
@@ -19,10 +17,8 @@ namespace Project.Models
 
 		[Required]
 		public Priority Priority { get; set; }
-
 		public string UserId { get; set; }
 		public ApplicationUser User { get; set; }
-
 		public string AnswerId { get; set; }
 		public Message Answer { get; set; }
 	}
