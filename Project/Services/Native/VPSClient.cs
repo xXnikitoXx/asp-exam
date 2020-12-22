@@ -30,39 +30,43 @@ namespace Project.Services.Native {
 			await _context.VPSs.FirstOrDefaultAsync(vps => vps.Id == id);
 
 		public List<VPS> GetVPSs(VPSsViewModel pageInfo) {
-			IQueryable<VPS> vpss = this._context.VPSs.AsQueryable();
+			IQueryable<VPS> vpss = this._context.VPSs.OrderBy(vps => vps.Name);
 			pageInfo.Total = vpss.Count();
 			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
-			return vpss.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
+			return vpss.Skip(pageInfo.Show * (pageInfo.Page - 1))
+				.Take(pageInfo.Show)
+				.ToList();
 		}
 
 		public async Task<List<VPS>> GetVPSs(ClaimsPrincipal user) =>
 			GetVPSs(await _userManager.GetUserAsync(user));
 
 		public List<VPS> GetVPSs(ApplicationUser user) =>
-			_context.VPSs.Where(vps => vps.UserId == user.Id).ToList();
+			_context.VPSs.Where(vps => vps.UserId == user.Id)
+				.OrderBy(vps => vps.Name)
+				.ToList();
 
 		public async Task<List<VPS>> GetVPSs(ClaimsPrincipal user, VPSsViewModel pageInfo) =>
 			GetVPSs(await this._userManager.GetUserAsync(user), pageInfo);
 
 
 		public List<VPS> GetVPSs(ApplicationUser user, VPSsViewModel pageInfo) {
-			IQueryable<VPS> vpss = this._context.VPSs.Where(vps => vps.UserId == user.Id);
+			IQueryable<VPS> vpss = this._context.VPSs.Where(vps => vps.UserId == user.Id)
+				.OrderBy(vps => vps.Name);
 			pageInfo.Total = vpss.Count();
 			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
 			return vpss.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
 		}
 
 		public async Task RegisterVPS(VPS vps) {
-			_context.VPSs.Add(vps);
-			_context.Users.Find(vps.User)
-				.VPSs.Add(vps);
+			this._context.VPSs.Add(vps);
+			(await this._userManager.FindByIdAsync(vps.UserId)).VPSs.Add(vps);
 			await _context.SaveChangesAsync();
 		}
 
-		public async Task<VPS> RegisterVPSFor(Order order) {
+		public async Task<VPS> RegisterVPSFor(Order order, string name = "Нов VPS") {
 			VPS vps = new VPS {
-				Name = "Нов VPS",
+				Name = name,
 				Location = order.Location,
 				IP = "0.0.0.0",
 				Cores = order.Plan.Cores,
@@ -75,6 +79,9 @@ namespace Project.Services.Native {
 			await this._orderService.AddVPS(order, vps);
 			return vps;
 		}
+
+		public async Task<VPS> RegisterVPSFor(Order order, int index) =>
+			await RegisterVPSFor(order, $"{order.Plan.Name} {index + 1}");
 
 		public async Task RemoveVPS(string id) =>
 			await RemoveVPS(await Find(id));

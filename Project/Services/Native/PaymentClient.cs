@@ -12,17 +12,20 @@ namespace Project.Services.Native {
 	public class PaymentClient : IPaymentClient {
 		private readonly ApplicationDbContext _context;
 		private readonly IVPSClient _vpsService;
+		private readonly IPlanClient _planService;
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly IOrderClient _orderService;
 
 		public PaymentClient(
 			ApplicationDbContext context,
 			IVPSClient vpsService,
+			IPlanClient planService,
 			UserManager<ApplicationUser> userManager,
 			IOrderClient orderService
 		) {
 			this._context = context;
 			this._vpsService = vpsService;
+			this._planService = planService;
 			this._userManager = userManager;
 			this._orderService = orderService;
 		}
@@ -41,15 +44,22 @@ namespace Project.Services.Native {
 		public async Task<List<Payment>> GetPayments(ClaimsPrincipal user) =>
 			GetPayments(await this._userManager.GetUserAsync(user));
 
-		public async Task<VPS> CreatePayment(Payment payment) {
+		public async Task<List<VPS>> CreatePayment(Payment payment) {
+			List<Models.Plan> plans = this._planService.GetPlans();
 			this._context.Payments.Add(payment);
-			ApplicationUser user = await this._context.Users.FirstOrDefaultAsync(user => user.Id == payment.UserId);
-			Order order = await this._context.Orders.FirstOrDefaultAsync(order => order.Id == payment.OrderId);
+			ApplicationUser user = await this._context.Users
+				.FirstOrDefaultAsync(user => user.Id == payment.UserId);
+			Order order = await this._context.Orders
+				.FirstOrDefaultAsync(order => order.Id == payment.OrderId);
 			user.Payments.Add(payment);
 			order.Payment = payment;
+			order.Plan = plans.FirstOrDefault(plan => plan.Number == order.PlanNumber);
 			await this._context.SaveChangesAsync();
 			await this._orderService.UpdateState(order, OrderState.Finished);
-			return await this._vpsService.RegisterVPSFor(order);
+			List<VPS> vpss = new List<VPS>();
+			for (int i = 0; i < order.Amount; i++)
+				vpss.Add(await this._vpsService.RegisterVPSFor(order, i));
+			return vpss;
 		}
 	}
 }

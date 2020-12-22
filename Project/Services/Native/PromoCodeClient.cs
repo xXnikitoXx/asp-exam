@@ -23,6 +23,34 @@ namespace Project.Services.Native {
 			this._userManager = userManager;
 		}
 
+		public IQueryable<PromoCode> Codes => this._context.PromoCodes.AsQueryable();
+
+		public double GetFinalPrice(double price, List<PromoCode> codes) {
+			double totalFixedAmount = 0;
+			double percentage = 0;
+			foreach (PromoCode code in codes) {
+				if (!code.IsValid)
+					continue;
+				switch(code.Type) {
+					case PromoCodeType.Free: return 0;
+					case PromoCodeType.PriceOverride: return code.Value;
+					case PromoCodeType.Percentage: percentage += code.Value * .01; break;
+					case PromoCodeType.FixedAmount: totalFixedAmount += code.Value; break;
+				}
+			}
+			price = (price - totalFixedAmount) * (1 - percentage);
+			return price < 0 ? 0 : price;
+		}
+
+		public double GetFinalPrice(double price, List<PromoCodeOrder> codes) =>
+			GetFinalPrice(price, codes.Select(code => code.PromoCode).ToList());
+
+		public double GetDiscount(double price, List<PromoCode> codes) =>
+			price - GetFinalPrice(price, codes);
+
+		public double GetDiscount(double price, List<PromoCodeOrder> codes) =>
+			price - GetFinalPrice(price, codes);
+
 		public PromoCode GetCodeById(string id) => this._context.PromoCodes.FirstOrDefault(code => code.Id == id);
 		public PromoCode GetCodeByText(string text) => this._context.PromoCodes.FirstOrDefault(code => code.Code == text);
 
@@ -87,16 +115,14 @@ namespace Project.Services.Native {
 		public async Task<List<PromoCode>> GetPromoCodes(ClaimsPrincipal user) => GetPromoCodes(await _userManager.GetUserAsync(user));
 		public async Task<List<PromoCode>> GetPromoCodes(ClaimsPrincipal user, PromoCodesViewModel pageInfo) => GetPromoCodes(await _userManager.GetUserAsync(user), pageInfo);
 
-		public async Task SetCodes(List<string> codes, Order order)
-		{
-			string id = order.Id;
-			List<PromoCode> promoCodes = this._context.PromoCodes.Where(code => codes.Contains(code.Code)).ToList();
+		public async Task SetCodes(List<PromoCode> codes, Order order) {
 			List<PromoCodeOrder> promoCodeOrders = this._context.PromoCodeOrders
-				.Where(promoCodeOrder => promoCodeOrder.OrderId == id)
+				.Where(promoCodeOrder => promoCodeOrder.OrderId == order.Id)
 				.ToList();
 			this._context.PromoCodeOrders.RemoveRange(promoCodeOrders);
+			await this._context.SaveChangesAsync();
 			promoCodeOrders = new List<PromoCodeOrder>();
-			foreach (PromoCode code in promoCodes) {
+			foreach (PromoCode code in codes) {
 				PromoCodeOrder promoCodeOrder = new PromoCodeOrder {
 					Order = order,
 					PromoCode = code,
@@ -106,7 +132,14 @@ namespace Project.Services.Native {
 				promoCodeOrders.Add(promoCodeOrder);
 			}
 			await this._context.PromoCodeOrders.AddRangeAsync(promoCodeOrders);
+			order.FinalPrice = GetDiscount(order.OriginalPrice, order.PromoCodes.ToList());
 			await this._context.SaveChangesAsync();
+		}
+
+		public async Task SetCodes(List<string> codes, Order order) {
+			string id = order.Id;
+			List<PromoCode> promoCodes = this._context.PromoCodes.Where(code => codes.Contains(code.Code)).ToList();
+			await SetCodes(promoCodes, order);
 		}
 
 		private static Random random = new Random();

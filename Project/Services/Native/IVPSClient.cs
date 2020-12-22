@@ -13,7 +13,8 @@ namespace Project.Services.Native {
 		List<VPS> GetVPSs(ApplicationUser user);
 		List<VPS> GetVPSs(VPSsViewModel pageInfo);
 		Task RegisterVPS(VPS vps);
-		Task<VPS> RegisterVPSFor(Order order);
+		Task<VPS> RegisterVPSFor(Order order, string name);
+		Task<VPS> RegisterVPSFor(Order order, int index);
 		Task UpdateStatus(string id, ServerStatus status, float cpu, float ram);
 		Task UpdateStatus(VPS vps, ServerStatus status, float cpu, float ram);
 		Task RegisterActivity(string id, string message, string url);

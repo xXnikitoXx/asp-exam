@@ -13,5 +13,6 @@ namespace Project.Services.Native {
 		public int OrdersCount() => this._context.Orders.Count();
 		public int PromoCodesCount() => this._context.PromoCodes.Count();
 		public int TicketsCount() => this._context.Tickets.Count();
+		public int PlansCount() => this._context.Plans.Count();
 	}
 }

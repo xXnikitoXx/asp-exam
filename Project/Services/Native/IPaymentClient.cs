@@ -12,6 +12,6 @@ namespace Project.Services.Native {
 		Payment GetPayment(Order order);
 		List<Payment> GetPayments(ApplicationUser user);
 		Task<List<Payment>> GetPayments(ClaimsPrincipal user);
-		Task<VPS> CreatePayment(Payment payment);
+		Task<List<VPS>> CreatePayment(Payment payment);
 	}
 }

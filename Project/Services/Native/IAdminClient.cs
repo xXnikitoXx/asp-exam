@@ -6,5 +6,6 @@ namespace Project.Services.Native {
 		int OrdersCount();
 		int PromoCodesCount();
 		int TicketsCount();
+		int PlansCount();
 	}
 }

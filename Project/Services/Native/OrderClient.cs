@@ -12,13 +12,19 @@ using System.Threading.Tasks;
 
 namespace Project.Services.Native {
 	public class OrderClient : IOrderClient {
+		private readonly IPlanClient _planService;
+		private readonly IPromoCodeClient _codeService;
 		private readonly ApplicationDbContext _context;
 		private readonly UserManager<ApplicationUser> _userManager;
 
 		public OrderClient(
+			IPlanClient planService,
+			IPromoCodeClient codeService,
 			ApplicationDbContext context,
 			UserManager<ApplicationUser> userManager
 		) {
+			this._planService = planService;
+			this._codeService = codeService;
 			this._context = context;
 			this._userManager = userManager;
 		}
@@ -178,6 +184,10 @@ namespace Project.Services.Native {
 
 		public async Task UpdateOrder(Order order) {
 			Order target = await Find(order.Id);
+			target.Plan = this._planService.GetPlans()
+				.FirstOrDefault(plan => plan.Number == target.PlanNumber);
+			order.OriginalPrice = target.Plan.Price * order.Amount;
+			order.FinalPrice = this._codeService.GetFinalPrice(order.OriginalPrice, order.PromoCodes.ToList());
 			target = order;
 			await this._context.SaveChangesAsync();
 		}
