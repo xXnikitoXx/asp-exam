@@ -70,7 +70,7 @@ namespace Project.Controllers {
 			model.PromoCodes = this._codeService.GetPromoCodes(order)
 				.Select(this._mapper.Map<PromoCodeViewModel>)
 				.ToList();
-			return View();
+			return View(model);
 		}
 
 		public async Task<IActionResult> Details(string OrderId, bool New = false) {
