@@ -39,15 +39,12 @@ const FetchMessages = async () => {
 };
 
 const RegisterMessage = message => {
-	new Promise(async accept => {
+	new Promise(async resolve => {
 		await LoadMessages();
-		accept();
+		resolve();
 	})
 	.then(() => {
 		navbar.messagesSeen = false;
-		navbar.messages.unshift(MessageToUI(message));
-		if (navbar.messages.length > 4)
-			navbar.messages.pop();
 		SaveMessages();
 	});
 };
