@@ -37,6 +37,8 @@ namespace Project.Controllers {
 				.Select(this._mapper.Map<PromoCodeViewModel>)
 				.Reverse()
 				.ToList();
+			foreach (PromoCodeViewModel code in model.Codes)
+				code.Usage = this._context.UserPromoCodes.Count(upc => upc.PromoCodeId == code.Id);
 			return View(model);
 		}
 
