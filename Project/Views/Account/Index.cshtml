@@ -42,7 +42,7 @@
 												</div>
 												<div class="col-8">
 													<h1>@Model.VPSCount</h1>
-													<h5>Сървъри</h5>
+													<h5>Сървър@(@Model.VPSCount == 1 ? "" : "а")</h5>
 												</div>
 											</div>
 										</div>
@@ -61,7 +61,7 @@
 												</div>
 												<div class="col-8">
 													<h1>@Model.OrdersCount</h1>
-													<h5>Поръчки</h5>
+													<h5>Поръчк@(@Model.OrdersCount == 1 ? "а" : "и")</h5>
 												</div>
 											</div>
 										</div>

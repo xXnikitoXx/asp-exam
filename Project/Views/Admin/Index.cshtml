@@ -1,4 +1,3 @@
-@using Project.Enums
 @model AdminViewModel
 @{
 	ViewData["Title"] = "Admin контролен панел";
@@ -12,17 +11,8 @@
 	.income .col-6:nth-child(3) .income-amount { color: #dc3545; }
 	.income .col-6:nth-child(4) .income-amount { color: purple; }
 
-	@@media all and (max-width: 1415px) {
-		.card-body .col-md-3 {
-			width: 50%;
-		}
-	}
-
-	@@media all and (max-width:560px) {
-		.card-body .col-md-3 {
-			width: 100%;
-		}
-	}
+	@@media all and (max-width: 1415px) { .card-body .col-md-3 { width: 50%; } }
+	@@media all and (max-width:560px) { .card-body .col-md-3 { width: 100%; } }
 </style>
 
 <div class="container-fluid p-0">
@@ -48,7 +38,7 @@
 												</div>
 												<div class="col-8">
 													<h1>@Model.UsersCount</h1>
-													<h5>Потребители</h5>
+													<h5>Потребител@(@Model.UsersCount == 1 ? "" : "я")</h5>
 												</div>
 											</div>
 										</div>
@@ -67,7 +57,7 @@
 												</div>
 												<div class="col-8">
 													<h1>@Model.AnnouncementsCount</h1>
-													<h5>Системни съобщения</h5>
+													<h5>@(@Model.AnnouncementsCount == 1 ? "Системно съобщение" : "Системни съобщения")</h5>
 												</div>
 											</div>
 										</div>
@@ -86,7 +76,7 @@
 												</div>
 												<div class="col-8">
 													<h1>@Model.VPSsCount</h1>
-													<h5>Сървъри</h5>
+													<h5>Сървър@(@Model.VPSsCount == 1 ? "" : "а")</h5>
 												</div>
 											</div>
 										</div>
@@ -105,7 +95,7 @@
 												</div>
 												<div class="col-8">
 													<h1>@Model.OrdersCount</h1>
-													<h5>Поръчки</h5>
+													<h5>Поръчк@(@Model.OrdersCount == 1 ? "а" : "и")</h5>
 												</div>
 											</div>
 										</div>
@@ -124,7 +114,7 @@
 												</div>
 												<div class="col-8">
 													<h1>@Model.PromoCodesCount</h1>
-													<h5>Промо кодове</h5>
+													<h5>Промо код@(@Model.PromoCodesCount == 1 ? "" : "а")</h5>
 												</div>
 											</div>
 										</div>
@@ -143,7 +133,7 @@
 												</div>
 												<div class="col-8">
 													<h1>@Model.TicketsCount</h1>
-													<h5>Билети</h5>
+													<h5>Билет@(@Model.TicketsCount == 1 ? "" : "а")</h5>
 												</div>
 											</div>
 										</div>
@@ -162,7 +152,7 @@
 												</div>
 												<div class="col-8">
 													<h1>@Model.PlansCount</h1>
-													<h5>Планове</h5>
+													<h5>План@(@Model.UsersCount == 1 ? "" : "а")</h5>
 												</div>
 											</div>
 										</div>
