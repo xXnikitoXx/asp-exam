@@ -2,6 +2,7 @@ const order = new Vue({
 	el: "#order",
 	data() {
 		return {
+			SaveOrder: window.SaveOrder || (() => new Promise(resolve => resolve())),
 			Having: (amount, price) => ({
 				get Get() {
 					let priceForOne = price / amount;
@@ -30,32 +31,36 @@ const order = new Vue({
 				else updateValues(discount, keepSaved);
 			},
 			applyCodes: () => {
-				let input = $("#codesInput");
-				let codes = [ input.val() ];
-				new Promise(async (resolve, reject) => {
-					let response = await fetch("/Order/SetCodes", {
-						method: "POST",
-						body: JsonToForm({
-							orderId: this.id,
-							codes
-						})
-					});
-					if (response.status == 200)
-						return resolve(await response.json());
-					reject(await response.text());
-				})
-				.then(discount => {
-					if (discount == 0 && codes.length != 0)
-						return $("#codeError").show();
-					input.val("");
-					this.codes = codes;
-					$("#codeError").hide();
-					this.update(discount, true);
-				})
-				.catch(console.error);
+				this.SaveOrder()
+				.then(() => {
+					let input = $("#codesInput");
+					let codes = [ input.val() ];
+					new Promise(async (resolve, reject) => {
+						let response = await fetch("/Order/SetCodes", {
+							method: "POST",
+							body: JsonToForm({
+								orderId: this.id,
+								codes
+							})
+						});
+						if (response.status == 200)
+							return resolve(await response.json());
+						reject(await response.text());
+					})
+					.then(discount => {
+						if (discount == 0 && codes.length != 0)
+							return $("#codeError").show();
+						input.val("");
+						this.codes = codes;
+						$("#codeError").hide();
+						this.update(discount, true);
+					})
+					.catch(console.error);
+				});
 			},
 			removeCodes: () => {
 				new Promise(async (resolve, reject) => {
+					await this.SaveOrder();
 					let response = await fetch("/Order/SetCodes", {
 						method: "POST",
 						body: JsonToForm({

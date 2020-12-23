@@ -210,6 +210,9 @@
 	</div>
 }
 
+@if (saveAllowedStates.Contains(Model.State)) {
+	<script src="/js/order/save.js"></script>
+}
 <script src="/js/order/price.js"></script>
 <script>
 	order.id = "@Model.Id";
@@ -222,6 +225,3 @@
 	order.codes = [ "@string.Join("\", \"", Model.PromoCodes.Select(code => code.Code))" ];
 	order.update(-1);
 </script>
-@if (saveAllowedStates.Contains(Model.State)) {
-	<script src="/js/order/save.js"></script>
-}
