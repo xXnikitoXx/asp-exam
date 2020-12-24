@@ -45,55 +45,97 @@
 			</div>
 			<div class="row">
 				@if (Model.ExternalId == null) {
-					<div class="row mb-3">
-						<div class="col-4 offset-4">
-							<label class="form-label">Име на сървъра</label>
-							<input id="nameInput" type="text" class="form-control" placeholder="Име на сървъра" asp-for="Name" :model="name">
+					<template v-if="password == '' && !processing">
+						<div class="row mb-3">
+							<div class="col-4 offset-4">
+								<label class="form-label">Име на сървъра</label>
+								<input id="nameInput" type="text" class="form-control" placeholder="Име на сървъра" v-model="name" v-on:keyup="changeName">
+							</div>
 						</div>
-					</div>
-					<div class="row mb-0">
-						<div class="col-8 offset-2 row">
-							<template v-for="d in Object.keys(versions)">
-								<div class="col-3">
-									<div class="card text-center distro pb-0 m-1 shadow-extra" :class="{ active: distro == d }" @@click="version = versions[distro = d][lastSelected[d]];">
-										<div class="card-body">
-											<img :src="`/img/distros/${d}.png`">
-											<h4 class="mt-4" style="text-transform: uppercase;">{{d}}</h4>
+						<div class="row mb-0">
+							<div class="col-8 offset-2 row">
+								<template v-for="d in Object.keys(versions)">
+									<div class="col-3">
+										<div class="card text-center distro pb-0 m-1 shadow-extra" :class="{ active: distro == d }" @@click="version = versions[distro = d][lastSelected[d]];">
+											<div class="card-body">
+												<img :src="`/img/distros/${d}.png`">
+												<h4 class="mt-4" style="text-transform: uppercase;">{{d}}</h4>
+											</div>
 										</div>
 									</div>
-								</div>
-							</template>
+								</template>
+							</div>
 						</div>
-					</div>
-					<div class="row mb-3">
-						<div class="col-8 offset-2 row">
-							<h3 class="form-label">Версия на дистрибуцията:</h3>
-							<template v-for="v in versions[distro]">
-								<div class="col-4">
-									<div class="card text-center distro p-0 m-1 shadow-extra" :class="{ active: version == v }" @@click="lastSelected[distro] = versions[distro].indexOf(version = v);">
-										<div class="card-body">
-											<h6 style="text-transform: uppercase;">{{v}}</h6>
+						<div class="row mb-3">
+							<div class="col-8 offset-2 row">
+								<h3 class="form-label">Версия на дистрибуцията:</h3>
+								<template v-for="v in versions[distro]">
+									<div class="col-4">
+										<div class="card text-center distro p-0 m-1 shadow-extra" :class="{ active: version == v }" @@click="lastSelected[distro] = versions[distro].indexOf(version = v);">
+											<div class="card-body">
+												<h6 style="text-transform: uppercase;">{{v}}</h6>
+											</div>
 										</div>
 									</div>
+								</template>
+							</div>
+						</div>
+						<div class="row mb-3">
+							<button @@click="setup" class="btn btn-primary col-4 offset-4" :disabled="name.length == 0">
+								Инсталация <i class="fas fa-running"></i>
+							</button>
+						</div>
+					</template>
+					<template v-else-if="processing">
+						<div class="row mb-3" style="justify-content: center;">
+							<div class="col-1">
+								<partial name="_Loader"></partial>
+							</div>
+						</div>
+					</template>
+					<template v-else>
+						<div class="row mb-3" style="justify-content: center;">
+							<div class="col-6">
+								<div class="input-group" style="width: auto;">
+									<span class="input-group-text">IP Адрес:</span>
+									<input type="text" class="form-control flex-grow-1" :value="ip" disabled>
 								</div>
-							</template>
+							</div>
 						</div>
-					</div>
-					<div class="row mb-3">
-						<div class="col-4 offset-2">
-							<label class="form-label">Парола за root:</label>
-							<input id="rootInput" type="password" class="form-control" placeholder="Парола за root">
+						<div class="row mb-3" style="justify-content: center;">
+							<div class="col-6">
+								<div class="col-6 input-group" style="width: auto;">
+									<span class="input-group-text">Root Парола:</span>
+									<input type="text" class="form-control flex-grow-1" :value="showPassword ? password : hiddenPassword" disabled>
+									<button class="btn" :class="{ 'btn-outline-info': showPassword, 'btn-primary': !showPassword }" @@click="showPassword = !showPassword">
+										{{showPassword ? "Скрии" : "Покажи"}}
+									</button>
+								</div>
+							</div>
 						</div>
-						<div class="col-4">
-							<label class="form-label">Потвърдете паролата:</label>
-							<input id="confInput" type="password" class="form-control" placeholder="Потвърдете паролата">
+						<div class="row mb-3" style="justify-content: center;">
+							<a :href="url" class="btn btn-primary col-4" >
+								Напред <i class="fas fa-chevron-right"></i>
+							</a>
 						</div>
-					</div>
+					</template>
 				} else {
-
+					<div class="row mb-3 text-center" style="justify-content: center;">
+						<h1>Сървърът Ви бе конфигуриран успешно!</h1>
+						<h1>🤩</h1>
+						<a href="/VPS/Manage?Id=@Model.Id" class="btn btn-info col-2" >
+							Преглед <i class="fas fa-server"></i>
+						</a>
+					</div>
 				}
 			</div>
 		</div>
 	</div>
 </div>
-<script src="/js/setup/ui.js"></script>
+@if (Model.ExternalId == null) {
+	<script src="/js/vps/setup.js"></script>
+	<script>
+		setup.name = "@Model.Name";
+		setup.changeName();
+	</script>
+}

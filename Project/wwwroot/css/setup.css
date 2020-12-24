@@ -95,3 +95,6 @@ body {
 	cursor: pointer;
 }
 .distro.active { background-color: #4287f5; }
+.distro.active h4,
+.distro.active h6
+{ color: #fff !important; }
