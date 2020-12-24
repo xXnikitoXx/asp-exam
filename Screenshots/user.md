@@ -7,3 +7,5 @@
 ![Order](/Screenshots/order.png)
 ![Order List](/Screenshots/orders.png)
 ![Removing Order](/Screenshots/removeOrder.png)
+## VPS
+![Setup](/Screenshots/setupVPS.png)
