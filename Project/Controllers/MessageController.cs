@@ -75,7 +75,13 @@ namespace Project.Controllers {
 		[HttpGet("/Admin/Message/Send")]
 		[Authorize(Roles = "Administrator")]
 		public IActionResult Send(string To = "{{ALL}}") {
-			ViewData["To"] = To;
+			if (To != "{{ALL}}") {
+				ApplicationUser target = this._roleService.Find(To);
+				if (target == null)
+					return Redirect("/404");
+				ViewData["To"] = target.UserName;
+			} else
+				ViewData["To"] = To;
 			return View();
 		}
 
