@@ -13,6 +13,7 @@ using Project.MappingConfiguration;
 using System;
 using Project.Hubs;
 using Project.Services.PayPal;
+using Project.Services.Hetzner;
 
 namespace Project {
 	public class Startup {
@@ -45,6 +46,7 @@ namespace Project {
 			services.AddScoped<IRoleClient, RoleClient>();
 			services.AddScoped<ITicketClient, TicketClient>();
 			services.AddScoped<IVPSClient, VPSClient>();
+			services.AddScoped<IServerClient, HetznerServerClient>();
 
 			services.AddScoped<MessageHub>();
 
