@@ -32,6 +32,7 @@ namespace Project.MappingConfiguration {
 				.ForMember(dest => dest.PayPalPayment, opt => opt.MapFrom(src => src.PaymentId))
 				.ForMember(dest => dest.PayPalPayer, opt => opt.MapFrom(src => src.PayerId));
 			CreateMap<PlanEditInputModel, Models.Plan>();
+			CreateMap<VPSSetupInputModel, VPS>();
 		}
 	}
 }
