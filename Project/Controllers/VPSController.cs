@@ -7,7 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Project.Data;
 using Project.Models;
 using Project.Services.Native;
+using Project.Services.Hetzner;
 using Project.ViewModels;
+using System;
+using lkcode.hetznercloudapi.Api;
+using Microsoft.AspNetCore.Identity;
 
 namespace Project.Controllers {
 	[Authorize]
@@ -15,20 +19,26 @@ namespace Project.Controllers {
 		private readonly IVPSClient _service;
 		private readonly IPlanClient _planService;
 		private readonly IOrderClient _orderService;
+		private readonly IServerClient _hetznerService;
 		private readonly ApplicationDbContext _context;
+		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly IMapper _mapper;
 
 		public VPSController(
 			IVPSClient service,
 			IPlanClient planService,
 			IOrderClient orderService,
+			IServerClient hetznerService,
 			ApplicationDbContext context,
+			UserManager<ApplicationUser> userManager,
 			IMapper mapper
 		) {
 			this._service = service;
 			this._planService = planService;
 			this._orderService = orderService;
+			this._hetznerService = hetznerService;
 			this._context = context;
+			this._userManager = userManager;
 			this._mapper = mapper;
 		}
 
@@ -58,7 +68,10 @@ namespace Project.Controllers {
 				return Redirect("/404");
 			if (target.ExternalId == null)
 				return Redirect("/VPS/Setup?Id=" + Id);
-			return View(target);
+			VPSViewModel model = this._mapper.Map<VPSViewModel>(target);
+			model.Order = this._mapper.Map<OrderViewModel>(await this._orderService.Find(model.OrderId));
+			model.Plan = this._mapper.Map<PlanViewModel>(await this._planService.Find(model.Order.PlanNumber));
+			return View(model);
 		}
 
 		public async Task<IActionResult> Setup(string Id) {
@@ -67,6 +80,30 @@ namespace Project.Controllers {
 			if (target == null)
 				return Redirect("/404");
 			return View(this._mapper.Map<VPSViewModel>(target));
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Setup(VPSSetupInputModel model) {
+			if (!ModelState.IsValid)
+				return BadRequest();
+			KeyValuePair<string, Server> server = new KeyValuePair<string, Server>(null, null);
+			VPS target = (await this._service.GetVPSs(User))
+				.FirstOrDefault(server => server.Id == model.Id);
+			target.Name = model.Name;
+			if (target == null)
+				return NotFound();
+			try {
+				Image image = await this._hetznerService.FromInput(model.Distro, model.Version);
+				server = await this._hetznerService.SetupServer(target, image);
+			} catch (Exception e) {
+				Console.WriteLine(e);
+			}
+			if (server.Key == null || server.Value == null)
+				return BadRequest();
+			target.IP = server.Value.Network.Ipv4.ToString();
+			target.ExternalId = server.Value.Id.ToString();
+			await this._service.UpdateVPS(target);
+			return Json(new string[] { server.Key, target.IP });
 		}
 	}
 }
