@@ -4,12 +4,9 @@ using Project.Enums;
 using Project.Models;
 using Project.ViewModels;
 
-namespace Project.MappingConfiguration
-{
-	public class ApplicationProfile : Profile
-	{
-		public ApplicationProfile()
-		{
+namespace Project.MappingConfiguration {
+	public class ApplicationProfile : Profile {
+		public ApplicationProfile() {
 			CreateMap<ApplicationUser, UserViewModel>();
 			CreateMap<VPS, VPSViewModel>();
 			CreateMap<Models.Plan, PlanViewModel>();
@@ -34,6 +31,7 @@ namespace Project.MappingConfiguration
 			CreateMap<PaymentInputModel, Payment>()
 				.ForMember(dest => dest.PayPalPayment, opt => opt.MapFrom(src => src.PaymentId))
 				.ForMember(dest => dest.PayPalPayer, opt => opt.MapFrom(src => src.PayerId));
+			CreateMap<PlanEditInputModel, Models.Plan>();
 		}
 	}
 }
