@@ -176,14 +176,7 @@ namespace Project.Services.Native {
 		}
 
 		public async Task UpdateCode(PromoCode code) {
-			PromoCode target = this._context.PromoCodes
-				.FirstOrDefault(promoCode => promoCode.Id == code.Id);
-			if (target == null)
-				throw new Exception();
-			target.Code = code.Code;
-			target.Type = code.Type;
-			target.Value = code.Value;
-			target.IsValid = code.IsValid;
+			this._context.PromoCodes.Update(code);
 			await this._context.SaveChangesAsync();
 		}
 

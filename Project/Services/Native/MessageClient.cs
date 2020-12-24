@@ -102,10 +102,7 @@ namespace Project.Services.Native {
 		}
 
 		public async Task UpdateMessage(Message message) {
-			Message target = this._context.Messages.FirstOrDefault(msg => msg.Id == message.Id);
-			if (target == null)
-				throw new Exception();
-			target = message;
+			this._context.Messages.Update(message);
 			await this._context.SaveChangesAsync();
 		}
 

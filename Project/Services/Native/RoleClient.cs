@@ -36,7 +36,7 @@ namespace Project.Services.Native {
 		}
 
 		public ApplicationUser First() => this._context.Users.OrderBy(user => user.JoinDate).FirstOrDefault();
-		public ApplicationUser Find(string id) => this._context.Users.FirstOrDefault(user => user.Id == id);
+		public ApplicationUser Find(string id) => this._context.Users.FirstOrDefault(user => user.Id == id || user.UserName == id);
 
 		public List<ApplicationUser> GetUsers() => this._context.Users.ToList();
 		public List<ApplicationUser> GetUsers(UsersViewModel pageInfo) {

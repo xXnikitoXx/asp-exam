@@ -53,6 +53,11 @@ namespace Project.Services.Native {
 			await this._context.SaveChangesAsync();
 		}
 
+		public async Task UpdatePlan(Plan plan) {
+			this._context.Update(plan);
+			await this._context.SaveChangesAsync();
+		}
+
 		public async Task RemovePlan(int number) =>
 			await this.RemovePlan(this._context.Plans.FirstOrDefault(plan => plan.Number == number));
 

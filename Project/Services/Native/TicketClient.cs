@@ -81,8 +81,7 @@ namespace Project.Services.Native {
 		}
 
 		public async Task UpdateTicket(Ticket ticket) {
-			Ticket target = await Find(ticket.Id);
-			target = ticket;
+			this._context.Tickets.Update(ticket);
 			await this._context.SaveChangesAsync();
 		}
 
