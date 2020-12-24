@@ -1,0 +1,50 @@
+@model PlanViewModel
+@{
+	ViewData["Title"] = "План " + Model.Name;
+}
+
+<div id="planDetails" class="row">
+	<div class="col-12">
+		<div class="card">
+			<div class="card-header text-center">
+				<h3 id="title" class="title">@ViewData["Title"]</h3>
+				<h5 class="subtitle text-muted">Настройка на плана</h5>
+			</div>
+			<div class="card-body">
+				<div class="row mb-3">
+					<div class="col-6">
+						<label class="form-label">Име на плана</label>
+						<input id="nameInput" type="text" class="form-control" placeholder="Име на плана" asp-for="Name">
+					</div>
+					<div class="col-6">
+						<label class="form-label">Цена</label>
+						<input id="priceInput" type="number" step="0.01" min="0" class="form-control" placeholder="Цена на плана" asp-for="Price">
+					</div>
+				</div>
+				<div class="row mb-3">
+					<div class="col-4">
+						<label class="form-label">Ядра</label>
+						<input id="coresInput" type="number" step="1" min="1" class="form-control" placeholder="Ядра на плана" asp-for="Cores">
+					</div>
+					<div class="col-4">
+						<label class="form-label">RAM памет</label>
+						<input id="memoryInput" type="number" step="1" min="2" class="form-control" placeholder="Памет на плана" asp-for="RAM">
+					</div>
+					<div class="col-4">
+						<label class="form-label">SSD пространство</label>
+						<input id="storageInput" type="number" step="1" min="20" class="form-control" placeholder="Пространство на плана" asp-for="SSD">
+					</div>
+				</div>
+				<div class="row mb-3">
+					<div class="col-12">
+					</div>
+				</div>
+				<div class="text-center mt-3">
+					<a href="/Admin/Plans" class="btn btn-primary"><i class="fas fa-chevron-left"></i> Назад</a>
+					<button onclick="SavePlan();" class="btn btn-outline-success"><i class="fas fa-save"></i> Запази промените</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="/js/plan/save.js"></script>

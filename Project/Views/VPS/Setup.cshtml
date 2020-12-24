@@ -1,0 +1,99 @@
+@model VPSViewModel
+@{
+	ViewData["Title"] = "Настройка на " + Model.Name;
+}
+
+<link rel="stylesheet" href="/css/setup.css">
+
+<div id="setup" class="row">
+	<div class="card">
+		<div class="card-header text-center">
+			<h3>
+				Настройване на сървър <span class="text-primary font-weight-bold">@Model.Name</span>
+			</h3>
+		</div>
+		<hr>
+		<div class="card-body">
+			<div class="row">
+				<div class="col-12">
+					<ul id="progressbar" class="text-center">
+						<li class="active step0">
+							<i class="fa fa-check"></i>
+							Плащане
+						</li>
+						@if (Model.ExternalId == null) {
+							<li class="active step0">
+								<i class="fa fa-cogs"></i>
+								Конфигурация
+							</li>
+							<li class="step0">
+								<i class="fa fa-server"></i>
+								Завършване
+							</li>
+						} else {
+							<li class="active step0">
+								<i class="fa fa-check"></i>
+								Конфигурация
+							</li>
+							<li class=" active step0">
+								<i class="fa fa-server"></i>
+								Завършване
+							</li>
+						}
+					</ul>
+				</div>
+			</div>
+			<div class="row">
+				@if (Model.ExternalId == null) {
+					<div class="row mb-3">
+						<div class="col-4 offset-4">
+							<label class="form-label">Име на сървъра</label>
+							<input id="nameInput" type="text" class="form-control" placeholder="Име на сървъра" asp-for="Name" :model="name">
+						</div>
+					</div>
+					<div class="row mb-0">
+						<div class="col-8 offset-2 row">
+							<template v-for="d in Object.keys(versions)">
+								<div class="col-3">
+									<div class="card text-center distro pb-0 m-1 shadow-extra" :class="{ active: distro == d }" @@click="version = versions[distro = d][lastSelected[d]];">
+										<div class="card-body">
+											<img :src="`/img/distros/${d}.png`">
+											<h4 class="mt-4" style="text-transform: uppercase;">{{d}}</h4>
+										</div>
+									</div>
+								</div>
+							</template>
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col-8 offset-2 row">
+							<h3 class="form-label">Версия на дистрибуцията:</h3>
+							<template v-for="v in versions[distro]">
+								<div class="col-4">
+									<div class="card text-center distro p-0 m-1 shadow-extra" :class="{ active: version == v }" @@click="lastSelected[distro] = versions[distro].indexOf(version = v);">
+										<div class="card-body">
+											<h6 style="text-transform: uppercase;">{{v}}</h6>
+										</div>
+									</div>
+								</div>
+							</template>
+						</div>
+					</div>
+					<div class="row mb-3">
+						<div class="col-4 offset-2">
+							<label class="form-label">Парола за root:</label>
+							<input id="rootInput" type="password" class="form-control" placeholder="Парола за root">
+						</div>
+						<div class="col-4">
+							<label class="form-label">Потвърдете паролата:</label>
+							<input id="confInput" type="password" class="form-control" placeholder="Потвърдете паролата">
+						</div>
+					</div>
+				} else {
+
+				}
+			</div>
+		</div>
+	</div>
+</div>
+<script src="/js/setup/ui.js"></script>
