@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -33,7 +32,7 @@ namespace Project.Controllers {
 			this._mapper = mapper;
 		}
 
-
+		[HttpGet("/VPS")]
 		public async Task<IActionResult> Index(int Page = 1, int Show = 10) {
 			List<Plan> plans = this._planService.GetPlans();
 			VPSsViewModel model = new VPSsViewModel {
@@ -52,8 +51,22 @@ namespace Project.Controllers {
 			return View(model);
 		}
 
-		public IActionResult Manage(string id) {
-			return View();
+		public async Task<IActionResult> Manage(string Id) {
+			VPS target = (await this._service.GetVPSs(User))
+				.FirstOrDefault(vps => vps.Id == Id);
+			if (target == null)
+				return Redirect("/404");
+			if (target.ExternalId == null)
+				return Redirect("/VPS/Setup?Id=" + Id);
+			return View(target);
+		}
+
+		public async Task<IActionResult> Setup(string Id) {
+			VPS target = (await this._service.GetVPSs(User))
+				.FirstOrDefault(vps => vps.Id == Id);
+			if (target == null)
+				return Redirect("/404");
+			return View(this._mapper.Map<VPSViewModel>(target));
 		}
 	}
 }

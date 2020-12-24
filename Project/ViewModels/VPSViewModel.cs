@@ -10,6 +10,7 @@ namespace Project.ViewModels {
 		}
 
 		public string Id { get; set; }
+		public string ExternalId { get; set; }
 		public string Name { get; set; }
 		public PlanViewModel Plan { get; set; }
 		public Location Location { get; set; }
