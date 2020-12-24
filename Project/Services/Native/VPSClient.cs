@@ -95,6 +95,11 @@ namespace Project.Services.Native {
 			await _context.SaveChangesAsync();
 		}
 
+		public async Task UpdateVPS(VPS vps) {
+			this._context.VPSs.Update(vps);
+			await this._context.SaveChangesAsync();
+		}
+
 		public async Task UpdateStatus(string id, ServerStatus status, float cpu, float ram) =>
 			await UpdateStatus(await Find(id), status, cpu, ram);
 
