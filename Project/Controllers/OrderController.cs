@@ -190,11 +190,23 @@ namespace Project.Controllers {
 		[HttpGet("/Admin/Order")]
 		[Authorize(Roles = "Administrator")]
 		public async Task<IActionResult> AdminIndex(string OrderId) {
-			OrderViewModel model = this._mapper.Map<OrderViewModel>(await this._service.Find(OrderId));
+			Order order = await this._service.Find(OrderId);
+			OrderViewModel model = this._mapper.Map<OrderViewModel>(order);
 			if (model == null)
 				return Redirect("/404");
 			model.Plan = this._mapper.Map<PlanViewModel>(this._planService.GetPlans()
 				.FirstOrDefault(plan => plan.Number == model.PlanNumber));
+			model.PromoCodes = this._codeService.GetPromoCodes(order)
+				.Select(this._mapper.Map<PromoCodeViewModel>)
+				.ToList();
+			if (model.State == OrderState.Finished) {
+				model.Payment = this._mapper.Map<PaymentViewModel>(this._paymentService.GetPayment(order));
+				model.Payment.AssociatedVPSs = (await this._vpsService.GetVPSs(User))
+					.Where(vps => vps.OrderId == order.Id)
+					.OrderBy(vps => vps.Name)
+					.Select(this._mapper.Map<VPSViewModel>)
+					.ToList();
+			}
 			return View(model);
 		}
 

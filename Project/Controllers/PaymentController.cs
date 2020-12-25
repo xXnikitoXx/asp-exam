@@ -74,7 +74,7 @@ namespace Project.Controllers {
 			List<VPSViewModel> vpss = (await this._paymentService.CreatePayment(payment))
 				.Select(this._mapper.Map<VPSViewModel>)
 				.OrderBy(vps => vps.Name)
-				.ToList();
+				.ToList(); 
 			PaymentViewModel viewModel = this._mapper.Map<PaymentViewModel>(payment);
 			viewModel.AssociatedVPSs = vpss;
 			return View(viewModel);

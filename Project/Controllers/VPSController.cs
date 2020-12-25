@@ -83,6 +83,8 @@ namespace Project.Controllers {
 		}
 
 		[HttpPost]
+		[Route("/VPS/Setup")]
+		[Route("/Admin/VPS/Setup")]
 		public async Task<IActionResult> Setup(VPSSetupInputModel model) {
 			if (!ModelState.IsValid)
 				return BadRequest();
@@ -104,6 +106,55 @@ namespace Project.Controllers {
 			target.ExternalId = server.Value.Id.ToString();
 			await this._service.UpdateVPS(target);
 			return Json(new string[] { server.Key, target.IP });
+		}
+
+		[HttpGet("/Admin/VPSs")]
+		[Authorize(Roles = "Administrator")]
+		public async Task<IActionResult> AdminList(int Page = 1, int Show = 10) {
+			VPSsViewModel model = new VPSsViewModel {
+				Page = Page,
+				Show = Show
+			};
+			model.VPSs = this._service.GetVPSs(model)
+				.Select(this._mapper.Map<VPSViewModel>)
+				.ToList();
+			foreach (VPSViewModel vps in model.VPSs) {
+				ApplicationUser user = await this._userManager.FindByIdAsync(vps.UserId);
+				vps.Username = user == null ? "{{DELETED}}" : user.UserName;
+				vps.Order = this._mapper.Map<OrderViewModel>(await this._orderService.Find(vps.OrderId));
+				vps.Plan = this._mapper.Map<PlanViewModel>(await this._planService.Find(vps.Order.PlanNumber));
+			}
+			return View(model);
+		}
+
+		[HttpGet("/Admin/VPS/Manage")]
+		[Authorize(Roles = "Administrator")]
+		public async Task<IActionResult> AdminManage(string Id) {
+			VPS target = await this._service.Find(Id);
+			if (target == null)
+				return Redirect("/404");
+			if (target.ExternalId == null)
+				return Redirect("/Admin/VPS/Setup?Id=" + Id);
+			VPSViewModel model = this._mapper.Map<VPSViewModel>(target);
+			ApplicationUser user = await this._userManager.FindByIdAsync(model.UserId);
+			model.Username = user == null ? "{{DELETED}}" : user.UserName;
+			model.Order = this._mapper.Map<OrderViewModel>(await this._orderService.Find(model.OrderId));
+			model.Plan = this._mapper.Map<PlanViewModel>(await this._planService.Find(model.Order.PlanNumber));
+			ViewData["Admin"] = true;
+			return View("Manage", model);
+		}
+
+		[HttpGet("/Admin/VPS/Setup")]
+		[Authorize(Roles = "Administrator")]
+		public async Task<IActionResult> AdminSetup(string Id) {
+			VPS target = await this._service.Find(Id);
+			if (target == null)
+				return Redirect("/404");
+			VPSViewModel model = this._mapper.Map<VPSViewModel>(target);
+			ApplicationUser user = await this._userManager.FindByIdAsync(model.UserId);
+			model.Username = user == null ? "{{DELETED}}" : user.UserName;
+			ViewData["Admin"] = true;
+			return View("Setup", model);
 		}
 	}
 }
