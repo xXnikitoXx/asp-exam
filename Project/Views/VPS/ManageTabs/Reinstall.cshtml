@@ -1,0 +1,81 @@
+<div id="reinstall" class="row">
+	<template v-if="password == '' && !processing">
+		<div class="row mb-0">
+			<div class="col-12">
+				<template v-for="d in Object.keys(versions)">
+					<div class="col-3">
+						<div class="card text-center distro pb-0 m-1 shadow-extra" :class="{ active: distro == d }" @@click="version = versions[distro = d][lastSelected[d]];">
+							<div class="card-body">
+								<img :src="'/img/distros/' + d + '.png'">
+								<h4 class="mt-4" style="text-transform: uppercase;">{{d}}</h4>
+							</div>
+						</div>
+					</div>
+				</template>
+			</div>
+		</div>
+		<div class="row mb-3">
+			<div class="col-12">
+				<template v-for="v in versions[distro]">
+					<div class="col-4">
+						<div class="card text-center distro p-0 m-1 shadow-extra" :class="{ active: version == v }" @@click="lastSelected[distro] = versions[distro].indexOf(version = v);">
+							<div class="card-body">
+								<h6 style="text-transform: uppercase;">{{v}}</h6>
+							</div>
+						</div>
+					</div>
+				</template>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-6 offset-3">
+				<div class="alert alert-danger" role="alert">
+					<div class="alert-icon">
+						<i class="fa fa-exclamation"></i>
+					</div>
+					<div class="alert-message">
+						Всички данни на сървъра ще бъдат изтрити!
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row mb-3">
+			<button @@click="setup" class="btn btn-danger col-4 offset-4">
+				Преинсталация <i class="fas fa-running"></i>
+			</button>
+		</div>
+	</template>
+	<template v-else-if="processing">
+		<div class="row mb-3" style="justify-content: center;">
+			<div class="col-1">
+				<partial name="_Loader"></partial>
+			</div>
+		</div>
+	</template>
+	<template v-else>
+		<div class="row mb-3" style="justify-content: center;">
+			<div class="col-8">
+				<div class="input-group" style="width: auto;">
+					<span class="input-group-text">IP Адрес:</span>
+					<input type="text" class="form-control flex-grow-1" :value="ip" disabled>
+				</div>
+			</div>
+		</div>
+		<div class="row mb-3" style="justify-content: center;">
+			<div class="col-8">
+				<div class="col-6 input-group" style="width: auto;">
+					<span class="input-group-text">Root Парола:</span>
+					<input type="text" class="form-control flex-grow-1" :value="showPassword ? password : hiddenPassword" disabled>
+					<button class="btn" :class="{ 'btn-outline-info': showPassword, 'btn-primary': !showPassword }" @@click="showPassword = !showPassword">
+						{{showPassword ? "Скрии" : "Покажи"}}
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="row mb-3" style="justify-content: center;">
+			<a :href="url" class="btn btn-primary col-4" >
+				Напред <i class="fas fa-chevron-right"></i>
+			</a>
+		</div>
+	</template>
+</div>
