@@ -78,7 +78,7 @@ const order = new Vue({
 				})
 				.catch(console.error);
 			},
-			id: null,
+			id: "",
 			showCodeError: false,
 			saved: true,
 			amount: 0,
@@ -86,7 +86,7 @@ const order = new Vue({
 			midPrice: 0,
 			discount: 0,
 			finalPrice: 0,
-			location: null,
+			location: "",
 			codes: [],
 		};
 	},
