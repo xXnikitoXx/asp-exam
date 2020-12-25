@@ -1,16 +1,32 @@
 @model VPSViewModel
 @{
 	ViewData["Title"] = "Настройка на " + Model.Name;
+	ViewData["Back"] = "/VPS";
+	if (ViewData["Admin"] != null)
+		ViewData["Back"] = $"/Admin{ViewData["Back"]}s";
 }
 
 <link rel="stylesheet" href="/css/setup.css">
 
 <div id="setup" class="row">
+	<div>
+		<a class="btn btn-outline-info" href="@ViewData["Back"]"><i class="fas fa-chevron-left"></i> Назад</a>
+	</div>
 	<div class="card">
 		<div class="card-header text-center">
 			<h3>
 				Настройване на сървър <span class="text-primary font-weight-bold">@Model.Name</span>
 			</h3>
+			@if (ViewData["Admin"] != null) {
+				<h5 class="text-muted">
+					Собственик: 
+					@if (@Model.Username == "{{DELETED}}") {
+						<span>« Изтрит »</span>
+					} else {
+						<a href="/Admin/User?UserName=@Model.Username">@Model.Username</a>
+					}
+				</h5>
+			}
 		</div>
 		<hr>
 		<div class="card-body">
@@ -133,9 +149,5 @@
 	</div>
 </div>
 @if (Model.ExternalId == null) {
-	<script src="/js/vps/setup.js"></script>
-	<script>
-		setup.name = "@Model.Name";
-		setup.changeName();
-	</script>
+	<script type="module" src="/js/vps/setup.js" onload="setup.name = '@Model.Name'; setup.changeName();"></script>
 }
