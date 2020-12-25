@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Project.Services.Native {
 	public interface IVPSClient {
+		Task<VPS> Find(string id);
 		Task<List<VPS>> GetVPSs(ClaimsPrincipal user, VPSsViewModel pageInfo);
 		List<VPS> GetVPSs(ApplicationUser user, VPSsViewModel pageInfo);
 		Task<List<VPS>> GetVPSs(ClaimsPrincipal user);

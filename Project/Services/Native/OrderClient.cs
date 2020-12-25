@@ -38,7 +38,9 @@ namespace Project.Services.Native {
 			GetOrders(await _userManager.GetUserAsync(user), pageInfo);
 
 		public List<Order> GetOrders(OrdersViewModel pageInfo) {
-			IQueryable<Order> orders = this._context.Orders.AsQueryable();
+			IQueryable<Order> orders = this._context.Orders
+				.OrderByDescending(order => order.TimeStarted)
+				.AsQueryable();
 			pageInfo.Total = orders.Count();
 			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
 			pageInfo.CreatedOrders = orders.Count(order => order.State == OrderState.Created);
@@ -53,10 +55,13 @@ namespace Project.Services.Native {
 		
 		public List<Order> GetOrders(ApplicationUser user) => _context.Orders
 			.Where(order => order.UserId == user.Id)
+			.OrderByDescending(order => order.TimeStarted)
 			.ToList();
 
 		public List<Order> GetOrders(ApplicationUser user, OrdersViewModel pageInfo) {
-			IQueryable<Order> orders = this._context.Orders.Where(order => order.UserId == user.Id);
+			IQueryable<Order> orders = this._context.Orders
+				.Where(order => order.UserId == user.Id)
+				.OrderByDescending(order => order.TimeStarted);
 			pageInfo.Total = orders.Count();
 			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
 			pageInfo.CreatedOrders = orders.Count(order => order.State == OrderState.Created);
@@ -70,9 +75,13 @@ namespace Project.Services.Native {
 		}
 
 		public IQueryable<Order> FinishedOrders() =>
-			this._context.Orders.Where(order => order.State == OrderState.Finished);
+			this._context.Orders
+				.Where(order => order.State == OrderState.Finished)
+				.OrderBy(order => order.TimeStarted);
 		public IQueryable<Order> FinishedOrders(ApplicationUser user) =>
-			this._context.Orders.Where(order => order.State == OrderState.Finished && order.UserId == user.Id);
+			this._context.Orders
+				.Where(order => order.State == OrderState.Finished && order.UserId == user.Id)
+				.OrderByDescending(order => order.TimeStarted);
 		public List<Order> FinishedOrders(OrdersViewModel pageInfo) {
 			IQueryable<Order> orders = FinishedOrders();
 			pageInfo.Total = orders.Count();
@@ -130,7 +139,8 @@ namespace Project.Services.Native {
 			.ToList();
 
 		public List<Order> FromThisMonth(OrdersViewModel pageInfo) {
-			IQueryable<Order> orders = FinishedOrders().Where(order => order.TimeFinished.Year == Year && order.TimeFinished.Month == Month);
+			IQueryable<Order> orders = FinishedOrders()
+				.Where(order => order.TimeFinished.Year == Year && order.TimeFinished.Month == Month);
 			pageInfo.Total = orders.Count();
 			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
 			pageInfo.CreatedOrders = orders.Count(order => order.State == OrderState.Created);
@@ -148,7 +158,8 @@ namespace Project.Services.Native {
 			.ToList();
 
 		public List<Order> FromThisYear(OrdersViewModel pageInfo) {
-			IQueryable<Order> orders = FinishedOrders().Where(order => order.TimeFinished.Year == Year);
+			IQueryable<Order> orders = FinishedOrders()
+				.Where(order => order.TimeFinished.Year == Year);
 			pageInfo.Total = orders.Count();
 			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
 			pageInfo.CreatedOrders = orders.Count(order => order.State == OrderState.Created);

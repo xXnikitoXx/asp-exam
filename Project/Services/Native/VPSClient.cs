@@ -26,7 +26,7 @@ namespace Project.Services.Native {
 			this._userManager = userManager;
 		}
 
-		async Task<VPS> Find(string id) =>
+		public async Task<VPS> Find(string id) =>
 			await _context.VPSs.FirstOrDefaultAsync(vps => vps.Id == id);
 
 		public List<VPS> GetVPSs(VPSsViewModel pageInfo) {

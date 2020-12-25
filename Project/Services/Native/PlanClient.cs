@@ -30,10 +30,14 @@ namespace Project.Services.Native {
 			await this._context.Plans.FirstOrDefaultAsync(plan => plan.Number == number);
 
 		public List<Plan> GetPlans() =>
-			this._context.Plans.ToList();
+			this._context.Plans
+				.OrderBy(plan => plan.Price)
+				.ToList();
 
 		public List<Plan> GetPlans(PlansViewModel pageInfo) {
-			IQueryable<Plan> plans = this._context.Plans.AsQueryable();
+			IQueryable<Plan> plans = this._context.Plans
+				.OrderBy(plan => plan.Price)
+				.AsQueryable();
 			pageInfo.Total = plans.Count();
 			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
 			return plans.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
