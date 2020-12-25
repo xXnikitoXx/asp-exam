@@ -8,11 +8,12 @@ namespace Project.MappingConfiguration {
 	public class ApplicationProfile : Profile {
 		public ApplicationProfile() {
 			CreateMap<ApplicationUser, UserViewModel>();
-			CreateMap<VPS, VPSViewModel>();
 			CreateMap<Models.Plan, PlanViewModel>();
 			CreateMap<Ticket, TicketViewModel>();
 			CreateMap<Payment, PaymentViewModel>();
 			CreateMap<Message, MessageViewModel>();
+			CreateMap<VPS, VPSViewModel>()
+				.ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.UserName));
 			CreateMap<Message, NotificationMessageViewModel>()
 				.ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.Sender.UserName));
 			CreateMap<PromoCode, PromoCodeViewModel>()

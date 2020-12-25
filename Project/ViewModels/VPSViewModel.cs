@@ -22,5 +22,7 @@ namespace Project.ViewModels {
 		public List<State> States { get; set; }
 		public string OrderId { get; set; }
 		public OrderViewModel Order { get; set; }
+		public string UserId { get; set; }
+		public string Username { get; set; }
 	}
 }
