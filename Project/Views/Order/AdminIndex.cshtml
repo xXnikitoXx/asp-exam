@@ -9,6 +9,26 @@
 	OrderState[] saveAllowedStates = new OrderState[] {
 		OrderState.Created,
 	};
+	double amount = Model.OriginalPrice;
+	foreach (PromoCodeViewModel code in Model.PromoCodes) {
+		switch (code.Type) {
+			case PromoCodeType.FixedAmount:
+				amount -= code.Value;
+				break;
+			case PromoCodeType.Percentage:
+				amount -= amount * code.Value;
+				break;
+			case PromoCodeType.PriceOverride:
+				amount = code.Value;
+				break;
+			case PromoCodeType.Free:
+				amount = 0;
+				break;
+		}
+	}
+	if (amount < 0)
+		amount = 0;
+	ViewData["Discount"] = Model.OriginalPrice - amount;
 }
 
 <style>
@@ -16,17 +36,7 @@
 		text-align: center;
 	}
 </style>
-@if (ViewData["Message"] != null) {
-	<div class="alert alert-primary alert-dismissible" role="alert">
-		<div class="alert-icon">
-			<i class="fa fa-info"></i>
-		</div>
-		<div class="alert-message">
-			@Html.Raw(@ViewData["Message"])
-		</div>
-	</div>
-}
-<div class="row">
+<div id="order" class="row">
 	<div class="col-12 col-md-8">
 		<div class="card">
 			<div class="card-header">
@@ -41,15 +51,19 @@
 							<th>Име на продукт</th>
 							<th>Количество</th>
 							<th>Сървърна локация</th>
-							<th>Цена</th>
+							<th>Единична цена</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr>
 							<td>@Model.Plan.Name</td>
-							<td>@Model.Amount</td>
-							<td class="table-action">@Model.Location.ToString().Replace("_", ", ")</td>
-							<td>@(Model.OriginalPrice.ToString("F2"))лв</td>
+							<td>
+								{{amount}}
+							</td>
+							<td>
+								{{location.replace("_", ", ")}}
+							</td>
+							<td>{{price.toFixed(2)}}лв</td>
 						</tr>
 					</tbody>
 				</table>
@@ -68,39 +82,15 @@
 							<thead>
 								<tr>
 									<th>Междинна сума: </th>
-									<th>Отстъпка: <code>@string.Join(", ", Model.PromoCodes.Select(code => code.Code).ToList())</code></th>
+									<th>Отстъпка: <code>{{codes.join(", ")}}</code></th>
 									<th>Обща сума: </th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td>@(Model.OriginalPrice.ToString("F2"))лв</td>
-									<td>
-										@(new Func<double>(() => {
-											double amount = Model.OriginalPrice;
-											foreach (PromoCodeViewModel code in Model.PromoCodes) {
-												switch (code.Type) {
-													case PromoCodeType.FixedAmount:
-														amount -= code.Value;
-														break;
-													case PromoCodeType.Percentage:
-														amount -= amount * code.Value;
-														break;
-													case PromoCodeType.PriceOverride:
-														amount = code.Value;
-														break;
-													case PromoCodeType.Free:
-														amount = 0;
-														break;
-												}
-											}
-											if (amount < 0)
-												amount = 0;
-											@ViewData["Change"] = amount.ToString("F2");
-											return Model.OriginalPrice - amount;
-										}).Invoke().ToString("F2"))лв
-									</td>
-									<td>@ViewData["Change"]лв</td>
+									<td>{{midPrice.toFixed(2)}}лв</td>
+									<td>{{discount.toFixed(2)}}лв</td>
+									<td>{{finalPrice.toFixed(2)}}лв</td>
 								</tr>
 							</tbody>
 						</table>
@@ -110,3 +100,59 @@
 		</div>
 	</div>
 </div>
+@if (Model.Payment != null) {
+	<div class="row">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-body">
+					<h3 class="card-title">Плащане</h3>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Дата</th>
+								<th>PayPal номер на плащане</th>
+								<th>PayPal номер на платец</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>@Model.Payment.Time</td>
+								<td>@Model.Payment.PayPalPayment</td>
+								<td>@Model.Payment.PayPalPayer</td>
+							</tr>
+						</tbody>
+					</table>
+					<hr>
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Създадени сървъри</th>
+							</tr>
+						</thead>
+						<tbody>
+							@foreach (VPSViewModel vps in @Model.Payment.AssociatedVPSs) {
+								<tr>
+									<td>
+										<a href="/Admin/VPS?Id=@vps.Id">@vps.Name</a>
+									</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+<script src="/js/order/price.js"></script>
+<script>
+	order.id = "@Model.Id";
+	order.amount = @Model.Amount;
+	order.midPrice = @Model.OriginalPrice;
+	order.price = order.Having(order.amount, order.midPrice).Get.PriceFor(1);
+	order.discount = @ViewData["Discount"];
+	order.finalPrice = @Model.FinalPrice;
+	order.location = "@Model.Location";
+	order.codes = [ "@string.Join("\", \"", Model.PromoCodes.Select(code => code.Code))" ];
+	order.update(-1);
+</script>
