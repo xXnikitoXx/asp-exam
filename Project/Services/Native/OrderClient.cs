@@ -53,8 +53,8 @@ namespace Project.Services.Native {
 			return orders.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
 		}
 		
-		public List<Order> GetOrders(ApplicationUser user) => _context.Orders
-			.Where(order => order.UserId == user.Id)
+		public List<Order> GetOrders(ApplicationUser user) =>
+			_context.Orders.Where(order => order.UserId == user.Id)
 			.OrderByDescending(order => order.TimeStarted)
 			.ToList();
 
@@ -75,12 +75,10 @@ namespace Project.Services.Native {
 		}
 
 		public IQueryable<Order> FinishedOrders() =>
-			this._context.Orders
-				.Where(order => order.State == OrderState.Finished)
+			this._context.Orders.Where(order => order.State == OrderState.Finished)
 				.OrderBy(order => order.TimeStarted);
 		public IQueryable<Order> FinishedOrders(ApplicationUser user) =>
-			this._context.Orders
-				.Where(order => order.State == OrderState.Finished && order.UserId == user.Id)
+			this._context.Orders.Where(order => order.State == OrderState.Finished && order.UserId == user.Id)
 				.OrderByDescending(order => order.TimeStarted);
 		public List<Order> FinishedOrders(OrdersViewModel pageInfo) {
 			IQueryable<Order> orders = FinishedOrders();

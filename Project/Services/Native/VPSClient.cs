@@ -118,8 +118,7 @@ namespace Project.Services.Native {
 		public async Task RegisterActivity(string id, string message, string url = null) =>
 			await RegisterActivity(await Find(id), message, url);
 
-		public async Task RegisterActivity(VPS vps, string message, string url = null)
-		{
+		public async Task RegisterActivity(VPS vps, string message, string url = null) {
 			Activity activity = new Activity {
 				Message = message,
 				URL = url,

@@ -5,7 +5,8 @@ namespace Project.Services.Native {
 	public class AdminClient : IAdminClient {
 		private readonly ApplicationDbContext _context;
 
-		public AdminClient(ApplicationDbContext context) => this._context = context;
+		public AdminClient(ApplicationDbContext context) =>
+			this._context = context;
 
 		public int UsersCount() => this._context.Users.Count();
 		public int AnnouncementsCount() => this._context.Announcements.Count();

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -9,8 +8,7 @@ using Project.Models;
 using Project.ViewModels;
 
 namespace Project.Services.Native {
-	public class RoleClient : IRoleClient
-	{
+	public class RoleClient : IRoleClient {
 		private readonly ApplicationDbContext _context;
 		private readonly RoleManager<IdentityRole> _roleManager;
 		private readonly UserManager<ApplicationUser> _userManager;
@@ -35,10 +33,13 @@ namespace Project.Services.Native {
 			}).Wait();
 		}
 
-		public ApplicationUser First() => this._context.Users.OrderBy(user => user.JoinDate).FirstOrDefault();
-		public ApplicationUser Find(string id) => this._context.Users.FirstOrDefault(user => user.Id == id || user.UserName == id);
+		public ApplicationUser First() =>
+			this._context.Users.OrderBy(user => user.JoinDate).FirstOrDefault();
+		public ApplicationUser Find(string id) =>
+			this._context.Users.FirstOrDefault(user => user.Id == id || user.UserName == id);
 
-		public List<ApplicationUser> GetUsers() => this._context.Users.ToList();
+		public List<ApplicationUser> GetUsers() =>
+			this._context.Users.ToList();
 		public List<ApplicationUser> GetUsers(UsersViewModel pageInfo) {
 			IQueryable<ApplicationUser> users = this._context.Users.AsQueryable();
 			pageInfo.Total = users.Count();
@@ -49,10 +50,14 @@ namespace Project.Services.Native {
 			return users.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
 		}
 
-		public async Task<bool> HasAdmin() => (await this._userManager.GetUsersInRoleAsync("Administrator")).Count != 0;
-		public async Task<bool> IsAdmin(ApplicationUser user) => await this._userManager.IsInRoleAsync(user, "Administrator");
-		public async Task<bool> IsAdmin(ClaimsPrincipal user) => await IsAdmin(await this._userManager.GetUserAsync(user));
-		public async Task<bool> IsAdmin(string id) => await this._userManager.IsInRoleAsync(Find(id), "Administrator");
+		public async Task<bool> HasAdmin() =>
+			(await this._userManager.GetUsersInRoleAsync("Administrator")).Count != 0;
+		public async Task<bool> IsAdmin(ApplicationUser user) =>
+			await this._userManager.IsInRoleAsync(user, "Administrator");
+		public async Task<bool> IsAdmin(ClaimsPrincipal user) =>
+			await IsAdmin(await this._userManager.GetUserAsync(user));
+		public async Task<bool> IsAdmin(string id) =>
+			await this._userManager.IsInRoleAsync(Find(id), "Administrator");
 
 		public async Task PromoteToAdmin(ApplicationUser user) {
 			await this._userManager.AddToRoleAsync(user, "Administrator");
@@ -72,6 +77,7 @@ namespace Project.Services.Native {
 		public async Task DemoteToUser(ClaimsPrincipal user) =>
 			await DemoteToUser(await this._userManager.GetUserAsync(user));
 
-		public async Task DemoteToUser(string id) => await DemoteToUser(Find(id));
+		public async Task DemoteToUser(string id) =>
+			await DemoteToUser(Find(id));
 	}
 }

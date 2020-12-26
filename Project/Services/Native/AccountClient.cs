@@ -8,11 +8,9 @@ using Project.Data;
 using Project.Models;
 
 namespace Project.Services.Native {
-	public class AccountClient : IAccountClient
-	{
+	public class AccountClient : IAccountClient {
 		private readonly ApplicationDbContext _context;
 		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly IRoleClient _roleService;
 		private readonly IOrderClient _orderService;
 		public AccountClient(
@@ -24,7 +22,6 @@ namespace Project.Services.Native {
 		) {
 			this._context = context;
 			this._userManager = userManager;
-			this._signInManager = signInManager;
 			this._roleService = roleService;
 			this._orderService = orderService;
 		}

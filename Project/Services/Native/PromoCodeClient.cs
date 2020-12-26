@@ -11,7 +11,6 @@ using Project.ViewModels;
 
 namespace Project.Services.Native {
 	public class PromoCodeClient : IPromoCodeClient {
-		
 		private readonly ApplicationDbContext _context;
 		private readonly UserManager<ApplicationUser> _userManager;
 
@@ -23,7 +22,8 @@ namespace Project.Services.Native {
 			this._userManager = userManager;
 		}
 
-		public IQueryable<PromoCode> Codes => this._context.PromoCodes.AsQueryable();
+		public IQueryable<PromoCode> Codes =>
+			this._context.PromoCodes.AsQueryable();
 
 		public double GetFinalPrice(double price, List<PromoCode> codes) {
 			double totalFixedAmount = 0;
@@ -51,8 +51,10 @@ namespace Project.Services.Native {
 		public double GetDiscount(double price, List<PromoCodeOrder> codes) =>
 			price - GetFinalPrice(price, codes);
 
-		public PromoCode GetCodeById(string id) => this._context.PromoCodes.FirstOrDefault(code => code.Id == id);
-		public PromoCode GetCodeByText(string text) => this._context.PromoCodes.FirstOrDefault(code => code.Code == text);
+		public PromoCode GetCodeById(string id) =>
+			this._context.PromoCodes.FirstOrDefault(code => code.Id == id);
+		public PromoCode GetCodeByText(string text) =>
+			this._context.PromoCodes.FirstOrDefault(code => code.Code == text);
 
 		public PromoCode GetCode(string search) {
 			PromoCode target = GetCodeById(search);
@@ -61,20 +63,23 @@ namespace Project.Services.Native {
 			return target;
 		}
 
-		public List<PromoCode> GetPromoCodes() => this._context.PromoCodes.ToList();
+		public List<PromoCode> GetPromoCodes() =>
+			this._context.PromoCodes.ToList();
 		public List<PromoCode> GetPromoCodes(PromoCodesViewModel pageInfo) {
-			pageInfo.Total = this._context.PromoCodes.Count();
-			pageInfo.Active = this._context.PromoCodes.Count(code => code.IsValid);
-			pageInfo.Inactive = this._context.PromoCodes.Count(code => !code.IsValid);
-			pageInfo.FixedAmount = this._context.PromoCodes.Count(code => code.Type == PromoCodeType.FixedAmount);
-			pageInfo.Percentage = this._context.PromoCodes.Count(code => code.Type == PromoCodeType.Percentage);
-			pageInfo.PriceOverride = this._context.PromoCodes.Count(code => code.Type == PromoCodeType.PriceOverride);
-			pageInfo.Free = this._context.PromoCodes.Count(code => code.Type == PromoCodeType.Free);
+			IQueryable<PromoCode> promoCodes = this._context.PromoCodes.AsQueryable();
+			pageInfo.Total = promoCodes.Count();
+			pageInfo.Active = promoCodes.Count(code => code.IsValid);
+			pageInfo.Inactive = promoCodes.Count(code => !code.IsValid);
+			pageInfo.FixedAmount = promoCodes.Count(code => code.Type == PromoCodeType.FixedAmount);
+			pageInfo.Percentage = promoCodes.Count(code => code.Type == PromoCodeType.Percentage);
+			pageInfo.PriceOverride = promoCodes.Count(code => code.Type == PromoCodeType.PriceOverride);
+			pageInfo.Free = promoCodes.Count(code => code.Type == PromoCodeType.Free);
 			pageInfo.Pages = (pageInfo.Total / pageInfo.Show) + (pageInfo.Total % pageInfo.Show != 0 ? 1 : 0);
-			return this._context.PromoCodes.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
+			return promoCodes.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
 		}
 
-		public List<PromoCode> GetPromoCodes(Order order) => this._context.PromoCodes
+		public List<PromoCode> GetPromoCodes(Order order) =>
+			this._context.PromoCodes
 			.Where(promoCode =>
 				promoCode.Orders.Any(promoCodeOrder => promoCodeOrder.OrderId == order.Id))
 			.ToList();
@@ -93,7 +98,8 @@ namespace Project.Services.Native {
 			return codes.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
 		}
 
-		public List<PromoCode> GetPromoCodes(ApplicationUser user) => this._context.PromoCodes
+		public List<PromoCode> GetPromoCodes(ApplicationUser user) =>
+			this._context.PromoCodes
 			.Where(promoCode =>
 				promoCode.Users.Any(userPromoCode => userPromoCode.UserId == user.Id))
 			.ToList();
@@ -112,8 +118,10 @@ namespace Project.Services.Native {
 			return codes.Skip(pageInfo.Show * (pageInfo.Page - 1)).Take(pageInfo.Show).ToList();
 		}
 
-		public async Task<List<PromoCode>> GetPromoCodes(ClaimsPrincipal user) => GetPromoCodes(await _userManager.GetUserAsync(user));
-		public async Task<List<PromoCode>> GetPromoCodes(ClaimsPrincipal user, PromoCodesViewModel pageInfo) => GetPromoCodes(await _userManager.GetUserAsync(user), pageInfo);
+		public async Task<List<PromoCode>> GetPromoCodes(ClaimsPrincipal user) =>
+			GetPromoCodes(await _userManager.GetUserAsync(user));
+		public async Task<List<PromoCode>> GetPromoCodes(ClaimsPrincipal user, PromoCodesViewModel pageInfo) =>
+			GetPromoCodes(await _userManager.GetUserAsync(user), pageInfo);
 
 		public async Task SetCodes(List<PromoCode> codes, Order order) {
 			List<PromoCodeOrder> promoCodeOrders = this._context.PromoCodeOrders
@@ -143,10 +151,12 @@ namespace Project.Services.Native {
 		}
 
 		private static Random random = new Random();
-		public static string RandomString(int length) => new string(
-			Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", length)
-				.Select(s => s[random.Next(s.Length)]).ToArray()
-		);
+		public static string RandomString(int length) =>
+			new string(
+				Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", length)
+					.Select(s => s[random.Next(s.Length)])
+					.ToArray()
+			);
 
 		public async Task<PromoCode> CreateCode() {
 			PromoCode code = new PromoCode {

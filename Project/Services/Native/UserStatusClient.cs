@@ -1,8 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using Project.Models;
 
 namespace Project.Services.Native {
@@ -14,7 +11,8 @@ namespace Project.Services.Native {
 
 		public bool IsOnline(string user) =>
 			this.statusRegistrar.ContainsKey(user);
-		public bool IsOnline(ApplicationUser user) => IsOnline(user.Id);
+		public bool IsOnline(ApplicationUser user) =>
+			IsOnline(user.Id);
 
 		public List<string> ConnectionsOf(string id) =>
 			this.statusRegistrar.ContainsKey(id) ? this.statusRegistrar[id].ToList() : new List<string>();
