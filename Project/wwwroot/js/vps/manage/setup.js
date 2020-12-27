@@ -11,9 +11,9 @@ export const setupModule = parent => ({
 	processing: false,
 	versions: {
 		ubuntu: [ 20.04, 18.04, 16.04 ],
-		debian: [ 9, 10 ],
-		fedora: [ 32, 33 ],
-		centos: [ 7, 8 ],
+		debian: [ 10, 9 ],
+		fedora: [ 33, 32 ],
+		centos: [ 8, 7 ],
 	},
 	lastSelected: {
 		ubuntu: 0,

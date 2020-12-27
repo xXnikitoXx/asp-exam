@@ -1,6 +1,7 @@
 import { charts } from "./manage/charts.js";
 import { tabs } from "./manage/tabs.js";
 import { setupModule } from "./manage/setup.js";
+import { control } from "./manage/control.js";
 
 window.manage = new Vue({
 	el: "#manage",
@@ -12,6 +13,7 @@ window.manage = new Vue({
 			...charts,
 			...tabs,
 			...setupModule(this),
+			...control(this),
 		};
 	},
 })
