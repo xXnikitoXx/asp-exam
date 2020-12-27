@@ -21,6 +21,9 @@ namespace Project.Services.Native {
 		Task UpdateVPS(VPS vps);
 		Task UpdateStatus(string id, ServerStatus status, double cpu, List<double> disk, List<double> network);
 		Task UpdateStatus(VPS vps, ServerStatus status, double cpu, List<double> disk, List<double> network);
+		List<State> GetState(string id, int step);
+		List<State> GetState(VPS vps, int step);
+		Task DisposeOldSates();
 		Task RegisterActivity(string id, string message, string url);
 		Task RegisterActivity(VPS vps, string message, string url);
 		Task RemoveVPS(string id);

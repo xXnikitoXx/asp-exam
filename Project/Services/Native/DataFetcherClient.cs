@@ -39,7 +39,7 @@ namespace Project.Services.Native {
 				DoWork,
 				null,
 				TimeSpan.Zero,
-				TimeSpan.FromSeconds(30)
+				TimeSpan.FromSeconds(15)
 			);
 			return Task.CompletedTask;
 		}
@@ -50,8 +50,11 @@ namespace Project.Services.Native {
 				this._hetznerService = scope.ServiceProvider.GetRequiredService<IServerClient>();
 				this._serverDataService = scope.ServiceProvider.GetRequiredService<IServerDataClient>();
 
-				List<Server> servers = this._hetznerService.GetAllServers().GetAwaiter().GetResult();
-				SyncStatus(servers).GetAwaiter().GetResult();
+				Task.Run(async () => {
+					List<Server> servers = await this._hetznerService.GetAllServers();
+					await SyncStatus(servers);
+					await this._vpsService.DisposeOldSates();
+				}).GetAwaiter().GetResult();
 			}
 		}
 

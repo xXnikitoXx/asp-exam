@@ -124,6 +124,22 @@ namespace Project.Services.Native {
 			await _context.SaveChangesAsync();
 		}
 
+		public List<State> GetState(string id, int step) =>
+			this._context.States.Where(state => state.VPSId == id)
+				.OrderByDescending(state => state.Time)
+				.Take(step)
+				.ToList();
+
+		public List<State> GetState(VPS vps, int step) =>
+			GetState(vps.Id, step);
+
+		public async Task DisposeOldSates() {
+			DateTime limit = DateTime.Now.AddMinutes(-5);
+			IQueryable<State> old = this._context.States.Where(state => state.Time.CompareTo(limit) < 0);
+			this._context.States.RemoveRange(old);
+			await this._context.SaveChangesAsync();
+		}
+
 		public async Task RegisterActivity(string id, string message, string url = null) =>
 			await RegisterActivity(await Find(id), message, url);
 
