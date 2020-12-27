@@ -1,7 +1,5 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Project.Data;
 using Project.Services.Native;
 using Project.ViewModels;
 
@@ -11,21 +9,15 @@ namespace Project.Controllers {
 		private readonly IAdminClient _service;
 		private readonly IRoleClient _roleService;
 		private readonly IOrderClient _orderService;
-		private readonly ApplicationDbContext _context;
-		private readonly IMapper _mapper;
 
 		public AdminController(
 			IAdminClient service,
 			IRoleClient roleService,
-			IOrderClient orderService,
-			ApplicationDbContext context,
-			IMapper mapper
+			IOrderClient orderService
 		) {
 			this._service = service;
 			this._roleService = roleService;
 			this._orderService = orderService;
-			this._context = context;
-			this._mapper = mapper;
 		}
 
 		public IActionResult Index() {

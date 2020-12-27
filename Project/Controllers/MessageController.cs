@@ -5,7 +5,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Project.Data;
 using Project.Hubs;
 using Project.Models;
 using Project.Services.Native;
@@ -17,7 +16,6 @@ namespace Project.Controllers {
 		private readonly IMessageClient _service;
 		private readonly ITicketClient _ticketService;
 		private readonly IRoleClient _roleService;
-		private readonly ApplicationDbContext _context;
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly IMapper _mapper;
 		private readonly MessageHub _messageHub;
@@ -26,7 +24,6 @@ namespace Project.Controllers {
 			IMessageClient service,
 			ITicketClient ticketService,
 			IRoleClient roleService,
-			ApplicationDbContext context,
 			UserManager<ApplicationUser> userManager,
 			IMapper mapper,
 			MessageHub messageHub
@@ -34,7 +31,6 @@ namespace Project.Controllers {
 			this._service = service;
 			this._ticketService = ticketService;
 			this._roleService = roleService;
-			this._context = context;
 			this._userManager = userManager;
 			this._mapper = mapper;
 			this._messageHub = messageHub;

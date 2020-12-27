@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Project.Data;
 using Project.Models;
 using Project.Services.Native;
 using Project.ViewModels;
@@ -13,16 +9,13 @@ using Project.ViewModels;
 namespace Project.Controllers {
 	[Authorize(Roles = "Administrator")]
 	public class AnnouncementController : Controller {
-		private readonly ApplicationDbContext _context;
 		private readonly IAnnouncementClient _service;
 		private readonly IMapper _mapper;
 
 		public AnnouncementController(
-			ApplicationDbContext context,
 			IAnnouncementClient service,
 			IMapper mapper
 		) {
-			this._context = context;
 			this._service = service;
 			this._mapper = mapper;
 		}
@@ -50,7 +43,7 @@ namespace Project.Controllers {
 				return BadRequest();
 			try {
 				await this._service.CreateAnnouncement(this._mapper.Map<Announcement>(model));
-			} catch (Exception) {
+			} catch {
 				return BadRequest();
 			}
 			return Ok();
@@ -68,7 +61,7 @@ namespace Project.Controllers {
 		public async Task<IActionResult> Remove(string Id) {
 			try {
 				await this._service.RemoveAnnouncement(Id);
-			} catch (Exception) {
+			} catch {
 				return NotFound();
 			}
 			return Ok();

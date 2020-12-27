@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -49,7 +48,7 @@ namespace Project.Controllers {
 			try {
 				Plan plan = this._mapper.Map<Plan>(model);
 				await this._service.UpdatePlan(plan);
-			} catch (Exception) {
+			} catch {
 				return NotFound();
 			}
 			return Ok();

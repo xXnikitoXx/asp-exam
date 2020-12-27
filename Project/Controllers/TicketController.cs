@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Project.Data;
 using Project.Services.Native;
 using Project.ViewModels;
 using System.Linq;
@@ -13,19 +12,15 @@ using System;
 namespace Project.Controllers {
 	[Authorize]
 	public class TicketController : Controller {
-
-		private readonly ApplicationDbContext _context;
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly ITicketClient _service;
 		private readonly IMapper _mapper;
 
 		public TicketController(
-			ApplicationDbContext context,
 			UserManager<ApplicationUser> userManager,
 			ITicketClient service,
 			IMapper mapper
 		) {
-			this._context = context;
 			this._userManager = userManager;
 			this._service = service;
 			this._mapper = mapper;

@@ -1,14 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using PayPal.Api;
-using Project.Data;
 using Project.Enums;
 using Project.Models;
 using Project.Services.Native;
@@ -22,7 +19,6 @@ namespace Project.Controllers {
 		private readonly IOrderClient _orderService;
 		private readonly IPlanClient _planService;
 		private readonly IPaymentClient _paymentService;
-		private readonly ApplicationDbContext _context;
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly IMapper _mapper;
 		private readonly string host;
@@ -32,7 +28,6 @@ namespace Project.Controllers {
 			IOrderClient orderService,
 			IPlanClient planService,
 			IPaymentClient paymentService,
-			ApplicationDbContext context,
 			UserManager<ApplicationUser> userManager,
 			IMapper mapper
 		) {
@@ -40,7 +35,6 @@ namespace Project.Controllers {
 			this._orderService = orderService;
 			this._planService = planService;
 			this._paymentService = paymentService;
-			this._context = context;
 			this._userManager = userManager;
 			this._mapper = mapper;
 			this.host = Environment.GetEnvironmentVariable("PROXY_HOST");
@@ -79,8 +73,7 @@ namespace Project.Controllers {
 				PaymentViewModel viewModel = this._mapper.Map<PaymentViewModel>(payment);
 				viewModel.AssociatedVPSs = vpss;
 				return View(viewModel);
-			} catch (Exception error) {
-				Console.WriteLine(error.ToString());
+			} catch {
 				return Redirect("/Error");
 			}
 		}

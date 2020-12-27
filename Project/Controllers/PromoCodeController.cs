@@ -47,7 +47,7 @@ namespace Project.Controllers {
 			try {
 				PromoCode code = await this._service.CreateCode();
 				return Redirect("/Admin/Codes/Details?Id=" + code.Id);
-			} catch (Exception) {
+			} catch {
 				return StatusCode(500);
 			}
 		}
@@ -65,7 +65,7 @@ namespace Project.Controllers {
 			bool state;
 			try {
 				state = await this._service.SwitchCode(Id);
-			} catch (Exception) {
+			} catch {
 				return NotFound();
 			}
 			return Json(state);
@@ -78,7 +78,7 @@ namespace Project.Controllers {
 			PromoCode code = this._mapper.Map<PromoCode>(model);
 			try {
 				await this._service.UpdateCode(code);
-			} catch(Exception) {
+			} catch {
 				return BadRequest();
 			}
 			return Ok();
