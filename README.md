@@ -8,8 +8,9 @@ Virtual private servers are provided by [UltimateHost](https://www.uhost.pw).
 * front-end - [jQuery](https://jquery.com/), [Vue.js](https://vuejs.org/) and [Bootstrap](https://getbootstrap.com/).
 * database - [Microsoft SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
 * payment gateway - [PayPal](https://developer.paypal.com/docs/api/rest-sdks/)
+* reverse proxy - based on [Tech Lab MVC (alpha)](https://tl-git.tk/techlab/templates/backend/node-mvc) and [Redbird](https://github.com/OptimalBits/redbird)
 
-The app is temporary hosted behind customized [Redbird Reverse Proxy](https://github.com/OptimalBits/redbird) and accessible on https://voxic.tk
+The app is temporary hosted behind customized reverse proxy and accessible on https://voxic.tk
 
 ## Screenshots
 * [Admin Panel](/Screenshots/admin.md)
