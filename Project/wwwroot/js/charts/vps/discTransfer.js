@@ -1,5 +1,6 @@
+import { xAxes } from "./timeAxes.js";
 const discTransferCtx = document.querySelector("#disc-transfer").getContext("2d");
-const discTransferChart = new Chart(discTransferCtx, {
+window.discTransferChart = new Chart(discTransferCtx, {
 	type: "line",
 	data: {
 		labels: [
@@ -9,6 +10,7 @@ const discTransferChart = new Chart(discTransferCtx, {
 			{
 				label: "четене",
 				data: [],
+				lineTension: 0,
 				backgroundColor: "#c057",
 				borderColor: "#c05",
 				borderWidth: 2
@@ -16,6 +18,7 @@ const discTransferChart = new Chart(discTransferCtx, {
 			{
 				label: "записване",
 				data: [],
+				lineTension: 0,
 				backgroundColor: "#0cf7",
 				borderColor: "#0cf",
 				borderWidth: 2
@@ -23,16 +26,26 @@ const discTransferChart = new Chart(discTransferCtx, {
 		]
 	},
 	options: {
+		elements: {
+			lines: {
+				bezierCurve: false,
+				tension: 0,
+			},
+		},
 		scales: {
 			yAxes: [{
+				beginAtZero: true,
 				ticks: {
 					callback: value => value + " MB/s",
+					stepSize: 1,
+					min: 0
 				},
 				scaleLabel: {
 					display: true,
 					labelString: ""
 				}
-			}]
+			}],
+			xAxes,
 		}
 	}
 });

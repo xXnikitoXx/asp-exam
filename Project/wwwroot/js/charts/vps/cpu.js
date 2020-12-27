@@ -1,5 +1,6 @@
+import { xAxes } from "./timeAxes.js";
 const cpuStatsCtx = document.querySelector("#cpu-stats").getContext("2d");
-const cpuChart = new Chart(cpuStatsCtx, {
+window.cpuChart = new Chart(cpuStatsCtx, {
 	type: "line",
 	data: {
 		labels: [
@@ -9,6 +10,7 @@ const cpuChart = new Chart(cpuStatsCtx, {
 			{
 				label: "",
 				data: [],
+				lineTension: 0,
 				backgroundColor: "#dc354577",
 				borderColor: "#dc3545",
 				borderWidth: 2
@@ -16,6 +18,12 @@ const cpuChart = new Chart(cpuStatsCtx, {
 		]
 	},
 	options: {
+		elements: {
+			lines: {
+				bezierCurve: false,
+				tension: 0,
+			},
+		},
 		scales: {
 			yAxes: [{
 				ticks: {
@@ -27,7 +35,8 @@ const cpuChart = new Chart(cpuStatsCtx, {
 					display: true,
 					labelString: ""
 				}
-			}]
+			}],
+			xAxes,
 		}
 	}
 });
