@@ -14,6 +14,7 @@ using System;
 using Project.Hubs;
 using Project.Services.PayPal;
 using Project.Services.Hetzner;
+using Newtonsoft.Json;
 
 namespace Project {
 	public class Startup {
@@ -47,8 +48,11 @@ namespace Project {
 			services.AddScoped<ITicketClient, TicketClient>();
 			services.AddScoped<IVPSClient, VPSClient>();
 			services.AddScoped<IServerClient, HetznerServerClient>();
+			services.AddScoped<IServerDataClient, ServerDataClient>();
 
 			services.AddScoped<MessageHub>();
+
+			services.AddHostedService<DataFetcherClient>();
 
 			services.AddAntiforgery();
 			services.AddControllersWithViews();
@@ -57,6 +61,10 @@ namespace Project {
 		}
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext context) {
+			JsonConvert.DefaultSettings = () => new JsonSerializerSettings {
+				NullValueHandling = NullValueHandling.Ignore
+			};
+
 			if (env.IsDevelopment()) {
 				context.Database.EnsureCreated();
 				app.UseDeveloperExceptionPage();
@@ -67,8 +75,7 @@ namespace Project {
 
 			app.Use(async (context, next) => {
 				await next();
-				if (context.Response.StatusCode == 404)
-				{
+				if (context.Response.StatusCode == 404) {
 					context.Request.Path = "/404";
 					await next();
 				}
