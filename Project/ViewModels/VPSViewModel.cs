@@ -5,8 +5,8 @@ using Project.Models;
 namespace Project.ViewModels {
 	public class VPSViewModel {
 		public VPSViewModel() {
-			this.Activities = new List<Activity>();
-			this.States = new List<State>();
+			this.Activities = new List<ActivityViewModel>();
+			this.States = new List<StateViewModel>();
 		}
 
 		public string Id { get; set; }
@@ -16,8 +16,8 @@ namespace Project.ViewModels {
 		public byte Cores { get; set; }
 		public byte RAM { get; set; }
 		public ushort SSD { get; set; }
-		public List<Activity> Activities { get; set; }
-		public List<State> States { get; set; }
+		public List<ActivityViewModel> Activities { get; set; }
+		public List<StateViewModel> States { get; set; }
 		public string OrderId { get; set; }
 		public OrderViewModel Order { get; set; }
 		public string ServerDataId { get; set; }
