@@ -14,7 +14,6 @@ namespace Project.Models {
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 		public string Id { get; set; }
-		public string ExternalId { get; set; }
 
 		[Required]
 		[StringLength(30, MinimumLength = 3)]
@@ -22,10 +21,6 @@ namespace Project.Models {
 
 		[Required]
 		public Location Location { get; set; }
-		
-		[Required]
-		[StringLength(15, MinimumLength = 7)]
-		public string IP { get; set; }
 
 		[Required]
 		public byte Cores { get; set; }
@@ -41,5 +36,7 @@ namespace Project.Models {
 		public ICollection<State> States { get; set; }
 		public string OrderId { get; set; }
 		public Order Order { get; set; }
+		public string ServerDataId { get; set; }
+		public ServerData ServerData { get; set; }
 	}
 }
