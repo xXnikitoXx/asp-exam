@@ -8,7 +8,6 @@ using Project.Models;
 using Project.Services.Native;
 using Project.Services.Hetzner;
 using Project.ViewModels;
-using System;
 using lkcode.hetznercloudapi.Api;
 using Microsoft.AspNetCore.Identity;
 
@@ -73,6 +72,10 @@ namespace Project.Controllers {
 			model.Order = this._mapper.Map<OrderViewModel>(await this._orderService.Find(model.OrderId));
 			model.ServerData = this._mapper.Map<ServerDataViewModel>(await this._serverDataService.Find(model.ServerDataId));
 			model.Plan = this._mapper.Map<PlanViewModel>(await this._planService.Find(model.Order.PlanNumber));
+			model.States = this._service.GetState(target, 10)
+				.Select(this._mapper.Map<StateViewModel>)
+				.OrderBy(state => state.Time)
+				.ToList();
 			return View(model);
 		}
 
@@ -107,8 +110,7 @@ namespace Project.Controllers {
 			Image image = await this._hetznerService.FromInput(model.Distro, model.Version);
 			try {
 				server = await this._hetznerService.SetupServer(target, image);
-			} catch (Exception e) {
-				Console.WriteLine(e);
+			} catch {
 				return BadRequest();
 			}
 			if (server.Key == null || server.Value == null)
@@ -152,6 +154,10 @@ namespace Project.Controllers {
 			model.Order = this._mapper.Map<OrderViewModel>(await this._orderService.Find(model.OrderId));
 			model.ServerData = this._mapper.Map<ServerDataViewModel>(await this._serverDataService.Find(model.ServerDataId));
 			model.Plan = this._mapper.Map<PlanViewModel>(await this._planService.Find(model.Order.PlanNumber));
+			model.States = this._service.GetState(target, 10)
+				.Select(this._mapper.Map<StateViewModel>)
+				.OrderBy(state => state.Time)
+				.ToList();
 			ViewData["Admin"] = true;
 			return View("Manage", model);
 		}
@@ -203,6 +209,28 @@ namespace Project.Controllers {
 					break;
 			}
 			return Ok();
+		}
+
+		[HttpGet("/VPS/State")]
+		public async Task<IActionResult> State(string Id, int Step = 10) {
+			if ((await this._service.GetVPSs(User)).Any(vps => vps.Id == Id)) {
+				List<StateViewModel> states = this._service.GetState(Id, Step)
+					.Select(this._mapper.Map<StateViewModel>)
+					.OrderBy(state => state.Time)
+					.ToList();
+				return Json(states);
+			} else
+				return NotFound();
+		}
+
+		[HttpGet("/Admin/VPS/State")]
+		[Authorize(Roles = "Administrator")]
+		public IActionResult AdminState(string Id, int Step = 10) {
+			List<StateViewModel> states = this._service.GetState(Id, Step)
+				.Select(this._mapper.Map<StateViewModel>)
+				.OrderBy(state => state.Time)
+				.ToList();
+			return Json(states);
 		}
 	}
 }
