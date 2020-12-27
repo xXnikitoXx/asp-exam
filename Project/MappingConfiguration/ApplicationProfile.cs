@@ -12,6 +12,7 @@ namespace Project.MappingConfiguration {
 			CreateMap<Ticket, TicketViewModel>();
 			CreateMap<Payment, PaymentViewModel>();
 			CreateMap<Message, MessageViewModel>();
+			CreateMap<ServerData, ServerDataViewModel>();
 			CreateMap<VPS, VPSViewModel>()
 				.ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.UserName));
 			CreateMap<Message, NotificationMessageViewModel>()
