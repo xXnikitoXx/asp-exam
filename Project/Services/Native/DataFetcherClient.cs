@@ -74,21 +74,33 @@ namespace Project.Services.Native {
 
 		public async Task UpdateVPS(ServerData data, ServerMetric cpuMetric, ServerMetric diskMetric, ServerMetric networkMetric) {
 			ServerMetricTimeSeries srs = cpuMetric.TimeSeries;
-			double cpu = srs.CpuValues[0].Value;
+			double cpu = 0;
+			List<double> disk = new List<double>();
+			List<double> network = new List<double>();
+			if (srs.CpuValues.Count != 0)
+				try {
+					cpu = srs.CpuValues[0].Value;
+				} catch {}
 			srs = diskMetric.TimeSeries;
-			List<double> disk = new List<double> {
-				srs.DiskValues[0].BandwithRead[0].Value,
-				srs.DiskValues[0].BandwithWrite[0].Value,
-				srs.DiskValues[0].IOPSRead[0].Value,
-				srs.DiskValues[0].IOPSWrite[0].Value,
-			};
+			if (srs.DiskValues.Count != 0)
+				try {
+					disk = new List<double> {
+						srs.DiskValues[0].BandwithRead[0].Value,
+						srs.DiskValues[0].BandwithWrite[0].Value,
+						srs.DiskValues[0].IOPSRead[0].Value,
+						srs.DiskValues[0].IOPSWrite[0].Value,
+					};
+				} catch {}
 			srs = networkMetric.TimeSeries;
-			List<double> network = new List<double> {
-				srs.NetworkValues[0].BandwithIn[0].Value,
-				srs.NetworkValues[0].BandwithOut[0].Value,
-				srs.NetworkValues[0].PPSIn[0].Value,
-				srs.NetworkValues[0].PPSOut[0].Value,
-			};
+			if (srs.NetworkValues.Count != 0)
+				try {
+					network = new List<double> {
+						srs.NetworkValues[0].BandwithIn[0].Value,
+						srs.NetworkValues[0].BandwithOut[0].Value,
+						srs.NetworkValues[0].PPSIn[0].Value,
+						srs.NetworkValues[0].PPSOut[0].Value,
+					};
+				} catch {}
 			await this._vpsService.UpdateStatus(data.VPSId, _filter[data.Status], cpu, disk, network);
 		}
 	}
