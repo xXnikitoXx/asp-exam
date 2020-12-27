@@ -54,6 +54,15 @@ namespace Project.Services.Native {
 			user.Payments.Add(payment);
 			order.Payment = payment;
 			order.Plan = plans.FirstOrDefault(plan => plan.Number == order.PlanNumber);
+			List<PromoCodeOrder> otherOrdersCodes = this._context.PromoCodeOrders
+				.Where(pco => order.PromoCodes.Select(pc => pc.PromoCodeId).Contains(pco.PromoCodeId))
+				.ToList();
+			this._context.PromoCodeOrders.RemoveRange(otherOrdersCodes);
+			foreach (PromoCodeOrder pco in order.PromoCodes)
+				this._context.UserPromoCodes.Add(new UserPromoCode {
+					User = order.User,
+					PromoCode = pco.PromoCode,
+				});
 			await this._context.SaveChangesAsync();
 			await this._orderService.UpdateState(order, OrderState.Finished);
 			List<VPS> vpss = new List<VPS>();

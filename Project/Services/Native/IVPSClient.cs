@@ -2,12 +2,14 @@
 using Project.Models;
 using Project.ViewModels;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Project.Services.Native {
 	public interface IVPSClient {
 		Task<VPS> Find(string id);
+		IQueryable<VPS> AllInitialized();
 		Task<List<VPS>> GetVPSs(ClaimsPrincipal user, VPSsViewModel pageInfo);
 		List<VPS> GetVPSs(ApplicationUser user, VPSsViewModel pageInfo);
 		Task<List<VPS>> GetVPSs(ClaimsPrincipal user);
@@ -17,8 +19,8 @@ namespace Project.Services.Native {
 		Task<VPS> RegisterVPSFor(Order order, string name);
 		Task<VPS> RegisterVPSFor(Order order, int index);
 		Task UpdateVPS(VPS vps);
-		Task UpdateStatus(string id, ServerStatus status, float cpu, float ram);
-		Task UpdateStatus(VPS vps, ServerStatus status, float cpu, float ram);
+		Task UpdateStatus(string id, ServerStatus status, double cpu, List<double> disk, List<double> network);
+		Task UpdateStatus(VPS vps, ServerStatus status, double cpu, List<double> disk, List<double> network);
 		Task RegisterActivity(string id, string message, string url);
 		Task RegisterActivity(VPS vps, string message, string url);
 		Task RemoveVPS(string id);

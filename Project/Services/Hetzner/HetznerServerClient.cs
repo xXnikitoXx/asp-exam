@@ -22,6 +22,16 @@ namespace Project.Services.Hetzner {
 			lkcode.hetznercloudapi.Core.ApiCore.ApiToken = Environment.GetEnvironmentVariable("HETZNER_TOKEN");
 		}
 
+		public async Task<Server> Find(string id) =>
+			await Server.GetByIdAsync(int.Parse(id));
+
+		public async Task<List<Server>> GetAllServers() =>
+			await Server.GetAsync();
+
+		public async Task<Image> FindImage(string id) =>
+			(await Image.GetAsync())
+			.FirstOrDefault(image => image.Id.ToString() == id);
+
 		public async Task<Image> FromInput(string distro, string version) =>
 			(await Image.GetAsync())
 			.FirstOrDefault(image => image.OsFlavor == distro && image.OsVersion == version);
@@ -51,5 +61,20 @@ namespace Project.Services.Hetzner {
 			else
 				return new KeyValuePair<string, Server>(action.AdditionalActionContent.ToString(), newServer);
 		}
+
+		public async Task<ServerActionResponse> PowerOn(string id) =>
+			await (new Server { Id = long.Parse(id) }).PowerOn();
+
+		public async Task<ServerActionResponse> Reboot(string id) =>
+			await (new Server { Id = long.Parse(id) }).Reboot();
+
+		public async Task<ServerActionResponse> Reset(string id) =>
+			await (new Server { Id = long.Parse(id) }).Reset();
+
+		public async Task<ServerActionResponse> Shutdown(string id) =>
+			await (new Server { Id = long.Parse(id) }).Shutdown();
+
+		public async Task<ServerActionResponse> PowerOff(string id) =>
+			await (new Server { Id = long.Parse(id) }).PowerOff();
 	}
 }

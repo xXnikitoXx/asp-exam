@@ -29,6 +29,9 @@ namespace Project.Services.Native {
 		public async Task<VPS> Find(string id) =>
 			await _context.VPSs.FirstOrDefaultAsync(vps => vps.Id == id);
 
+		public IQueryable<VPS> AllInitialized() =>
+			this._context.VPSs.Where(vps => vps.ServerDataId != null);
+
 		public List<VPS> GetVPSs(VPSsViewModel pageInfo) {
 			IQueryable<VPS> vpss = this._context.VPSs.OrderBy(vps => vps.Name);
 			pageInfo.Total = vpss.Count();
@@ -68,7 +71,6 @@ namespace Project.Services.Native {
 			VPS vps = new VPS {
 				Name = name,
 				Location = order.Location,
-				IP = "0.0.0.0",
 				Cores = order.Plan.Cores,
 				RAM = order.Plan.RAM,
 				SSD = order.Plan.SSD,
@@ -100,15 +102,22 @@ namespace Project.Services.Native {
 			await this._context.SaveChangesAsync();
 		}
 
-		public async Task UpdateStatus(string id, ServerStatus status, float cpu, float ram) =>
-			await UpdateStatus(await Find(id), status, cpu, ram);
+		public async Task UpdateStatus(string id, ServerStatus status, double cpu, List<double> disk, List<double> network) =>
+			await UpdateStatus(await Find(id), status, cpu, disk, network);
 
-		public async Task UpdateStatus(VPS vps, ServerStatus status, float cpu, float ram) {
+		public async Task UpdateStatus(VPS vps, ServerStatus status, double cpu, List<double> disk, List<double> network) {
 			State state = new State {
 				Status = status,
 				Time = DateTime.Now,
 				CPU = cpu,
-				RAM = ram,
+				DiskRead = disk[0],
+				DiskWrite = disk[1],
+				OperationsRead = disk[2],
+				OperationsWrite = disk[3],
+				NetworkIn = network[0],
+				NetworkOut = network[1],
+				PacketsIn = network[2],
+				PacketsOut = network[3],
 			};
 			_context.States.Add(state);
 			vps.States.Add(state);
