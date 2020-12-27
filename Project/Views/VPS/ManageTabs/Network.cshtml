@@ -1,1 +1,30 @@
-<h3>Мрежа</h3>
+@model VPSViewModel
+
+<div class="card">
+	<div class="card-header">
+		<h3 class="title">Мрежова информация</h3>
+	</div>
+	<div class="card-body">
+		<table id="datatables-reponsive" class="table table-striped" style="width:100%">
+			<thead>
+				<tr>
+					<th><i class="fas fa-globe"></i> IP Адреси</th>
+					<td></td>
+					<th>Блокиран</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th><i class="fas fa-dice-four"></i> IPv4</th>
+					<td>@Model.ServerData.IPv4</td>
+					<td><i class="fa fa-@(Model.ServerData.IPv4Blocked ? "check" : "times")"></td>
+				</tr>
+				<tr>
+					<th><i class="fas fa-dice-six"></i> IPv6</th>
+					<td>@Model.ServerData.IPv6</td>
+					<td><i class="fa fa-@(Model.ServerData.IPv4Blocked ? "check" : "times")"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

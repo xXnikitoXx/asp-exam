@@ -1,1 +1,39 @@
-<h3>Обща информация</h3>
+@model VPSViewModel
+
+<div class="card">
+	<div class="card-header">
+		<h3 class="title">Обща информация и данни</h3>
+	</div>
+	<div class="card-body">
+		<table id="datatables-reponsive" class="table table-striped" style="width:100%">
+			<thead>
+				<tr>
+					<th><i class="fas fa-microchip"></i> Ядра</th>
+					<td>@Model.Cores</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th><i class="fas fa-memory"></i> Рам Памет</th>
+					<td>@Model.RAM GB</td>
+				</tr>
+				<tr>
+					<th><i class="fas fa-hdd"></i> Диск</th>
+					<td>@Model.SSD GB</td>
+				</tr>
+				<tr>
+					<th><i class="fas fa-map-marker-alt"></i> Локация</th>
+					<td>@Model.Location.ToString().Replace("_", ", ")</td>
+				</tr>
+				<tr>
+					<th><i class="fas fa-clipboard-list"></i> План</th>
+					<td>@Model.Plan.Name</td>
+				</tr>
+				<tr>
+					<th><i class="fas fa-calendar-alt"></i> Създаден</th>
+					<td>@Model.Order.TimeFinished</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

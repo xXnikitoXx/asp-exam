@@ -37,7 +37,7 @@
 							<i class="fa fa-check"></i>
 							Плащане
 						</li>
-						@if (Model.ExternalId == null) {
+						@if (Model.ServerData == null) {
 							<li class="active step0">
 								<i class="fa fa-cogs"></i>
 								Конфигурация
@@ -60,7 +60,7 @@
 				</div>
 			</div>
 			<div class="row">
-				@if (Model.ExternalId == null) {
+				@if (Model.ServerData == null) {
 					<template v-if="password == '' && !processing">
 						<div class="row mb-3">
 							<div class="col-4 offset-4">
@@ -148,6 +148,6 @@
 		</div>
 	</div>
 </div>
-@if (Model.ExternalId == null) {
+@if (Model.ServerData == null) {
 	<script type="module" src="/js/vps/setup.js" onload="setup.name = '@Model.Name'; setup.changeName();"></script>
 }

@@ -1,5 +1,10 @@
+@model VPSViewModel
+
 <div id="reinstall" class="row">
 	<template v-if="password == '' && !processing">
+		<div class="card-header">
+			<h3 class="title">Преинсталация</h3>
+		</div>
 		<div class="row mb-0">
 			<div class="col-12">
 				<template v-for="d in Object.keys(versions)">
