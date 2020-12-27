@@ -16,6 +16,7 @@ namespace Project.Data {
 		public DbSet<Post> Posts { get; set; }
 		public DbSet<PromoCode> PromoCodes { get; set; }
 		public DbSet<PromoCodeOrder> PromoCodeOrders { get; set; }
+		public DbSet<ServerData> ServersData { get; set; }
 		public DbSet<State> States { get; set; }
 		public DbSet<Ticket> Tickets { get; set; }
 		public DbSet<UserPromoCode> UserPromoCodes { get; set; }
@@ -94,6 +95,10 @@ namespace Project.Data {
 				entity.HasMany(vps => vps.States)
 					.WithOne(state => state.VPS)
 					.HasForeignKey(state => state.VPSId);
+
+				entity.HasOne<ServerData>(vps => vps.ServerData)
+					.WithOne(data => data.VPS)
+					.HasForeignKey<ServerData>(data => data.VPSId);
 			});
 
 			modelBuilder.Entity<Post>(entity => {
@@ -181,6 +186,12 @@ namespace Project.Data {
 				entity.HasOne<Order>(payment => payment.Order)
 					.WithOne(order => order.Payment)
 					.HasForeignKey<Order>(order => order.PaymentId);
+			});
+
+			modelBuilder.Entity<ServerData>(entity => {
+				entity.HasOne<VPS>(data => data.VPS)
+					.WithOne(vps => vps.ServerData)
+					.HasForeignKey<VPS>(vps => vps.ServerDataId);
 			});
 
 			#endregion

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Project.Data;
 
 namespace Project.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201226133847_AddServerData")]
+    partial class AddServerData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -580,32 +582,11 @@ namespace Project.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<double>("CPU")
-                        .HasColumnType("float");
+                    b.Property<float>("CPU")
+                        .HasColumnType("real");
 
-                    b.Property<double>("DiskRead")
-                        .HasColumnType("float");
-
-                    b.Property<double>("DiskWrite")
-                        .HasColumnType("float");
-
-                    b.Property<double>("NetworkIn")
-                        .HasColumnType("float");
-
-                    b.Property<double>("NetworkOut")
-                        .HasColumnType("float");
-
-                    b.Property<double>("OperationsRead")
-                        .HasColumnType("float");
-
-                    b.Property<double>("OperationsWrite")
-                        .HasColumnType("float");
-
-                    b.Property<double>("PacketsIn")
-                        .HasColumnType("float");
-
-                    b.Property<double>("PacketsOut")
-                        .HasColumnType("float");
+                    b.Property<float>("RAM")
+                        .HasColumnType("real");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
