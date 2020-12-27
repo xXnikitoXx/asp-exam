@@ -4,6 +4,16 @@
 	ViewData["Back"] = "/VPS";
 	if (ViewData["Admin"] != null)
 		ViewData["Back"] = $"/Admin{ViewData["Back"]}s";
+	ViewData["CPU"] = string.Join(", ", Model.States.Select(state => (state.CPU * Math.Pow(10,-14)).ToString("F2")));
+	ViewData["DiskRead"] = string.Join(", ", Model.States.Select(state => (state.DiskRead / Math.Pow(1024, 2)).ToString("F2")));
+	ViewData["DiskWrite"] = string.Join(", ", Model.States.Select(state => (state.DiskWrite / Math.Pow(1024, 2)).ToString("F2")));
+	ViewData["OpsRead"] = string.Join(", ", Model.States.Select(state => state.OperationsRead.ToString("F2")));
+	ViewData["OpsWrite"] = string.Join(", ", Model.States.Select(state => state.OperationsWrite.ToString("F2")));
+	ViewData["NetworkIn"] = string.Join(", ", Model.States.Select(state => (state.NetworkIn / Math.Pow(1024, 2)).ToString("F2")));
+	ViewData["NetworkOut"] = string.Join(", ", Model.States.Select(state => (state.NetworkOut / Math.Pow(1024, 2)).ToString("F2")));
+	ViewData["PacketsIn"] = string.Join(", ", Model.States.Select(state => state.PacketsIn.ToString("F2")));
+	ViewData["PacketsOut"] = string.Join(", ", Model.States.Select(state => state.PacketsOut.ToString("F2")));
+	ViewData["Labels"] = string.Join("\", \"", Model.States.Select(state => state.Time.ToString()));
 }
 
 <style>
@@ -205,11 +215,50 @@
 	</div>
 </div>
 <script>
+	window.xs = [ "@Html.Raw(ViewData["Labels"])" ].map(d => new Date(d));
 	let setupData = () => {
 		manage.serverId = "@Model.Id";
 		manage.controlUrl = "@(Context.Request.Path.ToString().ToLower().Contains("admin") ? "/Admin/" : "/")VPS/Control";
 		delete setupData;
 	}
+
+	let setupCharts = () => {
+		let data = [
+			[ @ViewData["CPU"] ],
+			[ @ViewData["DiskRead"] ],
+			[ @ViewData["DiskWrite"] ],
+			[ @ViewData["OpsRead"] ],
+			[ @ViewData["OpsWrite"] ],
+			[ @ViewData["NetworkIn"] ],
+			[ @ViewData["NetworkOut"] ],
+			[ @ViewData["PacketsIn"] ],
+			[ @ViewData["PacketsOut"] ],
+		];
+		for (let i = 0; i < data.length; i++)
+			data[i] = data[i].map(d => ({ t: xs[i], y: d }));
+		cpuChart.data.datasets[0].data = data[0];
+		discTransferChart.data.datasets[0].data = data[1];
+		discTransferChart.data.datasets[1].data = data[2];
+		discOperationsChart.data.datasets[0].data = data[3];
+		discOperationsChart.data.datasets[1].data = data[4];
+		networkTransferChart.data.datasets[0].data = data[5];
+		networkTransferChart.data.datasets[1].data = data[6];
+		networkPacketsChart.data.datasets[0].data = data[7];
+		networkPacketsChart.data.datasets[1].data = data[8];
+		cpuChart.data.labels =
+		discTransferChart.data.labels =
+		discOperationsChart.data.labels =
+		networkTransferChart.data.labels =
+		networkPacketsChart.data.labels =
+		xs;
+		cpuChart.update();
+		discTransferChart.update();
+		discOperationsChart.update();
+		networkTransferChart.update();
+		networkPacketsChart.update();
+
+		SetupChartUpdate("@Model.Id", @((ViewData["Admin"] != null).ToString().ToLower()));
+	}
 </script>
 <script type="module" src="/js/vps/manage.js" onload="setupData();"></script>
-<script type="module" src="/js/charts/vps/charts.js"></script>
+<script type="module" src="/js/charts/vps/charts.js" onload="setupCharts();"></script>
