@@ -67,17 +67,22 @@ namespace Project.Controllers {
 			order.Plan = this._planService.GetPlans()
 				.FirstOrDefault(plan => plan.Number == order.PlanNumber);
 			ApplicationUser user = await this._userManager.GetUserAsync(User);
-			PayPal.Api.Payment payPalPayment = this._service.ExecutePayment(inputModel.PaymentId, inputModel.PayerId);
-			Models.Payment payment = this._mapper.Map<Models.Payment>(inputModel);
-			payment.UserId = user.Id;
-			payment.OrderId = order.Id;
-			List<VPSViewModel> vpss = (await this._paymentService.CreatePayment(payment))
-				.Select(this._mapper.Map<VPSViewModel>)
-				.OrderBy(vps => vps.Name)
-				.ToList(); 
-			PaymentViewModel viewModel = this._mapper.Map<PaymentViewModel>(payment);
-			viewModel.AssociatedVPSs = vpss;
-			return View(viewModel);
+			try {
+				PayPal.Api.Payment payPalPayment = this._service.ExecutePayment(inputModel.PaymentId, inputModel.PayerId);
+				Models.Payment payment = this._mapper.Map<Models.Payment>(inputModel);
+				payment.UserId = user.Id;
+				payment.OrderId = order.Id;
+				List<VPSViewModel> vpss = (await this._paymentService.CreatePayment(payment))
+					.Select(this._mapper.Map<VPSViewModel>)
+					.OrderBy(vps => vps.Name)
+					.ToList(); 
+				PaymentViewModel viewModel = this._mapper.Map<PaymentViewModel>(payment);
+				viewModel.AssociatedVPSs = vpss;
+				return View(viewModel);
+			} catch (Exception error) {
+				Console.WriteLine(error.ToString());
+				return Redirect("/Error");
+			}
 		}
 	}
 }
