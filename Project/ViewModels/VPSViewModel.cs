@@ -10,11 +10,9 @@ namespace Project.ViewModels {
 		}
 
 		public string Id { get; set; }
-		public string ExternalId { get; set; }
 		public string Name { get; set; }
 		public PlanViewModel Plan { get; set; }
 		public Location Location { get; set; }
-		public string IP { get; set; }
 		public byte Cores { get; set; }
 		public byte RAM { get; set; }
 		public ushort SSD { get; set; }
@@ -22,6 +20,8 @@ namespace Project.ViewModels {
 		public List<State> States { get; set; }
 		public string OrderId { get; set; }
 		public OrderViewModel Order { get; set; }
+		public string ServerDataId { get; set; }
+		public ServerDataViewModel ServerData { get; set; }
 		public string UserId { get; set; }
 		public string Username { get; set; }
 	}

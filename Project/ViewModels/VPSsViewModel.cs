@@ -6,5 +6,9 @@ namespace Project.ViewModels {
 			this.VPSs = new List<VPSViewModel>();
 
 		public List<VPSViewModel> VPSs { get; set; }
+		public int OnlineCount { get; set; }
+		public int OfflineCount { get; set; }
+		public int ErrorCount { get; set; }
+		public int MaintenanceCount { get; set; }
 	}
 }
