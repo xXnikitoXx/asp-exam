@@ -60,18 +60,26 @@
 											<td>@vps.RAM GB</td>
 											<td>@vps.SSD GB</td>
 											<td>
-												<button class="btn btn-success" type="button" data-toggle="tooltip" data-placement="top" title="Стартиране">
-													<i class="fas fa-play-circle"></i>
-												</button>&nbsp;
-												<button class="btn btn-warning" type="button" data-toggle="tooltip" data-placement="top" title="Рестартиране">
-													<i class="fas fa-undo-alt"></i>
-												</button>&nbsp;
-												<button class="btn btn-danger" type="button" data-toggle="tooltip" data-placement="top" title="Спиране">
-													<i class="fas fa-stop-circle"></i>
-												</button>&nbsp;
-												<a href="/Admin/VPS/Manage?Id=@vps.Id">
-													<button class="btn btn-primary">Контрол</button>
-												</a>
+												@if (@vps.ServerData != null) {
+													<div class="btn-group">
+														<button class="btn btn-success" type="button">
+															<i class="fas fa-play-circle"></i>
+														</button>
+														<button class="btn btn-warning" type="button">
+															<i class="fas fa-undo-alt"></i>
+														</button>
+														<button class="btn btn-danger" type="button">
+															<i class="fas fa-power-off"></i>
+														</button>
+													</div>
+													<a href="/Admin/VPS/Manage?Id=@vps.Id">
+														<button class="btn btn-primary">Контрол</button>
+													</a>
+												} else {
+													<a href="/Admin/VPS/Setup?Id=@vps.Id">
+														<button class="btn btn-primary">Конфигурация</button>
+													</a>
+												}
 											</td>
 										</tr>
 									}
