@@ -13,7 +13,6 @@
 	ViewData["NetworkOut"] = string.Join(", ", Model.States.Select(state => (state.NetworkOut / Math.Pow(1024, 2)).ToString("F2")));
 	ViewData["PacketsIn"] = string.Join(", ", Model.States.Select(state => state.PacketsIn.ToString("F2")));
 	ViewData["PacketsOut"] = string.Join(", ", Model.States.Select(state => state.PacketsOut.ToString("F2")));
-	ViewData["Labels"] = string.Join("\", \"", Model.States.Select(state => state.Time.ToString()));
 }
 
 <style>
@@ -215,7 +214,6 @@
 	</div>
 </div>
 <script>
-	window.xs = [ "@Html.Raw(ViewData["Labels"])" ].map(d => new Date(d));
 	let setupData = () => {
 		manage.serverId = "@Model.Id";
 		manage.controlUrl = "@(Context.Request.Path.ToString().ToLower().Contains("admin") ? "/Admin/" : "/")VPS/Control";
@@ -235,7 +233,7 @@
 			[ @ViewData["PacketsOut"] ],
 		];
 		for (let i = 0; i < data.length; i++)
-			data[i] = data[i].map(d => ({ t: xs[i], y: d }));
+			data[i] = data[i].map(d => ({ y: d }));
 		cpuChart.data.datasets[0].data = data[0];
 		discTransferChart.data.datasets[0].data = data[1];
 		discTransferChart.data.datasets[1].data = data[2];
@@ -245,12 +243,7 @@
 		networkTransferChart.data.datasets[1].data = data[6];
 		networkPacketsChart.data.datasets[0].data = data[7];
 		networkPacketsChart.data.datasets[1].data = data[8];
-		cpuChart.data.labels =
-		discTransferChart.data.labels =
-		discOperationsChart.data.labels =
-		networkTransferChart.data.labels =
-		networkPacketsChart.data.labels =
-		xs;
+
 		cpuChart.update();
 		discTransferChart.update();
 		discOperationsChart.update();
