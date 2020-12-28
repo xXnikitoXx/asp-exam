@@ -26,6 +26,7 @@ window.discOperationsChart = new Chart(discOperationsCtx, {
 		]
 	},
 	options: {
+		animation: false,
 		elements: {
 			lines: {
 				bezierCurve: false,
@@ -45,7 +46,6 @@ window.discOperationsChart = new Chart(discOperationsCtx, {
 					labelString: ""
 				},
 			}],
-			xAxes,
 		}
 	}
 });

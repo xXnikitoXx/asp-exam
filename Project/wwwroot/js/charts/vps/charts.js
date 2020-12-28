@@ -11,18 +11,11 @@ window.SetupChartUpdate = (vpsId, admin) => {
 		.then(response => response.json())
 		.then(json => {
 			let data = json[0];
-			let time = new Date(data.time);
 			cpuChart.data.labels.shift();
 			discTransferChart.data.labels.shift();
 			discOperationsChart.data.labels.shift();
 			networkTransferChart.data.labels.shift();
 			networkPacketsChart.data.labels.shift();
-
-			cpuChart.data.labels.push(time);
-			discTransferChart.data.labels.push(time);
-			discOperationsChart.data.labels.push(time);
-			networkTransferChart.data.labels.push(time);
-			networkPacketsChart.data.labels.push(time);
 
 			cpuChart.data.datasets[0].data.shift();
 			discTransferChart.data.datasets[0].data.shift();
@@ -34,21 +27,25 @@ window.SetupChartUpdate = (vpsId, admin) => {
 			networkPacketsChart.data.datasets[0].data.shift();
 			networkPacketsChart.data.datasets[1].data.shift();
 
-			cpuChart.data.datasets[0].data.push({ t: time, y: (data.CPU * Math.pow(10,-14)).toFixed(2) });
-			discTransferChart.data.datasets[0].data.push({ t: time, y: (data.diskRead / Math.pow(1024, 2)).toFixed(2) });
-			discTransferChart.data.datasets[1].data.push({ t: time, y: (data.diskWrite / Math.pow(1024, 2)).toFixed(2) });
-			discOperationsChart.data.datasets[0].data.push({ t: time, y: data.operationsRead.toFixed(2) });
-			discOperationsChart.data.datasets[1].data.push({ t: time, y: data.operationsWrite.toFixed(2) });
-			networkTransferChart.data.datasets[0].data.push({ t: time, y: (data.networkIn / Math.pow(1024, 2)).toFixed(2) });
-			networkTransferChart.data.datasets[1].data.push({ t: time, y: (data.networkOut / Math.pow(1024, 2)).toFixed(2) });
-			networkPacketsChart.data.datasets[0].data.push({ t: time, y: data.packetsIn.toFixed(2) });
-			networkPacketsChart.data.datasets[1].data.push({ t: time, y: data.packetsOut.toFixed(2) });
+			cpuChart.data.datasets[0].data.push({ y: (data.CPU * Math.pow(10,-14)).toFixed(2) });
+			discTransferChart.data.datasets[0].data.push({ y: (data.diskRead / Math.pow(1024, 2)).toFixed(2) });
+			discTransferChart.data.datasets[1].data.push({ y: (data.diskWrite / Math.pow(1024, 2)).toFixed(2) });
+			discOperationsChart.data.datasets[0].data.push({ y: data.operationsRead.toFixed(2) });
+			discOperationsChart.data.datasets[1].data.push({ y: data.operationsWrite.toFixed(2) });
+			networkTransferChart.data.datasets[0].data.push({ y: (data.networkIn / Math.pow(1024, 2)).toFixed(2) });
+			networkTransferChart.data.datasets[1].data.push({ y: (data.networkOut / Math.pow(1024, 2)).toFixed(2) });
+			networkPacketsChart.data.datasets[0].data.push({ y: data.packetsIn.toFixed(2) });
+			networkPacketsChart.data.datasets[1].data.push({ y: data.packetsOut.toFixed(2) });
 
 			cpuChart.update();
-			discTransferChart.update();
-			discOperationsChart.update();
-			networkTransferChart.update();
-			networkPacketsChart.update();
+			if (window.manage.discChart == 0)
+				discTransferChart.update();
+			if (window.manage.discChart == 1)
+				discOperationsChart.update();
+			if (window.manage.networkChart == 0)
+				networkTransferChart.update();
+			if (window.manage.networkChart == 1)
+				networkPacketsChart.update();
 		});
 	}, 15000);
 }

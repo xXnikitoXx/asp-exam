@@ -26,6 +26,7 @@ window.networkTransferChart = new Chart(networkTransferCtx, {
 		]
 	},
 	options: {
+		animation: false,
 		elements: {
 			lines: {
 				bezierCurve: false,
@@ -44,7 +45,6 @@ window.networkTransferChart = new Chart(networkTransferCtx, {
 					labelString: ""
 				}
 			}],
-			xAxes,
 		}
 	}
 });

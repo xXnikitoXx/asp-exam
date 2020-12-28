@@ -26,6 +26,7 @@ window.networkPacketsChart = new Chart(networkPacketsCtx, {
 		]
 	},
 	options: {
+		animation: false,
 		elements: {
 			lines: {
 				bezierCurve: false,
@@ -45,7 +46,6 @@ window.networkPacketsChart = new Chart(networkPacketsCtx, {
 					labelString: ""
 				}
 			}],
-			xAxes,
 		}
 	}
 });

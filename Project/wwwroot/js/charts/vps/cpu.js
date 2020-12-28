@@ -18,6 +18,7 @@ window.cpuChart = new Chart(cpuStatsCtx, {
 		]
 	},
 	options: {
+		animation: false,
 		elements: {
 			lines: {
 				bezierCurve: false,
@@ -26,6 +27,7 @@ window.cpuChart = new Chart(cpuStatsCtx, {
 		},
 		scales: {
 			yAxes: [{
+				stepSize: 25,
 				ticks: {
 					min: 0,
 					max: 100,
@@ -36,7 +38,6 @@ window.cpuChart = new Chart(cpuStatsCtx, {
 					labelString: ""
 				}
 			}],
-			xAxes,
 		}
 	}
 });

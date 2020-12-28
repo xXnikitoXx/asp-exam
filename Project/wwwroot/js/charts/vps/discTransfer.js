@@ -26,6 +26,7 @@ window.discTransferChart = new Chart(discTransferCtx, {
 		]
 	},
 	options: {
+		animation: false,
 		elements: {
 			lines: {
 				bezierCurve: false,
@@ -45,7 +46,6 @@ window.discTransferChart = new Chart(discTransferCtx, {
 					labelString: ""
 				}
 			}],
-			xAxes,
 		}
 	}
 });
