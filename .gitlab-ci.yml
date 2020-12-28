@@ -5,6 +5,7 @@ stages:
   - test
 
 variables:
+  DOCKER_TLS_CERTDIR: ""
   project: "Project"
 
 before_script:
