@@ -6,10 +6,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Project.Services.Native
-{
-	public interface IOrderClient
-	{
+namespace Project.Services.Native {
+	public interface IOrderClient {
 		Task<Order> Find(string id);
 		Task<List<Order>> GetOrders(ClaimsPrincipal user);
 		Task<List<Order>> GetOrders(ClaimsPrincipal user, OrdersViewModel pageInfo);

@@ -23,14 +23,17 @@ namespace Project.Services.Native {
 			this._userManager = userManager;
 
 			Task.Run(async () => {
-				if (!await this._roleManager.RoleExistsAsync("Administrator"))
-					await this._roleManager.CreateAsync(new IdentityRole("Administrator"));
-				if (!await HasAdmin()) {
-					ApplicationUser user = First();
-					if (user != null)
-						await PromoteToAdmin(First());
-				}
-			}).Wait();
+				try {
+					if (!await this._roleManager.RoleExistsAsync("Administrator"))
+						await this._roleManager.CreateAsync(new IdentityRole("Administrator"));
+					if (!await HasAdmin()) {
+						ApplicationUser user = First();
+						if (user != null)
+							await PromoteToAdmin(First());
+					}
+				} catch {}
+			})
+			.GetAwaiter().GetResult();
 		}
 
 		public ApplicationUser First() =>

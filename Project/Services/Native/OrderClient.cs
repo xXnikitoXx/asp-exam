@@ -176,7 +176,8 @@ namespace Project.Services.Native {
 				.Orders.Add(order);
 			await _context.SaveChangesAsync();
 		}
-		public async Task RemoveOrder(string id) => await RemoveOrder(await Find(id));
+		public async Task RemoveOrder(string id) =>
+			await RemoveOrder(await Find(id));
 
 		public async Task RemoveOrder(Order order) {
 			OrderState[] allowedStates = new OrderState[] {

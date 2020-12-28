@@ -53,8 +53,10 @@ namespace Project.Services.Native {
 			this._context.UserPromoCodes.RemoveRange(user.PromoCodes);
 			this._context.Activities.RemoveRange(user.Activities);
 			this._context.Messages.RemoveRange(user.Messages);
-			if (await this._roleService.IsAdmin(user))
-				await this._roleService.DemoteToUser(user);
+			try {
+				if (await this._roleService.IsAdmin(user))
+					await this._roleService.DemoteToUser(user);
+			} catch {}
 			await this._userManager.DeleteAsync(user);
 			await this._context.Orders.AddRangeAsync(finishedOrders);
 			await this._context.SaveChangesAsync();

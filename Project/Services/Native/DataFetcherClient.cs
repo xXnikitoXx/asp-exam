@@ -75,8 +75,8 @@ namespace Project.Services.Native {
 		public async Task UpdateVPS(ServerData data, ServerMetric cpuMetric, ServerMetric diskMetric, ServerMetric networkMetric) {
 			ServerMetricTimeSeries srs = cpuMetric.TimeSeries;
 			double cpu = 0;
-			List<double> disk = new List<double>();
-			List<double> network = new List<double>();
+			List<double> disk = new List<double> { 0, 0, 0, 0 };
+			List<double> network = new List<double>() { 0, 0, 0, 0 };
 			if (srs.CpuValues.Count != 0)
 				try {
 					cpu = srs.CpuValues[0].Value;
