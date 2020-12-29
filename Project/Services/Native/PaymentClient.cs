@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -49,8 +50,12 @@ namespace Project.Services.Native {
 			this._context.Payments.Add(payment);
 			ApplicationUser user = await this._context.Users
 				.FirstOrDefaultAsync(user => user.Id == payment.UserId);
+			if (user == null)
+				throw new Exception();
 			Order order = await this._context.Orders
 				.FirstOrDefaultAsync(order => order.Id == payment.OrderId);
+			if (order == null)
+				throw new Exception();
 			user.Payments.Add(payment);
 			order.Payment = payment;
 			order.Plan = plans.FirstOrDefault(plan => plan.Number == order.PlanNumber);
