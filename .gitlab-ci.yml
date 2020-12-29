@@ -5,10 +5,12 @@ stages:
   - test
 
 variables:
+  GIT_SSL_NO_VERIFY: "true"
   DOCKER_TLS_CERTDIR: ""
   project: "Project"
 
 before_script:
+  - "docker run -v /etc/hosts:/hosts -i microsoft/dotnet:latest sh -c 'echo 127.0.0.1 tl-git.tk > /hosts'"
   - "dotnet restore"
 
 build:
